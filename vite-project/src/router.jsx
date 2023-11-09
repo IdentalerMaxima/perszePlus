@@ -1,5 +1,6 @@
-import { createBrowserRouter } from "react-router-dom"
-import App from './App.jsx'
+import { Navigate, createBrowserRouter } from "react-router-dom"
+import GuestLayout from './components/GuestLayout.jsx'
+import DefaultLayout from './components/DefaultLayout.jsx'
 import Dashboard from './views/Dashboard.jsx'
 import Surveys from './views/Surveys.jsx'
 import Login from './views/Login.jsx'
@@ -9,19 +10,35 @@ import Signup from './views/Signup.jsx'
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <Dashboard />
+        element: <DefaultLayout />,
+        children: [
+            {
+                path: '/dashboard',
+                element: <Navigate to='/' />
+            },
+            {
+                path: '/',
+                element: <Dashboard />,
+            },
+            {
+                path: '/surveys',
+                element: <Surveys />
+            }
+        ]
     },
     {
-        path: '/surveys',
-        element: <Surveys />
-    },
-    {
-        path: '/login',
-        element: <Login />
-    },
-    {
-        path: '/signup',
-        element: <Signup />
+        path: '/',
+        element: <GuestLayout />,
+        children: [
+            {
+                path: '/login',
+                element: <Login />
+            },
+            {
+                path: '/signup',
+                element: <Signup />
+            }
+        ] 
     }
 ])
 
