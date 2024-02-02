@@ -1,13 +1,13 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 
 const StateContext = createContext({
-    currentUser: null,
+    currentUser: {},
     setCurrentUser: () => { },
     userToken: null,
     setUserToken: () => { }
 });
 
-export const ContextProvider = () => {
+export const ContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState({
         name: 'Tom Cook',
         email: 'tom@example.com',
@@ -21,7 +21,7 @@ export const ContextProvider = () => {
             userToken,
             setUserToken
         }}>
-            {children}
+            { children }
         </StateContext.Provider>
     )
 };
