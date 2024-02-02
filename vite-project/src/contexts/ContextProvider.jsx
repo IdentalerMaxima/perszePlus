@@ -9,8 +9,8 @@ const StateContext = createContext({
 
 export const ContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState({
-        name: 'Tom Cook',
-        email: 'tom@example.com',
+        name: 'Bakó Berik',
+        email: 'bako@erik.com',
         imageUrl: '..\\src\\assets\\Capture.PNG'
     })
     const [userToken, setUserToken] = useState(null)
