@@ -7,7 +7,7 @@ import { userStateContext } from '../contexts/ContextProvider'
 
 const navigation = [
   { name: 'Dashboard', to: '/' },
-  { name: 'Első oldal', to: '/surveys' },
+  { name: 'Naptár', to: '/naptar' },
 ]
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
