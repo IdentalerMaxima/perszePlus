@@ -13,7 +13,7 @@ export const ContextProvider = ({ children }) => {
         email: 'bako@erik.com',
         imageUrl: '..\\src\\assets\\Capture.PNG'
     })
-    const [userToken, setUserToken] = useState(null)
+    const [userToken, setUserToken] = useState('12')
     return (
         <StateContext.Provider value={{
             currentUser,
