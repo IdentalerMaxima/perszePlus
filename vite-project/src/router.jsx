@@ -21,9 +21,26 @@ const router = createBrowserRouter([
                 element: <Dashboard />,
             },
             {
-                path: '/surveys',
+                path: '/news',
                 element: <Surveys />
-            }
+            },
+            {
+                path: '/mydata',
+                element: <Surveys />
+            },
+            {
+                path: '/calendar',
+                element: <Surveys />
+            },
+            {
+                path: '/courses',
+                element: <Surveys />
+            },
+            {
+                path: '/attendance',
+                element: <Surveys />
+            },
+
         ]
     },
     {
