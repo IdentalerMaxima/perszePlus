@@ -1,8 +1,14 @@
 import { Navigate, createBrowserRouter } from "react-router-dom"
 import GuestLayout from './components/GuestLayout.jsx'
 import DefaultLayout from './components/DefaultLayout.jsx'
+
 import Dashboard from './views/Dashboard.jsx'
-import Surveys from './views/Surveys.jsx'
+import Calendar from './views/Calendar.jsx'
+import Courses from './views/Courses.jsx'
+import News from './views/News.jsx'
+import MyData from './views/MyData.jsx'
+import Attendance from './views/Attendance.jsx'
+
 import Login from './views/Login.jsx'
 import Signup from './views/Signup.jsx'
 
@@ -22,23 +28,23 @@ const router = createBrowserRouter([
             },
             {
                 path: '/news',
-                element: <Surveys />
+                element: <News />,
             },
             {
                 path: '/mydata',
-                element: <Surveys />
+                element: <MyData />
             },
             {
                 path: '/calendar',
-                element: <Surveys />
+                element: <Calendar />
             },
             {
                 path: '/courses',
-                element: <Surveys />
+                element: <Courses />
             },
             {
                 path: '/attendance',
-                element: <Surveys />
+                element: <Attendance />
             },
 
         ]
