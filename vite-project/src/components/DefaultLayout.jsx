@@ -7,7 +7,11 @@ import { userStateContext } from '../contexts/ContextProvider'
 
 const navigation = [
   { name: 'Főoldal', to: '/' },
-  { name: 'Naptár', to: '/surveys' },
+  { name: 'Jelenléti', to: '/attendance'},
+  { name: 'Hírek', to: '/news' },
+  { name: 'Adataim', to: '/mydata' },
+  { name: 'Naptár', to: '/calendar' },
+  { name: 'Kurzusok', to: '/courses' }
 ]
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
@@ -22,11 +26,11 @@ function classNames(...classes) {
 
 
 export default function DefaultLayout() {
-  const { currentUser, userToken } = userStateContext();
+  const { currentUser, userToken } = userStateContext('');
 
-  if (!userToken) {
-    return <Navigate to="/login" />
-  }
+  // if (!userToken) {
+  //   return <Navigate to="/login" />
+  // }
 
 
   return (
