@@ -47,59 +47,57 @@ export default function Signup() {
           {error.__html && (<div className="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
             dangerouslySetInnerHTML={error}>
           </div>)}
-          
+
+        <div className="rounded-md ring-1 ring-gray-300">
           <div>
-            <div className="mt-2">
-              <input
-                id="fullName"
-                name="fullName"
-                type="text"
-                required
-                className="block w-full rounded-t-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                placeholder="Teljes név"
-              />
-            </div>
+            <input
+              id="fullName"
+              name="fullName"
+              type="text"
+              required
+              className="block w-full rounded-t-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+              focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="Teljes név"
+            />
           </div>
 
           <div>
-            <div className="">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="block w-full border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                placeholder="Email cím"
-              />
-            </div>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              className="block w-full border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+              focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="Email cím"
+            />
           </div>
 
           <div>
-            <div className="">
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="block w-full border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                placeholder="Jelszó"
-              />
-            </div>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              className="block w-full border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+              focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="Jelszó"
+            />
           </div>
 
           <div>
-            <div className="">
-              <input
-                id="passwordConfirmation"
-                name="passwordConfirmation"
-                type="password"
-                required
-                className="block w-full rounded-b-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                placeholder="Jelszó megerősítése"
-              />
-            </div>
+            <input
+              id="passwordConfirmation"
+              name="passwordConfirmation"
+              type="password"
+              required
+              className="block w-full rounded-b-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+              focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="Jelszó megerősítése"
+            />
           </div>
+        </div>
 
           <div>
             <button
