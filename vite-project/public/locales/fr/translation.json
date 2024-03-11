@@ -1,3 +1,24 @@
+
 {
-    "Welcome to React": "Bienvenue à React et react-i18next"
-  }
+    "register now": "Inscrivez-vous maintenant!",
+    "full name": "Nom complet",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "confirm password": "Confirmez le mot de passe",
+    "create account": "Créer un compte",
+    "already have an account?": "Vous avez déjà un compte?",
+    "login": "S'identifier",
+
+    "type your email": "Tapez votre email",
+    "type your password": "Tapez votre mot de passe",
+    "remember me": "Souviens-toi de moi",
+    "forgot password": "Mot de passe oublié?",
+    "dont have an account?": "Vous n'avez pas de compte?",
+
+    "The name field is required.": "Le champ nom est requis.",
+    "The email field is required.": "Le champ email est requis.",
+    "The email must be a valid email address.": "L'email doit être une adresse e-mail valide.",
+    "The password field is required.": "Le champ mot de passe est requis."
+
+    
+}
