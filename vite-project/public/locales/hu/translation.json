@@ -1,0 +1,27 @@
+
+{   
+    "register now" : "Regisztrálj most!",
+    "full name" : "Teljes név",
+    "email" : "Email cím",
+    "password" : "Jelszó",
+    "confirm password" : "Jelszó megerősítése",
+    "create account" : "Fiók létrehozása",
+    "already have an account?" : "Már van fiókod?",
+    "login" : "Bejelentkezés",
+
+    "type your email": "Írd be az email címed",
+    "type your password": "Írd be a jelszavad",
+    "remember me": "Emlékezz rám",
+    "forgot password": "Elfelejtetted a jelszavad?",
+    "dont have an account?": "Nincs még fiókod?",
+
+    "The name field is required.": "A név mező kötelező.",
+    "The email field is required.": "Az email mező kötelező.",
+    "The email must be a valid email address.": "Az email címnek érvényesnek kell lennie.",
+    "The password field is required.": "A jelszó mező kötelező."
+
+
+
+
+
+}
