@@ -1,3 +1,22 @@
-{
-    "Welcome to React": "Welcome to React and react-i18next"
+{ 
+    "register now": "Register now!",
+    "full name": "Full name",
+    "email": "Email address",
+    "password": "Password",
+    "confirm password": "Confirm password",
+    "create account": "Create account",
+    "already have an account?": "Already have an account?",
+    "login": "Login",
+
+    "type your email": "Type your email",
+    "type your password": "Type your password",
+    "remember me": "Remember me",
+    "forgot password": "Forgot password?",
+    "dont have an account?": "Don't have an account?",
+
+    "The name field is required.": "The name field is required.",
+    "The email field is required.": "The email field is required.",
+    "The email must be a valid email address.": "The email must be a valid email address.",
+    "The password field is required.": "The password field is required."
+    
 }
