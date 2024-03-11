@@ -1,0 +1,25 @@
+
+{
+    "register now" : "Registrate hoy!",
+    "full name" : "Nombre completo",
+    "email" : "Correo electrónico",
+    "password" : "Contraseña",
+    "confirm password" : "Confirmar contraseña",
+    "create account" : "Crear cuenta",
+    "already have an account?" : "Ya tienes una cuenta?",
+    "login" : "Iniciar sesión",
+
+    "type your email": "Escribe tu correo electrónico",
+    "type your password": "Escribe tu contraseña",
+    "remember me": "Recuérdame",
+    "forgot password": "Olvidaste tu contraseña?",
+    "dont have an account?": "No tienes una cuenta?",
+
+    "The name field is required.": "El nombre es requerido.",
+    "The email field is required.": "El correo electrónico es requerido.",
+    "The email must be a valid email address.": "El correo electrónico debe ser una dirección de correo electrónico válida.",
+    "The password field is required.": "La contraseña es requerida."
+
+
+
+}
