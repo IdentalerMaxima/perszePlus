@@ -32,11 +32,11 @@ class AuthController extends Controller
         $remember = $credentials['remember'] ?? false;
         unset($credentials['remember']);
 
-        if (!auth()->attempt($credentials, $remember)) {
+        if (!Auth::attempt($credentials, $remember)) {
             return response()->json(['message' => 'Unauthorized'], 422);
         }
 
-        $user = auth::user();
+        $user = Auth::user();
         $token = $user->createToken('main')->plainTextToken;
 
         return response([
@@ -48,7 +48,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         /** @var User $user */
-        $user = auth::user();
+        $user = Auth::user();
         $user->currentAccesToken()->delete();
         
         return response([
