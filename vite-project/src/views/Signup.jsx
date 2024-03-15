@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import axiosClient from "../axios.js";
 import LanguageSelector from "../components/LanguageSelector.jsx";
 import { useTranslation } from "react-i18next";
+import { useStateContext } from "../contexts/ContextProvider.jsx";
 
 export default function Signup() {
   const { t, i18n } = useTranslation(['translation']);
 
+  const {setCurrentUser, setUserToken} = useStateContext();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,7 +36,8 @@ export default function Signup() {
       password_confirmation: passwordConfirmation
     })
       .then(({ data }) => {
-        console.log(data);
+        setCurrentUser(data.user);
+        setUserToken(data.token);
       })
       .catch((error) => {
         if (error.response){
