@@ -1,8 +1,9 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { NavLink, Navigate, Outlet } from 'react-router-dom'
+import { Link, NavLink, Navigate, Outlet } from 'react-router-dom'
 import { useStateContext } from '../contexts/ContextProvider'
+import axiosClient from '../axios'
 
 
 const navigation = [
@@ -14,9 +15,8 @@ const navigation = [
   { name: 'Kurzusok', to: '/courses' }
 ]
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
+  { name: 'Your Profile', to: '/profile' },
+  { name: 'Settings', to: '/settings' },
 ]
 
 function classNames(...classes) {
@@ -26,10 +26,19 @@ function classNames(...classes) {
 
 
 export default function DefaultLayout() {
-  const { currentUser, userToken } = useStateContext('');
+  const { currentUser, userToken, setCurrentUser, setUserToken } = useStateContext('');
 
   if (!userToken) {
     return <Navigate to="/login" />
+  }
+
+  const logout = (ev) => {
+    ev.preventDefault();
+    axiosClient.post('/logout')
+      .then(res => {
+        setCurrentUser({});
+        setUserToken(null);
+      })
   }
 
 
@@ -101,7 +110,7 @@ export default function DefaultLayout() {
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
+                                  <Link
                                     href={item.href}
                                     className={classNames(
                                       active ? 'bg-gray-100' : '',
@@ -109,7 +118,7 @@ export default function DefaultLayout() {
                                     )}
                                   >
                                     {item.name}
-                                  </a>
+                                  </Link>
                                 )}
                               </Menu.Item>
                             ))}
@@ -167,17 +176,28 @@ export default function DefaultLayout() {
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
                     </button>
                   </div>
+
                   <div className="mt-3 space-y-1 px-2">
                     {userNavigation.map((item) => (
-                      <Disclosure.Button
+                      <NavLink
                         key={item.name}
-                        as="a"
-                        href={item.href}
+                        to={item.to}
                         className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                       >
                         {item.name}
-                      </Disclosure.Button>
+                      </NavLink>
                     ))}
+
+                    <Disclosure.Button
+                      as="a"
+                      href="#"
+                      onClick={ (ev) => logout(ev) }
+                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+
+                    >
+                      Sign out
+                    </Disclosure.Button>
+
                   </div>
                 </div>
               </Disclosure.Panel>
