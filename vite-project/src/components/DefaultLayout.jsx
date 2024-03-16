@@ -8,11 +8,11 @@ import axiosClient from '../axios'
 
 const navigation = [
   { name: 'Főoldal', to: '/' },
-  { name: 'Jelenléti', to: '/attendance' },
   { name: 'Hírek', to: '/news' },
-  { name: 'Adataim', to: '/mydata' },
   { name: 'Naptár', to: '/calendar' },
-  { name: 'Kurzusok', to: '/courses' }
+  { name: 'Kurzusok', to: '/courses' },
+  { name: 'Jelenléti', to: '/attendance' },
+  { name: 'Adataim', to: '/mydata' }
 ]
 const userNavigation = [
   { name: 'Your Profile', to: '/profile' },
@@ -111,7 +111,7 @@ export default function DefaultLayout() {
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
                                   <Link
-                                    href={item.href}
+                                    to={item.to}
                                     className={classNames(
                                       active ? 'bg-gray-100' : '',
                                       'block px-4 py-2 text-sm text-gray-700'
