@@ -8,7 +8,7 @@ import axiosClient from '../axios'
 
 const navigation = [
   { name: 'Főoldal', to: '/' },
-  { name: 'Jelenléti', to: '/attendance'},
+  { name: 'Jelenléti', to: '/attendance' },
   { name: 'Hírek', to: '/news' },
   { name: 'Adataim', to: '/mydata' },
   { name: 'Naptár', to: '/calendar' },
@@ -122,8 +122,15 @@ export default function DefaultLayout() {
                                 )}
                               </Menu.Item>
                             ))}
+                            <Menu.Item>
+                              <button
+                                onClick={(ev) => logout(ev)}
+                                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                Sign out
+                              </button>
+                            </Menu.Item>
                           </Menu.Items>
-
                         </Transition>
                       </Menu>
                     </div>
@@ -191,7 +198,7 @@ export default function DefaultLayout() {
                     <Disclosure.Button
                       as="a"
                       href="#"
-                      onClick={ (ev) => logout(ev) }
+                      onClick={(ev) => logout(ev)}
                       className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
 
                     >
