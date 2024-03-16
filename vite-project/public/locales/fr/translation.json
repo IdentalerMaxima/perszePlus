@@ -18,7 +18,9 @@
     "The name field is required.": "Le champ nom est requis.",
     "The email field is required.": "Le champ email est requis.",
     "The email must be a valid email address.": "L'email doit être une adresse e-mail valide.",
-    "The password field is required.": "Le champ mot de passe est requis."
+    "The password field is required.": "Le champ mot de passe est requis.",
+
+    "email or password is incorrect": "l'email ou le mot de passe est incorrect"
 
     
 }

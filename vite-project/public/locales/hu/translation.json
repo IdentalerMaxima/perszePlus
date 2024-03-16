@@ -18,7 +18,9 @@
     "The name field is required.": "A név mező kötelező.",
     "The email field is required.": "Az email mező kötelező.",
     "The email must be a valid email address.": "Az email címnek érvényesnek kell lennie.",
-    "The password field is required.": "A jelszó mező kötelező."
+    "The password field is required.": "A jelszó mező kötelező.",
+
+    "email or password is incorrect": "Az email cím vagy a jelszó helytelen"
 
 
 

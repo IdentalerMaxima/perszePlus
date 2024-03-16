@@ -37,11 +37,16 @@ export default function Login() {
         setUserToken(data.token);
       })
       .catch((error) => {
+        if (error.response && error.response.status === 422) {
+          const finalErrors = "email or password is incorrect";
+          translateErrors(finalErrors);
+        }
         if (error.response){
-          const finalErrors = Object.values(error.response.data.errors)
-            .reduce((accum, next) => [...accum, ...next], [])
-            .join('<br>');
-            translateErrors(finalErrors);
+          console.log(error.response.data);
+          // const finalErrors = Object.values(error.response.data.errors)
+          //   .reduce((accum, next) => [...accum, ...next], [])
+          //   .join('<br>');
+            //translateErrors(finalErrors);
         }
       });
   };
@@ -60,7 +65,7 @@ export default function Login() {
 
         <form onSubmit={onSubmit} className="space-y-6" action="#" method="POST">
           <div>
-            <div className="mt-2">
+            <div className="mt-14">
               <input
                 id="email"
                 name="email"

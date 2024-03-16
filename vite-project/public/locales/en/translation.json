@@ -17,6 +17,8 @@
     "The name field is required.": "The name field is required.",
     "The email field is required.": "The email field is required.",
     "The email must be a valid email address.": "The email must be a valid email address.",
-    "The password field is required.": "The password field is required."
+    "The password field is required.": "The password field is required.",
+
+    "email or password is incorrect": "Email or password is incorrect"
     
 }

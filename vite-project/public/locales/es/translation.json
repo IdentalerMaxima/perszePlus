@@ -18,7 +18,9 @@
     "The name field is required.": "El nombre es requerido.",
     "The email field is required.": "El correo electrónico es requerido.",
     "The email must be a valid email address.": "El correo electrónico debe ser una dirección de correo electrónico válida.",
-    "The password field is required.": "La contraseña es requerida."
+    "The password field is required.": "La contraseña es requerida.",
+
+    "email or password is incorrect": "El correo electrónico o la contraseña son incorrectos"
 
 
 
