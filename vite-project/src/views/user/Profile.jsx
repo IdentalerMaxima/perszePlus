@@ -1,5 +1,6 @@
 import PageComponent from "../../components/PageComponent";
-
+import Avatar from '@mui/material/Avatar';
+import DatePicker from '@mui/lab/DatePicker';
 
 export default function Dashboard() {
   return (
@@ -8,70 +9,65 @@ export default function Dashboard() {
         <div className="space-y-12">
 
           <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
 
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 
+              <div className="sm:col-span-2 flex flex-col justify-end items-center">
+
+                <div className="flex items-center justify-center gap-x-3">
+                  <Avatar
+                    alt="Remy Sharp"
+                    src="..\..\src\assets\0.PNG"
+                    sx={{ width: 150, height: 150 }}
+                  />
+                </div>
+              </div>
+
               <div className="sm:col-span-2">
-                <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
-                  First name
-                </label>
                 <div className="mt-2">
                   <input
                     type="text"
                     name="first-name"
                     id="first-name"
                     autoComplete="given-name"
+                    placeholder="First name"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
 
               <div className="sm:col-span-2">
-                <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
-                  Last name
-                </label>
                 <div className="mt-2">
                   <input
                     type="text"
                     name="last-name"
                     id="last-name"
                     autoComplete="family-name"
+                    placeholder="Last name"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
 
-              <div className="col-span-2">
-                <Avatar>H</Avatar>
-                <div className="flex items-center gap-x-3">
-                  <UserCircleIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />
-                  <button
-                    type="button"
-                    className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                  >
-                    Change
-                  </button>
-                </div>
-              </div>
+              <DatePicker label="Basic date picker" />
+
+
 
               <div className="sm:col-span-4">
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                  Email address
-                </label>
                 <div className="mt-2">
                   <input
                     id="email"
                     name="email"
                     type="email"
                     autoComplete="email"
+                    placeholder="Email address"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
 
-              <div className="sm:col-span-3">
+
+              {/* <div className="sm:col-span-3">
                 <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
                   Country
                 </label>
@@ -87,63 +83,57 @@ export default function Dashboard() {
                     <option>Mexico</option>
                   </select>
                 </div>
-              </div>
+              </div> */}
+
+
 
               <div className="col-span-full">
-                <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
-                  Street address
-                </label>
                 <div className="mt-2">
                   <input
                     type="text"
                     name="street-address"
                     id="street-address"
                     autoComplete="street-address"
+                    placeholder="Street address"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
 
               <div className="sm:col-span-2 sm:col-start-1">
-                <label htmlFor="city" className="block text-sm font-medium leading-6 text-gray-900">
-                  City
-                </label>
                 <div className="mt-2">
                   <input
                     type="text"
                     name="city"
                     id="city"
                     autoComplete="address-level2"
+                    placeholder="City"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
 
               <div className="sm:col-span-2">
-                <label htmlFor="region" className="block text-sm font-medium leading-6 text-gray-900">
-                  State / Province
-                </label>
                 <div className="mt-2">
                   <input
                     type="text"
                     name="region"
                     id="region"
                     autoComplete="address-level1"
+                    placeholder="State / Province"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
 
               <div className="sm:col-span-2">
-                <label htmlFor="postal-code" className="block text-sm font-medium leading-6 text-gray-900">
-                  ZIP / Postal code
-                </label>
                 <div className="mt-2">
                   <input
                     type="text"
                     name="postal-code"
                     id="postal-code"
                     autoComplete="postal-code"
+                    placeholder="ZIP / Postal"
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
