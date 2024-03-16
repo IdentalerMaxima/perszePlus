@@ -1,6 +1,13 @@
 import PageComponent from "../../components/PageComponent";
 import Avatar from '@mui/material/Avatar';
-import DatePicker from '@mui/lab/DatePicker';
+
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
+import dayjs from 'dayjs';
+
 
 export default function Dashboard() {
   return (
@@ -34,6 +41,17 @@ export default function Dashboard() {
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
+
+                <div className="mt-6">
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={['DatePicker']}>
+                      <DatePicker
+                        style={{ width: "200px", height: "22px", fontSize: "12px" }}
+                        label="Birth Date"
+                      />
+                    </DemoContainer>
+                  </LocalizationProvider>
+                </div>
               </div>
 
               <div className="sm:col-span-2">
@@ -49,10 +67,14 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <DatePicker label="Basic date picker" />
 
 
 
+
+            </div>
+
+
+            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-4">
                 <div className="mt-2">
                   <input
@@ -65,27 +87,6 @@ export default function Dashboard() {
                   />
                 </div>
               </div>
-
-
-              {/* <div className="sm:col-span-3">
-                <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
-                  Country
-                </label>
-                <div className="mt-2">
-                  <select
-                    id="country"
-                    name="country"
-                    autoComplete="country-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                  >
-                    <option>United States</option>
-                    <option>Canada</option>
-                    <option>Mexico</option>
-                  </select>
-                </div>
-              </div> */}
-
-
 
               <div className="col-span-full">
                 <div className="mt-2">

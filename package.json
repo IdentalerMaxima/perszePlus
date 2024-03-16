@@ -4,6 +4,8 @@
     "@emotion/styled": "^11.11.0",
     "@headlessui/react": "^1.7.17",
     "@mui/lab": "^5.0.0-alpha.168",
-    "@mui/material": "^5.15.13"
+    "@mui/material": "^5.15.13",
+    "@mui/x-date-pickers": "^6.19.7",
+    "dayjs": "^1.11.10"
   }
 }
