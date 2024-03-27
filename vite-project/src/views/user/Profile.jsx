@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import PageComponent from '../../components/PageComponent';
 import Avatar from '@mui/material/Avatar';
 import { MenuItem } from '@mui/material';
+import PersonalData from '../../components/forms/PersonalData';
+import DocumentsData from '../../components/forms/DocumentsData';
+import UniversityData from '../../components/forms/UniversityData';
 
 const profileLayouts = [
   { name: 'Personal data', active: true },
@@ -51,9 +54,9 @@ export default function Dashboard() {
         </div>
         <div className="basis-3/4 p-4 bg-gray-100 rounded-lg shadow-md">
           {/* Content for the second container */}
-          {activeContent === 'Personal data' && <div>Personal data content goes here</div>}
-          {activeContent === 'University' && <div>University content goes here</div>}
-          {activeContent === 'Documents' && <div>Documents content goes here</div>}
+          {activeContent === 'Personal data' && <PersonalData />}
+          {activeContent === 'University' && <UniversityData />}
+          {activeContent === 'Documents' && <DocumentsData />}
         </div>
       </div>
     </PageComponent>
