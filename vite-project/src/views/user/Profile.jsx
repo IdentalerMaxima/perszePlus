@@ -5,6 +5,7 @@ import { MenuItem } from '@mui/material';
 import PersonalData from '../../components/forms/PersonalData';
 import DocumentsData from '../../components/forms/DocumentsData';
 import UniversityData from '../../components/forms/UniversityData';
+import FileUploadButton from '../../components/FileUploadButton';
 
 const profileLayouts = [
   { name: 'Personal data', active: true },
@@ -14,14 +15,16 @@ const profileLayouts = [
 
 export default function Dashboard() {
   const [activeContent, setActiveContent] = useState('Personal data');
+  const [selectedFile, setSelectedFile] = useState(null);
+
 
   const handleClick = (layout) => {
     setActiveContent(layout.name);
     profileLayouts.forEach(item => {
       item.active = item.name === layout.name;
     });
-    
   };
+
 
   return (
     <PageComponent title={'Profile'}>
@@ -34,15 +37,23 @@ export default function Dashboard() {
               sx={{ width: 156, height: 156 }}
             />
           </div>
-          <div className=" mt-3 flex justify-center">
-            <button type="button" className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Change</button>
+          <div className="mt-3 flex justify-center">
+            <FileUploadButton
+              config={{
+                  fileKey: 'avatar',
+                  endpoint: '/upload/avatar',
+                }}
+              onSuccess={(data) => console.log("Avatar uploaded:", data)}
+              onError={(error) => console.error("Error uploading avatar:", error)}
+            />
           </div>
+
           <div className="mt-3 flex justify-center font-bold">Bako Erik</div>
           <div className="mt-3">
             {profileLayouts.map((layout) => (
-              <MenuItem 
-                key={layout.name} 
-                onClick={() => handleClick(layout)} 
+              <MenuItem
+                key={layout.name}
+                onClick={() => handleClick(layout)}
                 sx={{
                   ...(layout.active && { fontWeight: 'italic', backgroundColor: 'rgba(0, 0, 0, 0.04)' }),
                 }}
