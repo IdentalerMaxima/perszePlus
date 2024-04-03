@@ -7,6 +7,7 @@ use App\Http\Requests\SignupRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -19,6 +20,7 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'imageUrl' => null,
         ]);
 
         $token = $user->createToken('main')->plainTextToken;
@@ -41,6 +43,9 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
+
+        Log::info($user);
+
         $token = $user->createToken('main')->plainTextToken;
 
         return response([
