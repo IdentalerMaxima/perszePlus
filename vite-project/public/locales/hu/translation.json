@@ -1,7 +1,8 @@
 
 {   
     "register now" : "Regisztrálj most!",
-    "full name" : "Teljes név",
+    "first name": "Keresztnév",
+    "last name": "Vezetéknév",
     "email" : "Email cím",
     "password" : "Jelszó",
     "confirm password" : "Jelszó megerősítése",

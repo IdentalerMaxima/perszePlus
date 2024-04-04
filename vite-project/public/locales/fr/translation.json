@@ -1,7 +1,8 @@
 
 {
     "register now": "Inscrivez-vous maintenant!",
-    "full name": "Nom complet",
+    "first name": "Prénom",
+    "last name": "Nom de famille",
     "email": "Adresse e-mail",
     "password": "Mot de passe",
     "confirm password": "Confirmez le mot de passe",
