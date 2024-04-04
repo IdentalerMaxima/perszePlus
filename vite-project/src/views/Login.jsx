@@ -33,6 +33,10 @@ export default function Login() {
       password,
     })
       .then(({ data }) => {
+        
+        sessionStorage.setItem('user', JSON.stringify(data.user));
+        sessionStorage.setItem('token', data.token);
+
         setCurrentUser(data.user);
         setUserToken(data.token);
       })
