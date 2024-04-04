@@ -6,6 +6,8 @@ import PersonalData from '../../components/forms/PersonalData';
 import DocumentsData from '../../components/forms/DocumentsData';
 import UniversityData from '../../components/forms/UniversityData';
 import FileUploadButton from '../../components/FileUploadButton';
+import { useStateContext } from '../../contexts/ContextProvider';
+
 
 const profileLayouts = [
   { name: 'Personal data', active: true },
@@ -13,7 +15,8 @@ const profileLayouts = [
   { name: 'Documents', active: false },
 ];
 
-export default function Dashboard() {
+export default function Profile() {
+  const { currentUser, setCurrentUser } = useStateContext();
   const [activeContent, setActiveContent] = useState('Personal data');
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -32,10 +35,11 @@ export default function Dashboard() {
         <div className="basis-1/4 mr-4 bg-gray-100 rounded-lg shadow-md">
           <div className="flex justify-center mt-3">
             <Avatar
-              alt="Remy Sharp"
-              src="..\..\src\assets\0.PNG"
+              alt={currentUser.name}
+              src={currentUser.imageUrl || "../../src/assets/defaultAvatar.PNG"}
               sx={{ width: 156, height: 156 }}
-            />
+            >
+            </Avatar>
           </div>
           <div className="mt-3 flex justify-center">
             <FileUploadButton
@@ -47,8 +51,8 @@ export default function Dashboard() {
               onError={(error) => console.error("Error uploading avatar:", error)}
             />
           </div>
-
-          <div className="mt-3 flex justify-center font-bold">Bako Erik</div>
+          <div className="mt-16 flex justify-center font-bold">{currentUser.name}</div>
+          <div className="mt-16 flex justify-center font-bold">Erik</div>
           <div className="mt-3">
             {profileLayouts.map((layout) => (
               <MenuItem
