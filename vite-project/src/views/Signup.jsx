@@ -8,8 +8,9 @@ import { useStateContext } from "../contexts/ContextProvider.jsx";
 export default function Signup() {
   const { t, i18n } = useTranslation(['translation']);
 
-  const {setCurrentUser, setUserToken} = useStateContext();
-  const [fullName, setFullName] = useState('');
+  const { setCurrentUser, setUserToken } = useStateContext();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
@@ -28,9 +29,9 @@ export default function Signup() {
   const onSubmit = (ev) => {
     ev.preventDefault();
     setError({ __html: '' }); // Reset errors if there are some
-    
     axiosClient.post('/signup', {
-      name: fullName,
+      first_name: firstName,
+      last_name: lastName, 
       email,
       password,
       password_confirmation: passwordConfirmation
@@ -40,11 +41,11 @@ export default function Signup() {
         setUserToken(data.token);
       })
       .catch((error) => {
-        if (error.response){
+        if (error.response) {
           const finalErrors = Object.values(error.response.data.errors)
             .reduce((accum, next) => [...accum, ...next], [])
             .join('<br>');
-            translateErrors(finalErrors);
+          translateErrors(finalErrors);
         }
       });
   };
@@ -62,34 +63,50 @@ export default function Signup() {
         </div>)}
 
         <form onSubmit={onSubmit} className="" action="" method="POST">
-          <div className="mt-14 rounded-md ring-1 ring-gray-300">
-            <div>
-              <input
-                id="full-name"
-                name="name"
-                type="text"
-                value={fullName}
-                onChange={(ev) => setFullName(ev.target.value)}
-                className="block w-full rounded-t-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+          <div className="mt-14">
+            <div className="mt-14 flex justify-between py-4 space-x-4">
+              <div>
+                <input
+                  id="first-name"
+                  name="first_name"
+                  type="text"
+                  value={firstName}
+                  onChange={(ev) => setFirstName(ev.target.value)}
+                  className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
               focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                placeholder={t('full name')}
-              />
+                  placeholder={t('first name')}
+                />
+              </div>
+
+              <div>
+                <input
+                  id="last-name"
+                  name="last_name"
+                  type="text"
+                  value={lastName}
+                  onChange={(ev) => setLastName(ev.target.value)}
+                  className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+              focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  placeholder={t('last name')}
+                />
+              </div>
             </div>
 
-            <div>
+
+            <div className="pb-4">
               <input
                 id="email-address"
                 name="email"
                 type="email"
                 value={email}
                 onChange={(ev) => setEmail(ev.target.value)}
-                className="block w-full border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
-              focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+              focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 "
                 placeholder={t('email')}
               />
             </div>
 
-            <div>
+            <div className="pb-4">
               <input
                 id="password"
                 name="password"
@@ -97,7 +114,7 @@ export default function Signup() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
-                className="block w-full border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+                className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
               focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder={t('password')}
               />
@@ -110,7 +127,7 @@ export default function Signup() {
                 type="password"
                 value={passwordConfirmation}
                 onChange={(ev) => setPasswordConfirmation(ev.target.value)}
-                className="block w-full rounded-b-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+                className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
               focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder={t('confirm password')}
               />
