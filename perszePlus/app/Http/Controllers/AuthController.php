@@ -15,9 +15,12 @@ class AuthController extends Controller
     {
         $data = $request->validated();
 
+        Log::info($data);
+
         /** @var \App\Models\User $user */
         $user = User::create([
-            'name' => $data['name'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'imageUrl' => null,
@@ -43,8 +46,6 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
-
-        Log::info($user);
 
         $token = $user->createToken('main')->plainTextToken;
 
