@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
+use Log;
 
 class SignupRequest extends FormRequest
 {
@@ -22,8 +23,13 @@ class SignupRequest extends FormRequest
      */
     public function rules(): array
     {
+        
+        //log data passed
+        //Log::info($this->all());
+        
         return [
-            'name' => 'required|string',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => [
                 'required',
