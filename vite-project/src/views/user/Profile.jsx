@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PageComponent from '../../components/PageComponent';
 import Avatar from '@mui/material/Avatar';
 import { MenuItem } from '@mui/material';
@@ -19,6 +19,16 @@ export default function Profile() {
   const { currentUser, setCurrentUser } = useStateContext();
   const [activeContent, setActiveContent] = useState('Personal data');
   const [selectedFile, setSelectedFile] = useState(null);
+
+ useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const response = await axiosClient.get('/user');
+      setCurrentUser(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
 
   const handleClick = (layout) => {
@@ -52,7 +62,6 @@ export default function Profile() {
             />
           </div>
           <div className="mt-16 flex justify-center font-bold">{currentUser.name}</div>
-          <div className="mt-16 flex justify-center font-bold">Erik</div>
           <div className="mt-3">
             {profileLayouts.map((layout) => (
               <MenuItem
