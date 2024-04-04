@@ -20,15 +20,17 @@ export default function Profile() {
   const [activeContent, setActiveContent] = useState('Personal data');
   const [selectedFile, setSelectedFile] = useState(null);
 
- useEffect(() => {
-  const fetchUserData = async () => {
-    try {
-      const response = await axiosClient.get('/user');
-      setCurrentUser(response.data);
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axiosClient.get('/user');
+        setCurrentUser(response.data);
+      } catch (error) {
+        console.error(error);
+      }
     }
-  };
+    fetchUserData();
+  }, []);
 
 
   const handleClick = (layout) => {
@@ -54,9 +56,9 @@ export default function Profile() {
           <div className="mt-3 flex justify-center">
             <FileUploadButton
               config={{
-                  fileKey: 'avatar',
-                  endpoint: '/upload/avatar',
-                }}
+                fileKey: 'avatar',
+                endpoint: '/upload/avatar',
+              }}
               onSuccess={(data) => console.log("Avatar uploaded:", data)}
               onError={(error) => console.error("Error uploading avatar:", error)}
             />
