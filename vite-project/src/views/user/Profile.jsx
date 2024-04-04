@@ -7,6 +7,7 @@ import DocumentsData from '../../components/forms/DocumentsData';
 import UniversityData from '../../components/forms/UniversityData';
 import FileUploadButton from '../../components/FileUploadButton';
 import { useStateContext } from '../../contexts/ContextProvider';
+import axiosClient from '../../axios'
 
 
 const profileLayouts = [
@@ -17,18 +18,21 @@ const profileLayouts = [
 
 export default function Profile() {
   const { currentUser, setCurrentUser } = useStateContext();
-  const [activeContent, setActiveContent] = useState('Personal data');
-  const [selectedFile, setSelectedFile] = useState(null);
+  console.log(currentUser)
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axiosClient.get('/user');
-        setCurrentUser(response.data);
-      } catch (error) {
-        console.error(error);
-      }
+  const [activeContent, setActiveContent] = useState('Personal data');
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axiosClient.get('/user/info');
+      setCurrentUser(response.data.user);
+    } catch (error) {
+      console.error(error);
     }
+  };
+
+  // Fetch user data when the component mounts
+  useEffect(() => {
     fetchUserData();
   }, []);
 
@@ -39,7 +43,6 @@ export default function Profile() {
       item.active = item.name === layout.name;
     });
   };
-
 
   return (
     <PageComponent title={'Profile'}>
