@@ -5,6 +5,7 @@
     "@mui/lab": "^5.0.0-alpha.168",
     "@mui/material": "^5.15.13",
     "@mui/x-date-pickers": "^6.19.7",
-    "dayjs": "^1.11.10"
+    "dayjs": "^1.11.10",
+    "tailwind-datepicker-react": "^1.4.3"
   }
 }

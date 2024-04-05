@@ -1,16 +1,22 @@
+import * as React from 'react';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateField } from '@mui/x-date-pickers/DateField';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
+export default function PersonalData({ currentUser }) {
 
-export default function PersonalData() {
   return (
     <form>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
 
           <div className="border-b border-gray-900/10 pb-1">
-          <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
+            <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
+            <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
           </div>
-          
+
 
           <div className="mt-2 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 
@@ -24,7 +30,9 @@ export default function PersonalData() {
                   name="first-name"
                   id="first-name"
                   autoComplete="given-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+                   ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  defaultValue={currentUser ? currentUser.first_name : ''}
                 />
               </div>
             </div>
@@ -39,12 +47,14 @@ export default function PersonalData() {
                   name="last-name"
                   id="last-name"
                   autoComplete="family-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+                   ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  defaultValue={currentUser ? currentUser.last_name : ''}
                 />
               </div>
             </div>
 
-            <div className="sm:col-span-4">
+            <div className="sm:col-span-3">
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email address
               </label>
@@ -54,8 +64,56 @@ export default function PersonalData() {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+                   ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  defaultValue={currentUser.email}
                 />
+              </div>
+            </div>
+
+            <div className="sm:col-span-3">
+              <label htmlFor="phone" className="block text-sm font-medium leading-6 text-gray-900">
+                Phone
+              </label>
+              <div className="mt-2">
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  autoComplete="phone"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+                   ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  defaultValue={currentUser.phone}
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-3">
+              <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
+                Birth date
+              </label>
+              <div>
+                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DateField']}>
+                    <DateField
+                      sx={{
+                        '& .MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputAdornedEnd.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:focus': {
+                          boxShadow: 'none !important',
+                        },
+                      }}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider> */}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DatePicker']}>
+                    <DatePicker
+                      sx={{
+                        '& .MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputAdornedEnd.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:focus': {
+                          boxShadow: 'none !important',
+                        },
+                      }} />
+                  </DemoContainer>
+                </LocalizationProvider>
               </div>
             </div>
 
