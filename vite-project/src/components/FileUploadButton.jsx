@@ -21,7 +21,8 @@ const FileUploadButton = ({ config, onSuccess, onError }) => {
                 }
             });
             if (onSuccess) {
-                onSuccess(response.data);
+                console.log("File uploaded successfully:", response.data);
+                onSuccess(response.data.path);
             }
         } catch (error) {
             console.error("Error uploading file:", error);
