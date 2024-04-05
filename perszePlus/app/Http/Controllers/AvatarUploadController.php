@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AvatarUploadRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AvatarUploadController extends Controller
 {
@@ -15,13 +18,27 @@ class AvatarUploadController extends Controller
     public function upload(AvatarUploadRequest $request)
     {
         // Store the uploaded avatar file in the 'avatars' directory within the 'storage/app' directory
-        $path = $request->file('avatar')->store('avatars');
+        $path = $request->file('avatar')->store('public/avatars');
 
-        // Optionally, you can store the avatar path in the user's database record
-        // $user->avatar_path = $path;
-        // $user->save();
+        
+
+        // Update the authenticated user's avatar path in the database
+        $user = Auth::user();
+        //Log::info($user);
+
+        $avatarUrl = asset(Storage::url($path));
+        //Log::info($avatarUrl);
+
+        $user->avatar_path = $avatarUrl;
+
+        
+
+        $user->save();
+        //Log::info($user);
+
+        
 
         // Return a JSON response with the path to the stored avatar
-        return response()->json(['path' => $path], 200);
+        return response()->json(['path' => $avatarUrl], 200);
     }
 }
