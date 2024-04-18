@@ -1,11 +1,21 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateField } from '@mui/x-date-pickers/DateField';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
+
+
+
 export default function PersonalData({ currentUser }) {
+
+  const [isChecked, setIsChecked] = useState(false);
+  const [streetAddress, setStreetAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [region, setRegion] = useState("");
+  const [postalCode, setPostalCode] = useState("");
 
   return (
     <form>
@@ -225,9 +235,99 @@ export default function PersonalData({ currentUser }) {
                 />
               </div>
             </div>
+
+            <div className="col-span-full">
+              <div className="flex h-6 items-center">
+                <input
+                  id="homeAddressIsDifferent"
+                  name="homeAddressIsDifferent"
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                  onChange={() => {
+                    if (isChecked) {
+                      setStreetAddress("");
+                      setCity("");
+                      setRegion("");
+                      setPostalCode("");
+                    }
+                    setIsChecked(!isChecked);
+                  }}
+                />
+                <p className="text-gray-500 ml-2"> I have a different temporary address than home address.</p>
+              </div>
+            </div>
+
+            <div className="col-span-full" style={{ display: isChecked ? 'block' : 'none' }}>
+              <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
+                Street address
+              </label>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  name="street-address"
+                  id="street-address"
+                  autoComplete="street-address"
+                  value={streetAddress}
+                  onChange={(e) => setStreetAddress(e.target.value)}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-2 sm:col-start-1" style={{ display: isChecked ? 'block' : 'none' }}>
+              <label htmlFor="city" className="block text-sm font-medium leading-6 text-gray-900">
+                City
+              </label>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  name="city"
+                  id="city"
+                  autoComplete="address-level2"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-2" style={{ display: isChecked ? 'block' : 'none' }}>
+              <label htmlFor="region" className="block text-sm font-medium leading-6 text-gray-900">
+                State / Province
+              </label>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  name="region"
+                  id="region"
+                  autoComplete="address-level1"
+                  value={region}
+                  onChange={(e) => setRegion(e.target.value)}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
+            <div className="sm:col-span-2" style={{ display: isChecked ? 'block' : 'none' }}>
+              <label htmlFor="postal-code" className="block text-sm font-medium leading-6 text-gray-900">
+                ZIP / Postal code
+              </label>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  name="postal-code"
+                  id="postal-code"
+                  autoComplete="postal-code"
+                  value={postalCode}
+                  onChange={(e) => setPostalCode(e.target.value)}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
+
           </div>
         </div>
-
       </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
