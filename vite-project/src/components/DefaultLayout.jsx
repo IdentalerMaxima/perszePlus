@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link, NavLink, Navigate, Outlet } from 'react-router-dom'
@@ -6,14 +6,7 @@ import { useStateContext } from '../contexts/ContextProvider'
 import axiosClient from '../axios'
 
 
-const navigation = [
-  { name: 'Főoldal', to: '/' },
-  { name: 'Hírek', to: '/news' },
-  { name: 'Naptár', to: '/calendar' },
-  { name: 'Kurzusok', to: '/courses' },
-  { name: 'Jelenléti', to: '/attendance' },
-  { name: 'Adataim', to: '/mydata' }
-]
+
 const userNavigation = [
   { name: 'Your Profile', to: '/profile' },
   { name: 'Settings', to: '/settings' },
@@ -27,6 +20,11 @@ function classNames(...classes) {
 
 export default function DefaultLayout() {
   const { currentUser, userToken, setCurrentUser, setUserToken } = useStateContext('');
+  const [avatarPath, setAvatarPath] = useState(currentUser.avatar_path || '');
+
+  useEffect(() => {
+    setAvatarPath(currentUser.avatar_path || '');
+  }, [currentUser]);
 
   if (!userToken) {
     return <Navigate to="/login" />
@@ -40,6 +38,15 @@ export default function DefaultLayout() {
         setUserToken(null);
       })
   }
+
+  const navigation = [
+    { name: 'Főoldal', to: '/' },
+    { name: 'Hírek', to: '/news' },
+    { name: 'Naptár', to: '/calendar' },
+    { name: 'Kurzusok', to: '/courses' },
+    { name: 'Jelenléti', to: '/attendance' },
+    { name: 'Adataim', to: '/mydata' },
+  ]
 
 
   return (
@@ -94,7 +101,11 @@ export default function DefaultLayout() {
                           <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span className="absolute -inset-1.5" />
                             <span className="sr-only">Open user menu</span>
-                            <img className="h-8 w-8 rounded-full" src={currentUser.imageUrl || "../src/assets/defaultAvatar.PNG"} alt="" />
+                            <div className="flex-shrink-0">
+                              <div className="h-10 w-10 rounded-full overflow-hidden">
+                                <img className="h-full w-full object-cover" src={avatarPath || "../../src/assets/defaultAvatar.PNG"} alt="" />
+                              </div>
+                            </div>
                           </Menu.Button>
                         </div>
                         <Transition
@@ -212,7 +223,9 @@ export default function DefaultLayout() {
           )}
         </Disclosure>
 
-        <Outlet />
+        <div className="bg-slate-100 min-h-screen">
+          <Outlet />
+        </div>
       </div>
     </>
   )
