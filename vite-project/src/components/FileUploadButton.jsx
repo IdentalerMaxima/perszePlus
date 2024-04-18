@@ -14,14 +14,12 @@ const FileUploadButton = ({ config, onSuccess, onError }) => {
         try {
             const formData = new FormData();
             formData.append(config.fileKey, file);
-            console.log("FormData:", formData);
             const response = await axiosClient.post(config.endpoint, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data" 
                 }
             });
             if (onSuccess) {
-                console.log("File uploaded successfully:", response.data);
                 onSuccess(response.data.path);
             }
         } catch (error) {
