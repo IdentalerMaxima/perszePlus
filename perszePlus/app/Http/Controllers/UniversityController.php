@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\University;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\Faculty;
 
 class UniversityController extends Controller
 {
@@ -72,5 +73,16 @@ class UniversityController extends Controller
         $universities = University::all();
         //Log::info($universities);
         return response()->json($universities, 200);
+    }
+
+    /**
+     * Get list of faculties for a university.
+     */
+    public function getFacultiesForUniversity($universityId)
+    {
+        $university = University::find($universityId);
+        $facultyIds = $university->faculties()->pluck('faculty_id');
+        $faculties = Faculty::whereIn('id', $facultyIds)->pluck('name');
+        return response()->json($faculties, 200);
     }
 }
