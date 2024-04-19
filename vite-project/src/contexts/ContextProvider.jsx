@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import axiosClient from "../axios";
 
 const StateContext = createContext({
     currentUser: {},
@@ -10,6 +11,21 @@ const StateContext = createContext({
 export const ContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState({})
     const [userToken, _setUserToken] = useState(localStorage.getItem('TOKEN') || '');
+
+    const fetchUserData = async () => {
+        try {
+          const response = await axiosClient.get('/user/info');
+          setCurrentUser(response.data.user);
+          console.log("u data", response.data.user);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+    
+      useEffect(() => {
+        fetchUserData();
+        console.log("fetch user data");
+      }, []);
 
     const setUserToken = (token) => { 
         if(token){
