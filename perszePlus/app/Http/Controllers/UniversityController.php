@@ -70,7 +70,7 @@ class UniversityController extends Controller
     public function getUniversities()
     {
         $universities = University::all();
-        Log::info($universities);
+        //Log::info($universities);
         return response()->json($universities, 200);
     }
 }
