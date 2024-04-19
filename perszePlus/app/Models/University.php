@@ -8,4 +8,9 @@ class University extends Model
 {
     protected $fillable = ['name'];
 
+    public function faculties()
+    {
+        return $this->belongsToMany(Faculty::class);
+    }
+
 }
