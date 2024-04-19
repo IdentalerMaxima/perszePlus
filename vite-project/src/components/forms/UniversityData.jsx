@@ -3,13 +3,15 @@ import { useEffect, useState } from 'react';
 
 export default function PersonalData() {
   const [universities, setUniversities] = useState([]);
+  const [selectedUniversity, setSelectedUniversity] = useState(null);
+  const [faculties, setFaculties] = useState([]);
 
   useEffect(() => {
     // Fetch universities from the database
     const fetchUniversities = async () => {
       try {
         const response = await axiosClient.get('/universities');
-        setUniversities(response.data); 
+        setUniversities(response.data);
         console.log('Universities:', data);
       } catch (error) {
         console.error('Error fetching universities:', error);
@@ -18,6 +20,22 @@ export default function PersonalData() {
 
     fetchUniversities();
   }, []);
+
+  const fetchFaculties = async (universityId) => {
+    try {
+      const response = await axiosClient.get(`/universities/${universityId}/faculties`);
+      setFaculties(response.data);
+      console.log('Faculties:', response.data);
+    } catch (error) {
+      console.error('Error fetching faculties:', error);
+    }
+  }
+
+  const handleUniversityChange = (event) => {
+    const universityId = event.target.value;
+    setSelectedUniversity(universityId);
+    fetchFaculties(universityId);
+  };
 
 
   return (
@@ -52,6 +70,7 @@ export default function PersonalData() {
                   id="university"
                   name="university"
                   autoComplete="country-name"
+                  onChange={handleUniversityChange}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                 >
                   {/* <option>Pécsi Tudományegyetem</option>
@@ -72,17 +91,29 @@ export default function PersonalData() {
             </div>
 
             <div className="sm:col-span-2">
-              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                Faculty
+              <label htmlFor="faculty" className="block text-sm font-medium leading-6 text-gray-900">
+                Faculties
               </label>
               <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
+                <select
+                  id="faculty"
+                  name="faculty"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                >
+                  {/* <option>Pécsi Tudományegyetem</option>
+                  <option>Budapesti Corvinus Egyetem</option>
+                  <option>Budapesti Gazdasági Egyetem</option>
+                  <option>Debreceni Egyetem</option>
+                  <option>Eötvös Loránd Tudományegyetem</option>
+                  <option>Kaposvári Egyetem</option> */}
+
+                  {Array.isArray(faculties) && faculties.map((faculty) => (
+                    <option key={faculty.id} value={faculty.id}>
+                      {faculty}
+                    </option>
+                  ))}
+
+                </select>
               </div>
             </div>
 
