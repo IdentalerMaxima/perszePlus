@@ -25,7 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
+
 Route::get('/universities', [UniversityController::class, 'getUniversities']);
+Route::get('universities/{universityName}/faculties', [UniversityController::class, 'getFacultiesForUniversity']);
 
 
 
