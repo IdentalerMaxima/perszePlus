@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@mui/material";
 import axiosClient from "../axios";
 
-const FileUploadButton = ({ config, onSuccess, onError }) => {
+const FileUploadButton = ({ buttonName, config, onSuccess, onError }) => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -34,9 +34,9 @@ const FileUploadButton = ({ config, onSuccess, onError }) => {
         <Button
             component="label"
             variant="contained"
-            color="grey"
+            //color="grey"
         >
-            Upload
+            {buttonName || "Upload File"}
             <input
                 type="file"
                 hidden

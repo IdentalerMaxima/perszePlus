@@ -7,10 +7,7 @@ import DocumentsData from '../../components/forms/DocumentsData';
 import UniversityData from '../../components/forms/UniversityData';
 import FileUploadButton from '../../components/FileUploadButton';
 import { useStateContext } from '../../contexts/ContextProvider';
-import axiosClient from '../../axios'
-import { styled } from '@mui/material/styles';
-import Badge from '@mui/material/Badge';
-import Stack from '@mui/material/Stack';
+import axiosClient from '../../axios';
 
 const profileLayouts = [
   { name: 'Personal data', active: true },
@@ -27,7 +24,6 @@ export default function Profile() {
     try {
       const response = await axiosClient.get('/user/info');
       setCurrentUser(response.data.user);
-      console.log(response.data.user);
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -47,49 +43,12 @@ export default function Profile() {
 
   const handleAvatarUpload = (avatarPath) => {
     setCurrentUser({ ...currentUser, avatar_path: avatarPath });
-    console.log("Current user:", currentUser); 
   }
-
-  // const StyledBadge = styled(Badge)(({ theme }) => ({
-  //   '& .MuiBadge-badge': {
-  //     backgroundColor: '#44b700',
-  //     color: '#44b700',
-  //     boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-  //     '&::after': {
-  //       position: 'absolute',
-  //       top: 0,
-  //       left: 0,
-  //       width: '100%',
-  //       height: '100%',
-  //       borderRadius: '50%',
-  //       animation: 'ripple 1.2s infinite ease-in-out',
-  //       border: '1px solid currentColor',
-  //       content: '""',
-  //     },
-  //   },
-  //   '@keyframes ripple': {
-  //     '0%': {
-  //       transform: 'scale(.8)',
-  //       opacity: 1,
-  //     },
-  //     '100%': {
-  //       transform: 'scale(2.4)',
-  //       opacity: 0,
-  //     },
-  //   },
-  // }));
-  
-  // const SmallAvatar = styled(Avatar)(({ theme }) => ({
-  //   width: 22,
-  //   height: 22,
-  //   border: `2px solid ${theme.palette.background.paper}`,
-  // }));
-
 
   return (
     <PageComponent title={'Profile'}>
-      <div className="flex">
-        <div className="basis-1/4 mr-4 bg-gray-100 rounded-lg shadow-md">
+      <div className="flex min-h-full">
+        <div className="basis-1/4 mr-4 bg-white rounded-lg shadow-2xl" style={{ height: '27rem' }}>
           {loading ? (
             <div className="flex justify-center items-center h-72">
               <CircularProgress />
@@ -98,34 +57,14 @@ export default function Profile() {
             <>
               <div className="flex justify-center mt-3">
                 <Avatar
-                  alt={currentUser.name}
-                  src={currentUser.avatar_path || "../../src/assets/defaultAvatar.PNG"}
-                  sx={{ width: 156, height: 156 }}
-                />
-                {/* <Stack direction="row" spacing={2}>
-                  <StyledBadge
-                    overlap="circular"
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    variant="string"
-                  >
-                    <Avatar
-                    alt="Remy Sharp" 
-                    src="/static/images/avatar/1.jpg"
-                    sx={{ width: 156, height: 156 }} />
-                  </StyledBadge>
-                  <Badge
-                    overlap="circular"
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    badgeContent={
-                      <SmallAvatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                    }
-                  >
-                    <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                  </Badge>
-                </Stack> */}
+                    alt={currentUser.name}
+                    src={currentUser.avatar_path || "../../src/assets/defaultAvatar.PNG"}
+                    sx={{ width: 156, height: 156 }}
+                  />
               </div>
               <div className="mt-3 flex justify-center">
                 <FileUploadButton
+                  buttonName="Change profile"
                   config={{
                     fileKey: 'avatar',
                     endpoint: '/upload/avatar',
@@ -151,7 +90,7 @@ export default function Profile() {
             </>
           )}
         </div>
-        <div className="basis-3/4 p-4 bg-gray-100 rounded-lg shadow-md">
+        <div className="basis-3/4 p-4 bg-white rounded-lg shadow-2xl">
           {loading ? (
             <div className="flex justify-center items-center h-full">
               <CircularProgress />

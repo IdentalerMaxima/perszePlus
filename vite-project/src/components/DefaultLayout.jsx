@@ -223,7 +223,7 @@ export default function DefaultLayout() {
           )}
         </Disclosure>
 
-        <div className="bg-slate-100 min-h-screen">
+        <div className="bg-slate-300 min-h-screen">
           <Outlet />
         </div>
       </div>
