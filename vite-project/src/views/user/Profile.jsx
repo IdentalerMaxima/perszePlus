@@ -5,9 +5,9 @@ import { MenuItem, CircularProgress } from '@mui/material';
 import PersonalData from '../../components/forms/PersonalData';
 import DocumentsData from '../../components/forms/DocumentsData';
 import UniversityData from '../../components/forms/UniversityData';
-import FileUploadButton from '../../components/FileUploadButton';
 import { useStateContext } from '../../contexts/ContextProvider';
 import axiosClient from '../../axios';
+import AvatarUpload from '../../components/upload/AvatarUpload';
 
 const profileLayouts = [
   { name: 'Personal data', active: true },
@@ -63,15 +63,13 @@ export default function Profile() {
                   />
               </div>
               <div className="mt-3 flex justify-center">
-                <FileUploadButton
-                  buttonName="Change profile"
-                  config={{
-                    fileKey: 'avatar',
-                    endpoint: '/upload/avatar',
-                  }}
+
+                <AvatarUpload
                   onSuccess={handleAvatarUpload}
                   onError={(error) => console.error("Error uploading avatar:", error)}
-                />
+                >
+                </AvatarUpload>
+
               </div>
               <div className="mt-16 flex justify-center font-bold">{currentUser.first_name + " " + currentUser.last_name}</div>
               <div className="mt-3">
