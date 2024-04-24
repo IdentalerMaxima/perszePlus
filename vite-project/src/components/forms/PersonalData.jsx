@@ -22,9 +22,9 @@ export default function PersonalData({ currentUser }) {
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
 
-          <div className="">
+          <div>
             <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
+            {/* <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p> */}
           </div>
 
 
@@ -103,17 +103,6 @@ export default function PersonalData({ currentUser }) {
                 Birth date
               </label>
               <div>
-                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={['DateField']}>
-                    <DateField
-                      sx={{
-                        '& .MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputAdornedEnd.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:focus': {
-                          boxShadow: 'none !important',
-                        },
-                      }}
-                    />
-                  </DemoContainer>
-                </LocalizationProvider> */}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={['DatePicker']}>
                     <DatePicker
@@ -156,25 +145,6 @@ export default function PersonalData({ currentUser }) {
                 />
               </div>
             </div>
-
-
-            {/* <div className="sm:col-span-3">
-              <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
-                Country
-              </label>
-              <div className="mt-2">
-                <select
-                  id="country"
-                  name="country"
-                  autoComplete="country-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                >
-                  <option>United States</option>
-                  <option>Canada</option>
-                  <option>Mexico</option>
-                </select>
-              </div>
-            </div> */}
 
             <div className="col-span-full">
               <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
