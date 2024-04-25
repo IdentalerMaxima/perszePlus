@@ -7,25 +7,38 @@ export default function FileUpload({handleClose}) {
   const [documentType, setDocumentType] = useState('Egyeb');
   const [tempDocument, setTempDocument] = useState(null);
   const [tempDocumentUrl, setTempDocumentUrl] = useState(null);
+  const [error, setError] = useState(null);
 
   const closeDialog = () => {
-    setDocumentName('');
-    setDocumentType('Egyeb');
-    setTempDocument(null);
-    setTempDocumentUrl(null);
     handleClose();
   };
 
-  const handleFileUpload = (file) => {
-    setTempDocument(file);
+  const validateFileType = (type) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip'];
+    return allowedTypes.includes(type);
+  };
 
-    const url = URL.createObjectURL(file);
-    setTempDocumentUrl(url);
+  const handleFileUpload = (file) => {
+
+    setTempDocument(null);
+    setTempDocumentUrl(null);
+
+    if(file){
+      if(validateFileType(file.type)){
+        setTempDocument(file);
+        const url = URL.createObjectURL(file);
+        setTempDocumentUrl(url);
+        setError(null)
+      } else {
+        setError("Invalid file type!")
+      }
+    }
   };
 
   const handleDocumentUpload = () => {
-    handleDocumentUpload(tempDocument);
-    setTempDocument(null); // Clear temporary document
+    //Upload doc
+    console.log("Uploading document: ", documentName, documentType, tempDocument);
     closeDialog();
   };
 
@@ -71,7 +84,8 @@ export default function FileUpload({handleClose}) {
           }}
         />
 
-        <FormControl fullWidth sx={{ mt: 2 }}>
+        
+        <FormControl fullWidth sx={{ mt: 2}}>
           <InputLabel id="document-type-label">Document Type</InputLabel>
           <Select
             labelId="document-type-label"
@@ -105,6 +119,11 @@ export default function FileUpload({handleClose}) {
           </Button>
         </div>
 
+        {error && (
+          <div className="flex justify-center mt-2">
+            <p className="text-red-500">{error}</p>
+          </div>
+        )}
 
         {tempDocumentUrl && (
           <div className="mt-2 items-center justify-center">
