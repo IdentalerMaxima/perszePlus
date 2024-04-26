@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import axiosClient from '../../axios';
 
 export default function FileUpload({handleClose}) {
 
@@ -19,7 +20,7 @@ export default function FileUpload({handleClose}) {
     return allowedTypes.includes(type);
   };
 
-  const handleFileUpload = (file) => {
+  const handleTempUpload = (file) => {
 
     setTempDocument(null);
     setTempDocumentUrl(null);
@@ -36,11 +37,39 @@ export default function FileUpload({handleClose}) {
     }
   };
 
-  const handleDocumentUpload = () => {
-    //Upload doc
-    console.log("Uploading document: ", documentName, documentType, tempDocument);
-    closeDialog();
+  const handleFinalUpload = () => {
+    if (tempDocument) {
+      // Create metadata record and upload file
+      uploadFile(tempDocument, documentName, documentType);
+      console.log("Uploading document: ", documentName, documentType, tempDocument);
+      closeDialog();
+    } else {
+      setError("Please select a file to upload");
+    }
   };
+
+  const uploadFile = async (file, name, type) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('name', documentName);
+      formData.append('type', documentType);
+
+      console.log('Uploading file:', formData);
+
+      const response = await axiosClient.post('/upload/file', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      console.log('File uploaded successfully:', response.data);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      setError('Error uploading file');
+    }
+  };
+
 
   const getFileIcon = (type) => {
   switch (type) {
@@ -94,6 +123,7 @@ export default function FileUpload({handleClose}) {
             value={documentType}
             defaultValue=""
             onChange={(e) => setDocumentType(e.target.value)}
+
           >
             <MenuItem value="Hatranyos helyzet">Hatranyos helyzet</MenuItem>
             <MenuItem value="Halmozottan hatranyos helyzet">Halmozottan hatranyos helyzet</MenuItem>
@@ -114,7 +144,7 @@ export default function FileUpload({handleClose}) {
             <input
               type="file"
               hidden
-              onChange={(e) => handleFileUpload(e.target.files[0])}
+              onChange={(e) => handleTempUpload(e.target.files[0])}
             />
           </Button>
         </div>
@@ -140,10 +170,10 @@ export default function FileUpload({handleClose}) {
       </DialogContent>
 
       <DialogActions >
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={closeDialog} color="primary">
           Cancel
         </Button>
-        <Button onClick={handleDocumentUpload} color="primary">
+        <Button onClick={handleFinalUpload} color="primary">
           Save
         </Button>
       </DialogActions>
