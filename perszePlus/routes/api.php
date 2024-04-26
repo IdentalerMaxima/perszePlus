@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AvatarUploadController;
+use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\UserDataController;
+use App\Http\Controllers\DocumentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,8 +21,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+
     Route::post('/upload/avatar', [AvatarUploadController::class, 'upload']);
+    Route::post('/upload/file', [FileUploadController::class, 'upload']);
+
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
+    Route::get('/user/documents', [DocumentController::class, 'index']);
+    Route::get('/user/documents/{file}', [DocumentController::class, 'getFile']);
+
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
