@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Fab, Button } from '@mui/material';
+import { Fab, Button, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -12,6 +12,7 @@ export default function DocumentsData() {
   const [isUploadClicked, setIsUploadClicked] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [checkboxedDocuments, setCheckboxedDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const openDialog = () => {
     setIsUploadClicked(true);
@@ -30,6 +31,7 @@ export default function DocumentsData() {
     try {
       const response = await axiosClient.get('/user/documents');
       setUploadedFiles(response.data.documents);
+      setLoading(false); // Set loading to false when data is fetched
     } catch (error) {
       console.error('Error fetching documents:', error);
     }
@@ -77,19 +79,15 @@ export default function DocumentsData() {
     const isChecked = checkboxedDocuments.some((doc) => doc.id === file.id);
 
     if (isChecked) {
-
       // If the file is already checked, remove it from the checkboxedDocuments array
       setCheckboxedDocuments(
         checkboxedDocuments.filter((doc) => doc.id !== file.id)
       );
-
     } else {
-
       // If the file is not checked, add it to the checkboxedDocuments array
       setCheckboxedDocuments([...checkboxedDocuments, file]);
-
     }
-    
+
     console.log(checkboxedDocuments);
   };
 
@@ -109,10 +107,9 @@ export default function DocumentsData() {
     const isChecked = event.target.checked;
     if (isChecked) {
       setCheckboxedDocuments([...uploadedFiles]);
-      console.log(checkboxedDocuments);
     } else {
       setCheckboxedDocuments([]);
-    };
+    }
   };
 
 
@@ -148,64 +145,62 @@ export default function DocumentsData() {
         </div>
       </div>
 
-
-      <div className=''>
-
-      </div>
       <div className="flex justify-between items-center">
         <input
           type="checkbox"
           className="h-4 w-4 rounded-full border-gray-300 text-indigo-600"
           onChange={(e) => checkboxAll(e)}
         />
-        <div className="text-gray-600 font-semibold w-1/5 flex justify-start pl-20">Name</div>
-        <div className="text-gray-600 font-semibold w-2/5 flex justify-start">Type</div>
-        <div className="text-gray-600 font-semibold w-1/5 flex justify-start pl-4">Size</div>
-        <div className="text-gray-600 font-semibold w-1/5 flex justify-centre pl-4">Upload date</div>
+        <div className="text-gray-600 font-semibold w-2/6 flex justify-start pl-20">Name</div>
+        <div className="text-gray-600 font-semibold w-2/6 flex justify-start">Type</div>
+        <div className="text-gray-600 font-semibold w-1/6 flex justify-start pl-4">Size</div>
+        <div className="text-gray-600 font-semibold w-1/6 flex justify-centre pl-4">Upload date</div>
       </div>
 
       <div className="mt-3 mb-24">
-        {uploadedFiles.map((file, index) => (
-
-          <div key={index} className="flex items-center border-b py-2">
-
-            <div>
-              <input
-                type="checkbox"
-                className="h-4 w-4 rounded-full border-gray-300 text-indigo-600 pt-2"
-                onChange={() => handleCheckboxChange(file)}
-                checked={checkboxedDocuments.some((doc) => doc.id === file.id)}
-              />
-            </div>
-
-
-            <div className="w-1/5 flex justify-start px-8">
-              <img
-                src={getFileIcon(file)}
-                alt="file icon"
-                className="w-6 h-6"
-              />
-              <p className="font-semibold pl-6">{file.name}</p>
-            </div>
-
-            <div className="w-2/5 ">
-              <p>{file.type}</p>
-            </div>
-
-            <div className="w-1/5 px-4">
-              <p>{formatSize(file.size)}</p>
-            </div>
-
-            <div className="w-1/5 pl-4 justify-end">
-              <p>{formatDate(file.last_modified)}</p>
-            </div>
-
-
+        {loading ? (
+          <div className="flex justify-center items-center h-72">
+            <CircularProgress />
           </div>
-        ))}
+        ) : (
+          <>
+            {uploadedFiles.map((file, index) => (
+              <div key={index} className="flex items-center border-b py-2">
+
+                <div>
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded-full border-gray-300 text-indigo-600 pt-2"
+                    onChange={() => handleCheckboxChange(file)}
+                    checked={checkboxedDocuments.some((doc) => doc.id === file.id)}
+                  />
+                </div>
+
+                <div className="w-2/6 flex justify-start px-8">
+                  <img
+                    src={getFileIcon(file)}
+                    alt="file icon"
+                    className="w-6 h-6"
+                  />
+                  <p className="font-semibold pl-6 truncate ...">{file.name}</p>
+                </div>
+
+                <div className="w-2/6 ">
+                  <p>{file.type}</p>
+                </div>
+
+                <div className="w-1/6 px-4">
+                  <p>{formatSize(file.size)}</p>
+                </div>
+
+                <div className="w-1/6 pl-4 justify-end">
+                  <p>{formatDate(file.last_modified)}</p>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </div>
-
-
 
       {!selectedDocument && (
         <div className="absolute bottom-4 right-4">
@@ -227,7 +222,6 @@ export default function DocumentsData() {
             className="w-3/4 h-3/4"
             src={`http://127.0.0.1:8000/${selectedDocument.file_path}`}
           />
-
           <div
             className="absolute top-4 right-4 bg-white rounded-full p-2 cursor-pointer"
             onClick={() => setSelectedDocument(null)}
