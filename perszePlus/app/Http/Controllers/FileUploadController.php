@@ -23,7 +23,8 @@ class FileUploadController extends Controller
         // Log::info($fileType);
         
         // Store file in the storage directory
-        $file->storeAs('uploads', $fileName);
+        $path = uniqid() . '_' . $file->getClientOriginalName();
+        $file->storeAs('uploads', $path);
 
         // Save metadata record of the document
         $document = new Document();
@@ -33,7 +34,7 @@ class FileUploadController extends Controller
         $document->original_name = $file->getClientOriginalName();
         $document->size = $file->getSize();
         $document->last_modified = now();
-        $document->file_path = 'uploads/' . uniqid() . '_' . $file->getClientOriginalName();
+        $document->file_path = 'uploads/' . $path;
         $document->save();
 
 
