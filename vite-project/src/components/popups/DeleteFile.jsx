@@ -3,55 +3,50 @@ import { Dialog, Button, Typography, TextField, DialogContent } from "@mui/mater
 import DialogTitle from "@mui/material/DialogTitle";
 import axiosClient from '../../axios';
 
-export default function DeleteFile({ handleClose, file }) {
+export default function DeleteFile({ handleClose, filesToDelete, refreshFiles }) {
 
     const closeDialog = () => {
         handleClose();
     }
 
-    const handleDelete = () => {
-        deleteFile();
-        closeDialog();
-    }
-
-    const deleteFile = () => {
+    const deleteFile = async (fileId) => {
         try {
-            axiosClient.delete(`/upload/file/${file.id}`);
+          await axiosClient.delete(`/user/documents/${fileId}`);
+          refreshFiles();
         } catch (error) {
-            console.error('Error deleting file:', error);
+          console.error('Error deleting file:', error);
         }
-        
-    }
+      };
 
-
-
-
-
+      const handleDelete = () => {
+        filesToDelete.forEach((file) => {
+          deleteFile(file.id); // Use file.id here
+        });
+        closeDialog();
+      };
 
         return (
             <Dialog open={true} onClose={handleClose} className="w-">
-                <DialogTitle>Delete {file ? 'File' : 'Files'}</DialogTitle>
+                <DialogTitle>Delete {filesToDelete.length > 1 ? 'File' : 'Files'}</DialogTitle>
                 <DialogContent
                     className="flex flex-col"
                 >
                     <div>
-                        {file ? 'Are you sure you want to delete the selected file?' : 'Are you sure you want to delete the selected files?'}
+                        {filesToDelete.length > 1 ? 'Are you sure you want to delete the selected file?' : 'Are you sure you want to delete the selected files?'}
                     </div>
 
                     <div className="flex w-full mt-4 justify-end">
                         <Button
-                            onClick={handleClose}
-                            //variant="contained"
+                            onClick={closeDialog}
                             color="secondary"
                         >
                             Cancel
                         </Button>
                         <Button
-                            //variant="contained"
                             color="primary"
                             onClick={handleDelete}
                         >
-                            Delete {file ? 'File' : 'Files'}
+                            Delete {filesToDelete.length > 1 ? 'File' : 'Files'}
                         </Button>
                     </div>
                 </DialogContent>
