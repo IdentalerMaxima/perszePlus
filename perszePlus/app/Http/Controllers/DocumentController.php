@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Document;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
@@ -34,10 +35,10 @@ class DocumentController extends Controller
         if (!$document) {
             return response()->json(['message' => 'File not found'], 404);
         }
+        unlink(storage_path('app/' . $document->file_path));
+
         $document->delete();
-        //delete from storage
-        //unlink(storage_path('app/' . $document->file_path));
-        //Storage::delete($document->file_path);
+        
         return response()->json(['message' => 'File deleted successfully']);
 
     }
