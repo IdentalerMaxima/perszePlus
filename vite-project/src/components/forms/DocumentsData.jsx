@@ -6,15 +6,18 @@ import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import FileUpload from '../../components/upload/FileUpload';
 import axiosClient from '../../axios';
+import DeleteFile from '../../components/popups/DeleteFile';
+
 
 export default function DocumentsData() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isUploadClicked, setIsUploadClicked] = useState(false);
+  const [isDeleteClicked, setIsDeleteClicked] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [checkboxedDocuments, setCheckboxedDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const openDialog = () => {
+  const openUploadDialog = () => {
     setIsUploadClicked(true);
   };
 
@@ -23,9 +26,20 @@ export default function DocumentsData() {
     fetchDocuments();
   };
 
+  const openDeleteDialog = () => {
+    setIsDeleteClicked(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setIsDeleteClicked(false);
+    fetchDocuments();
+  };
+
   useEffect(() => {
     fetchDocuments();
   }, []);
+
+
 
   const fetchDocuments = async () => {
     try {
@@ -123,7 +137,7 @@ export default function DocumentsData() {
             variant="contained"
             color="secondary"
             disabled={checkboxedDocuments.length === 0}
-            onClick={handleDeleteSelected}
+            onClick={openDeleteDialog}
             startIcon={<DeleteIcon />}
           >
             Delete
@@ -207,7 +221,7 @@ export default function DocumentsData() {
           <Fab
             color="primary"
             aria-label="add"
-            onClick={openDialog}
+            onClick={openUploadDialog}
           >
             <AddIcon />
           </Fab>
@@ -215,6 +229,15 @@ export default function DocumentsData() {
       )}
 
       {isUploadClicked && <FileUpload handleClose={closeDialog} />}
+
+      {isDeleteClicked && <DeleteFile
+
+        handleClose={closeDeleteDialog}
+        filesToDelete={checkboxedDocuments}
+        refreshFiles={fetchDocuments}
+        
+        />}
+
       {selectedDocument && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <iframe
