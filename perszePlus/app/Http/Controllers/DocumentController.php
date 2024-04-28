@@ -26,4 +26,19 @@ class DocumentController extends Controller
         }
         return response()->download(storage_path('app/' . $document->file_path));
     }
+
+    public function delete(Request $request, $fileId)
+    {
+        $userId = $request->user()->id;
+        $document = Document::where('user_id', $userId)->where('id', $fileId)->first();
+        if (!$document) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+        $document->delete();
+        //delete from storage
+        //unlink(storage_path('app/' . $document->file_path));
+        //Storage::delete($document->file_path);
+        return response()->json(['message' => 'File deleted successfully']);
+
+    }
 }
