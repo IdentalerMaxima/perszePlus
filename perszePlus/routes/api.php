@@ -27,7 +27,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
     Route::get('/user/documents', [DocumentController::class, 'index']);
-    Route::get('/user/documents/{file}', [DocumentController::class, 'getFile']);
+    Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
+
 
 });
 
@@ -35,7 +36,7 @@ Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/universities', [UniversityController::class, 'getUniversities']);
-Route::get('universities/{universityName}/faculties', [UniversityController::class, 'getFacultiesForUniversity']);
+Route::get('/universities/{universityName}/faculties', [UniversityController::class, 'getFacultiesForUniversity']);
 
 
 
