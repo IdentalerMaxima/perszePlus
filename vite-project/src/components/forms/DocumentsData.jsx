@@ -21,7 +21,7 @@ export default function DocumentsData() {
     setIsUploadClicked(true);
   };
 
-  const closeDialog = () => {
+  const closeUploadDialog = () => {
     setIsUploadClicked(false);
     fetchDocuments();
   };
@@ -63,7 +63,7 @@ export default function DocumentsData() {
       case 'png':
         return '../../src/assets/IconIMG.png';
       case 'pdf':
-        return 'png';
+        return '../../src/assets/IconPDF.png';
       case 'docx':
         return '../../src/assets/IconDOC.png';
       case 'xlsx':
@@ -228,7 +228,7 @@ export default function DocumentsData() {
         </div>
       )}
 
-      {isUploadClicked && <FileUpload handleClose={closeDialog} />}
+      {isUploadClicked && <FileUpload handleClose={closeUploadDialog} />}
 
       {isDeleteClicked && <DeleteFile
 
