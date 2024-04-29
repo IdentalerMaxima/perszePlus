@@ -228,7 +228,11 @@ export default function DocumentsData() {
         </div>
       )}
 
-      {isUploadClicked && <FileUpload handleClose={closeUploadDialog} />}
+      {isUploadClicked && <FileUpload 
+        handleClose={closeUploadDialog}
+        refreshFiles={fetchDocuments}
+        
+        />}
 
       {isDeleteClicked && <DeleteFile
 

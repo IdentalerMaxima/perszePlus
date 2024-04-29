@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import axiosClient from '../../axios';
 
-export default function FileUpload({handleClose}) {
+export default function FileUpload({handleClose, refreshFiles}) {
 
   const [documentName, setDocumentName] = useState('');
   const [documentType, setDocumentType] = useState('Egyeb');
@@ -64,6 +64,7 @@ export default function FileUpload({handleClose}) {
       });
 
       console.log('File uploaded successfully:', response.data);
+      refreshFiles();
     } catch (error) {
       console.error('Error uploading file:', error);
       setError('Error uploading file');
