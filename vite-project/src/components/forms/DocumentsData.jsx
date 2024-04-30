@@ -40,7 +40,29 @@ export default function DocumentsData() {
   }, []);
 
 
+  const downloadFile = async (fileId) => {
+    try {
+      const response = await axiosClient.get(`/user/documents/${fileId}`, {
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link
+        .setAttribute('href', url);
+      link.setAttribute('download', response.headers['content-disposition'].split('=')[1]);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  };
 
+  const downloadSelectedFiles = async () => {
+    checkboxedDocuments.forEach(file => {
+      downloadFile(file.id);
+    });
+  }
   const fetchDocuments = async () => {
     try {
       const response = await axiosClient.get('/user/documents');
@@ -150,7 +172,7 @@ export default function DocumentsData() {
             variant="contained"
             color="primary"
             disabled={checkboxedDocuments.length === 0}
-            onClick={handleDeleteSelected}
+            onClick={downloadSelectedFiles}
             startIcon={<DownloadIcon />}
           >
             Download
@@ -228,19 +250,19 @@ export default function DocumentsData() {
         </div>
       )}
 
-      {isUploadClicked && <FileUpload 
+      {isUploadClicked && <FileUpload
         handleClose={closeUploadDialog}
         refreshFiles={fetchDocuments}
-        
-        />}
+
+      />}
 
       {isDeleteClicked && <DeleteFile
 
         handleClose={closeDeleteDialog}
         filesToDelete={checkboxedDocuments}
         refreshFiles={fetchDocuments}
-        
-        />}
+
+      />}
 
       {selectedDocument && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">

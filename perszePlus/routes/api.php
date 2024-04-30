@@ -23,11 +23,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::post('/upload/avatar', [AvatarUploadController::class, 'upload']);
-    Route::post('/upload/file', [FileUploadController::class, 'upload']);
+    Route::post('/upload/file', [DocumentController::class, 'upload']);
 
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
     Route::get('/user/documents', [DocumentController::class, 'index']);
+    Route::get('/user/documents/{id}', [DocumentController::class, 'download']);
+
     Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
+
 
 
 });
