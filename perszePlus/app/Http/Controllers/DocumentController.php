@@ -35,6 +35,8 @@ class DocumentController extends Controller
         if (!$document) {
             return response()->json(['message' => 'File not found'], 404);
         }
+
+
         unlink(storage_path('app/' . $document->file_path));
 
         $document->delete();

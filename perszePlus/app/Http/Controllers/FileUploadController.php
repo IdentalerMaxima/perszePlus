@@ -13,6 +13,7 @@ class FileUploadController extends Controller
 {
     public function upload(FileUploadRequest $request)
     {
+        $userId = auth()->user()->id;
         $file = $request->file('file');
         $fileName = $request->input('name');
         $fileType = $request->input('type');
@@ -21,10 +22,19 @@ class FileUploadController extends Controller
         // Log::info($file);
         // Log::info($fileName);
         // Log::info($fileType);
+        Log::info($userId);
+
+        $directory = "uploads/{$userId}";
+        if (!Storage::exists($directory)) {
+            Storage::makeDirectory($directory);
+        }
+
+        Log::info($directory);
         
         // Store file in the storage directory
         $path = uniqid() . '_' . $file->getClientOriginalName();
-        $file->storeAs('uploads', $path);
+        $file->storeAs($directory, $path);
+
 
         // Save metadata record of the document
         $document = new Document();
@@ -34,7 +44,7 @@ class FileUploadController extends Controller
         $document->original_name = $file->getClientOriginalName();
         $document->size = $file->getSize();
         $document->last_modified = now();
-        $document->file_path = 'uploads/' . $path;
+        $document->file_path = $directory . '/' . $path;
         $document->save();
 
 
