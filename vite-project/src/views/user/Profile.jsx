@@ -32,6 +32,12 @@ export default function Profile() {
 
   useEffect(() => {
     fetchUserData();
+    return () => {
+      profileLayouts.forEach(item => {
+        item.active = item.name === 'Personal data';
+      });
+      setActiveContent('Personal data');
+    };
   }, []);
 
   const handleClick = (layout) => {
