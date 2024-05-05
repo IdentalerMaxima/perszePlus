@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/upload/avatar', [AvatarUploadController::class, 'upload']);
     Route::post('/upload/file', [DocumentController::class, 'upload']);
+    Route::post('/user/info', [UserDataController::class, 'saveUserData']);
+
 
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
     Route::get('/user/documents', [DocumentController::class, 'index']);
