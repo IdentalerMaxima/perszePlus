@@ -15,7 +15,7 @@ class DocumentController extends Controller
         $userId = $request->user()->id;
         // Log::info($userId);
         $documents = Document::where('user_id', $userId)->get();
-        Log::info($documents);
+        //Log::info($documents);
         return response()->json(['documents' => $documents]);
     }
 
@@ -40,14 +40,14 @@ class DocumentController extends Controller
         // Log::info($file);
         // Log::info($fileName);
         // Log::info($fileType);
-        Log::info($userId);
+        //Log::info($userId);
 
         $directory = "uploads/{$userId}";
         if (!Storage::exists($directory)) {
             Storage::makeDirectory($directory);
         }
 
-        Log::info($directory);
+        //Log::info($directory);
 
         // Store file in the storage directory
         $path = uniqid() . '_' . $file->getClientOriginalName();
