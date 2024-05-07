@@ -2,14 +2,14 @@ import React from "react";
 import { Dialog, Button, Typography, TextField, DialogContent } from "@mui/material";
 import DialogTitle from "@mui/material/DialogTitle";
 
-export default function Cancel({ handleClose, handleRerender}) {
+export default function Cancel({ handleClose, resetForm}) {
 
     const closeDialog = () => {
         handleClose();
     }
 
     const cancelOperation = () => {
-        handleRerender();
+        resetForm();
         closeDialog();
     }
 
