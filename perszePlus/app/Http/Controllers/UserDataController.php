@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class UserDataController extends Controller
 {
@@ -20,11 +20,17 @@ class UserDataController extends Controller
     {
         $user = $request->user();
 
-        $user->update($request->all());
+        //Log::info('Data to save: ' . json_encode($request->all()));
+
+        $userData = $request->all();
+
+        $user->update($userData);
 
         return response()->json([
             'message' => 'User data saved successfully',
             'user' => $user
         ]);
     }
+
+
 }
