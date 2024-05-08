@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AvatarUploadController;
-use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\UserDataController;
 use App\Http\Controllers\DocumentController;
