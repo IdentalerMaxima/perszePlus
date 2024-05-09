@@ -22,7 +22,7 @@ export default function PersonalData({ currentUser }) {
     first_name: currentUser ? currentUser.first_name : '',
     last_name: currentUser ? currentUser.last_name : '',
     email: currentUser ? currentUser.email : '',
-    phone: currentUser ? currentUser.phone : '',
+    phone_number: currentUser ? currentUser.phone_number : '',
     birth_date: currentUser ? currentUser.birth_date : '',
     birth_place: currentUser ? currentUser.birth_place : '',
     mothers_name: currentUser ? currentUser.mothers_name : '',
@@ -50,7 +50,7 @@ export default function PersonalData({ currentUser }) {
       ...formData,
       [name]: value,
     });
-    console.log(formData);
+
   };
 
 
@@ -60,6 +60,7 @@ export default function PersonalData({ currentUser }) {
     setLoading(true);
     setError('');
     try {
+      console.log('Data to save:', formData);
       const response = await axiosClient.post('/user/info', formData);
       console.log('Data saved successfully:', response.data);
       setLoading(false);
@@ -73,7 +74,6 @@ export default function PersonalData({ currentUser }) {
   const handleCancel = () => {
     console.log('Cancel clicked');
     openCancelDialog();
-
   };
 
   const openCancelDialog = () => {
@@ -161,13 +161,13 @@ export default function PersonalData({ currentUser }) {
               <div className="mt-2">
                 <input
                   id="phone"
-                  name="phone"
+                  name="phone_number"
                   type="tel"
                   autoComplete="phone"
                   placeholder='+36 30 123 4567'
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
                    ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value={formData.phone}
+                  value={formData.phone_number}
                   onChange={handleChange}
                 />
               </div>
