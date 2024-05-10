@@ -8,6 +8,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axiosClient from '../../axios';
 import Cancel from '../popups/Cancel';
 import { use } from 'i18next';
+import dayjs from 'dayjs';
 
 
 
@@ -22,19 +23,19 @@ export default function PersonalData({ currentUser }) {
     first_name: currentUser ? currentUser.first_name : '',
     last_name: currentUser ? currentUser.last_name : '',
     email: currentUser ? currentUser.email : '',
-    phone_number: currentUser ? currentUser.phone_number : '',
-    birth_date: currentUser ? currentUser.birth_date : '',
-    birth_place: currentUser ? currentUser.birth_place : '',
-    mothers_name: currentUser ? currentUser.mothers_name : '',
-    street_address: currentUser ? currentUser.street_address : '',
-    city: currentUser ? currentUser.city : '',
-    state: currentUser ? currentUser.state : '',
-    zip: currentUser ? currentUser.zip : '',
-    main_address_matches_temporary_address: currentUser ? currentUser.main_address_matches_temporary_address : '',
-    temporary_street_address: currentUser ? currentUser.temporary_street_address : '',
-    temporary_city: currentUser ? currentUser.temporary_city : '',
-    temporary_state: currentUser ? currentUser.temporary_state : '',
-    temporary_zip: currentUser ? currentUser.temporary_zip : '',
+    phone_number: currentUser.phone_number ? currentUser.phone_number : '',
+    birth_date: currentUser.birth_date ? currentUser.birth_date : null,
+    birth_place: currentUser.birth_place ? currentUser.birth_place : '',
+    mothers_name: currentUser.mothers_name ? currentUser.mothers_name : '',
+    street_address: currentUser.street_address ? currentUser.street_address : '',
+    city: currentUser.city ? currentUser.city : '',
+    state: currentUser.state ? currentUser.state : '',
+    zip: currentUser.zip ? currentUser.zip : '',
+    temp_addr: currentUser.temp_addr ? currentUser.temp_addr : 'false',
+    temp_addr_street: currentUser.temp_addr_street ? currentUser.temp_addr_street : '',
+    temp_addr_city: currentUser.temp_addr_city ? currentUser.temp_addr_city : '',
+    temp_addr_state: currentUser.temp_addr_state ? currentUser.temp_addr_state : '',
+    temp_addr_zip: currentUser.temp_addr_zip ? currentUser.temp_addr_zip : '',
   };
 
 
@@ -46,10 +47,22 @@ export default function PersonalData({ currentUser }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    if (name === 'temp_addr') {
+      setIsChecked(!isChecked);
+      setFormData({
+        ...formData,
+        [name]: !isChecked ? 'true' : 'false',
+        temp_addr_street: !isChecked ? '' : formData.temp_addr_street,
+        temp_addr_city: !isChecked ? '' : formData.temp_addr_city,
+        temp_addr_state: !isChecked ? '' : formData.temp_addr_state,
+        temp_addr_zip: !isChecked ? '' : formData.temp_addr_zip,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
 
   };
 
@@ -84,6 +97,7 @@ export default function PersonalData({ currentUser }) {
     setFormData(initialFormData);
     setRerender(prev => !prev);
   }
+
 
 
 
@@ -181,15 +195,22 @@ export default function PersonalData({ currentUser }) {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={['DatePicker']}>
                     <DatePicker
+                      name="birth_date"
+                      id="birth-date"
+                      value={dayjs(formData.birth_date)}
+                      onChange={handleChange}
+                      renderInput={(params) => <input {...params} />}
                       sx={{
                         '& .MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputAdornedEnd.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:focus': {
                           boxShadow: 'none !important',
                         },
-                      }} />
+                      }}
+                    />
                   </DemoContainer>
                 </LocalizationProvider>
               </div>
             </div>
+
 
             <div className="sm:col-span-2">
               <label htmlFor="birth-place" className="block text-sm font-medium leading-6 text-gray-900">
@@ -234,7 +255,7 @@ export default function PersonalData({ currentUser }) {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="street-address"
+                  name="street_address"
                   id="street-address"
                   autoComplete="street-address"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset
@@ -270,7 +291,7 @@ export default function PersonalData({ currentUser }) {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="region"
+                  name="state"
                   id="region"
                   autoComplete="address-level1"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset
@@ -302,26 +323,27 @@ export default function PersonalData({ currentUser }) {
             <div className="col-span-full">
               <div className="flex h-6 items-center">
                 <input
-                  id="main_address_matches_temporary_address"
-                  name="homeAddressIsDifferent"
+                  id="homeAddressIsDifferent"
+                  name="temp_addr"
                   type="checkbox"
                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                  checked={isChecked}
                   onChange={() => {
-                    //handleChange();
-                    if (isChecked) {
-                      formData.temporary_street_address = '';
-                      formData.temporary_city = '';
-                      formData.temporary_state = '';
-                    }
                     setIsChecked(!isChecked);
+                    setFormData({
+                      ...formData,
+                      temp_addr: !isChecked ? 'true' : 'false',
+                      temp_addr_street: !isChecked ? '' : formData.temp_addr_street,
+                      temp_addr_city: !isChecked ? '' : formData.temp_addr_city,
+                      temp_addr_state: !isChecked ? '' : formData.temp_addr_state,
+                      temp_addr_zip: !isChecked ? '' : formData.temp_addr_zip,
+                    });
                   }}
-                //value={formData.main_address_matches_temporary_address}
-
-
                 />
                 <p className="text-gray-500 ml-2"> I have a different temporary address than home address.</p>
               </div>
             </div>
+
 
             <div className="col-span-full" style={{ display: isChecked ? 'block' : 'none' }}>
               <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
@@ -330,13 +352,12 @@ export default function PersonalData({ currentUser }) {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="street-address"
-                  id="street-address"
-                  autoComplete="street-address"
+                  name="temp_addr_street"
+                  id="temporary-street-address"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset
                    focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   onChange={handleChange}
-                  defaultChecked={formData.temporary_street_address}
+                  defaultChecked={formData.temp_addr_street}
                 />
               </div>
             </div>
@@ -348,12 +369,12 @@ export default function PersonalData({ currentUser }) {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="city"
+                  name="temp_addr_city"
                   id="city"
                   autoComplete="address-level2"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset
                    focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value={formData.temporary_city}
+                  value={formData.temp_addr_city}
                   onChange={handleChange}
                 />
               </div>
@@ -366,12 +387,11 @@ export default function PersonalData({ currentUser }) {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="region"
-                  id="region"
-                  autoComplete="address-level1"
+                  name="temp_addr_state"
+                  id="temporary-state"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset
                    focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value={formData.temporary_state}
+                  value={formData.temp_addr_state}
                   onChange={handleChange}
                 />
               </div>
@@ -384,12 +404,11 @@ export default function PersonalData({ currentUser }) {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="zip"
-                  id="postal-code"
-                  autoComplete="postal-code"
+                  name="temp_addr_zip"
+                  id="zip"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset
                    focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value={formData.temporary_zip}
+                  value={formData.temp_addr_zip}
                   onChange={handleChange}
                 />
               </div>
