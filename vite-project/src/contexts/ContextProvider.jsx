@@ -16,7 +16,7 @@ export const ContextProvider = ({ children }) => {
         try {
           const response = await axiosClient.get('/user/info');
           setCurrentUser(response.data.user);
-          console.log("u data", response.data.user);
+          //console.log("u data", response.data.user);
         } catch (error) {
           console.error(error);
         }
@@ -24,7 +24,7 @@ export const ContextProvider = ({ children }) => {
     
       useEffect(() => {
         fetchUserData();
-        console.log("fetch user data");
+        //console.log("fetch user data");
       }, []);
 
     const setUserToken = (token) => { 
