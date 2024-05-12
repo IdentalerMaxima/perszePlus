@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('state')->nullable()->after('city');
             $table->string('zip')->nullable()->after('state');
 
-            $table->boolean('main_address_matches_temporary_address')->nullable()->after('zip');
+            $table->string('temp_addr')->default('false')->after('zip'); 
 
             $table->string('temp_addr_street')->nullable()->after('main_address_matches_temporary_address');
             $table->string('temp_addr_city')->nullable()->after('temp_addr_street');
@@ -52,7 +52,7 @@ return new class extends Migration
             $table->dropColumn('state');
             $table->dropColumn('zip');
 
-            $table->dropColumn('main_address_matches_temporary_address');
+            $table->dropColumn('temp_addr');
             
             $table->dropColumn('temp_addr_street');
             $table->dropColumn('temp_addr_city');
