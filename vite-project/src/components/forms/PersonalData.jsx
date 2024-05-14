@@ -15,7 +15,7 @@ import dayjs from 'dayjs';
 
 export default function PersonalData({ currentUser }) {
 
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(currentUser.temp_addr == 'true' ? true : false);
   const [isCancelClicked, setIsCancelClicked] = useState(false);
   const [rerender, setRerender] = useState(false);
 
@@ -45,7 +45,12 @@ export default function PersonalData({ currentUser }) {
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
+
+    
     const { name, value } = e.target;
+
+
+    
 
     if (name === 'temp_addr') {
       setIsChecked(!isChecked);
@@ -198,7 +203,7 @@ export default function PersonalData({ currentUser }) {
                       name="birth_date"
                       id="birth-date"
                       value={dayjs(formData.birth_date)}
-                      onChange={handleChange}
+                      onChange={(newValue) => handleChange(newValue, 'birth_date')}
                       renderInput={(params) => <input {...params} />}
                       sx={{
                         '& .MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputAdornedEnd.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:focus': {
@@ -357,7 +362,7 @@ export default function PersonalData({ currentUser }) {
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset
                    focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   onChange={handleChange}
-                  defaultChecked={formData.temp_addr_street}
+                  value={formData.temp_addr_street}
                 />
               </div>
             </div>
