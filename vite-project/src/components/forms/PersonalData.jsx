@@ -45,12 +45,7 @@ export default function PersonalData({ currentUser }) {
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
-
-    
     const { name, value } = e.target;
-
-
-    
 
     if (name === 'temp_addr') {
       setIsChecked(!isChecked);
@@ -69,6 +64,13 @@ export default function PersonalData({ currentUser }) {
       });
     }
 
+  };
+
+  const handleDateChange = (date) => {
+    setFormData({
+      ...formData,
+      birth_date: date.format('YYYY-MM-DD'),
+    });
   };
 
 
@@ -203,7 +205,7 @@ export default function PersonalData({ currentUser }) {
                       name="birth_date"
                       id="birth-date"
                       value={dayjs(formData.birth_date)}
-                      onChange={(newValue) => handleChange(newValue, 'birth_date')}
+                      onChange={ (date) => handleDateChange(date)}
                       renderInput={(params) => <input {...params} />}
                       sx={{
                         '& .MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputAdornedEnd.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:focus': {
