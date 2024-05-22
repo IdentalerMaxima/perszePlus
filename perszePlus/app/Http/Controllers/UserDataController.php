@@ -20,9 +20,11 @@ class UserDataController extends Controller
     {
         $user = $request->user();
 
-        //Log::info('Data to save: ' . json_encode($request->all()));
+        // Log::info('Data to save: ' . json_encode($request->all()));
 
         $userData = $request->all();
+
+        // Log::info('User data: ' . json_encode($userData));
 
         $user->update($userData);
 
