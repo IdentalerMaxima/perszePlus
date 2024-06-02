@@ -36,6 +36,13 @@ class User extends Authenticatable
         'temp_addr_zip',
         'password',
         'avatar_path',
+        'neptun_code',
+        'university',
+        'faculty',
+        'start_year',
+        'current_semester',
+        'educational_format',
+        'level_of_education',
     ];
 
     /**
