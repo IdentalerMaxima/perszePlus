@@ -3,18 +3,18 @@ import { useState, useEffect } from 'react';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateField } from '@mui/x-date-pickers/DateField';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axiosClient from '../../axios';
 import Cancel from '../popups/Cancel';
-import { use } from 'i18next';
 import dayjs from 'dayjs';
+import { useStateContext } from '../../contexts/ContextProvider';
 
 
 
 
-export default function PersonalData({ currentUser }) {
+export default function PersonalData() {
 
+  const { currentUser, setCurrentUser } = useStateContext();
   const [isChecked, setIsChecked] = useState(currentUser.temp_addr == 'true' ? true : false);
   const [isCancelClicked, setIsCancelClicked] = useState(false);
   const [rerender, setRerender] = useState(false);
@@ -84,6 +84,9 @@ export default function PersonalData({ currentUser }) {
       const response = await axiosClient.post('/user/info', formData);
       console.log('Data saved successfully:', response.data);
       setLoading(false);
+
+      setCurrentUser(response.data.user);
+      
     } catch (error) {
       console.error('Error saving data:', error);
       setError('An error occurred while saving data.');
@@ -105,9 +108,6 @@ export default function PersonalData({ currentUser }) {
     setRerender(prev => !prev);
   }
 
-
-
-
   return (
     <form key={rerender}>
       <div className="space-y-12">
@@ -117,10 +117,7 @@ export default function PersonalData({ currentUser }) {
             <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
             {/* <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p> */}
           </div>
-
-
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-
             <div className="sm:col-span-3">
               <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
                 First name
