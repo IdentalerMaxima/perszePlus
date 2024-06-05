@@ -101,7 +101,7 @@ export default function Profile() {
             </div>
           ) : (
             <>
-              {activeContent === 'Personal data' && <PersonalData currentUser={currentUser} />}
+              {activeContent === 'Personal data' && <PersonalData />}
               {activeContent === 'University' && <UniversityData />}
               {activeContent === 'Documents' && <DocumentsData />}
             </>
