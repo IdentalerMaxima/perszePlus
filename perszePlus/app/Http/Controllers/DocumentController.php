@@ -101,8 +101,10 @@ class DocumentController extends Controller
         return response()->json(['message' => 'File not found'], 404);
     }
 
+    $mimeType = Storage::mimeType($document->file_path);
+
     $headers = [
-        'Content-Type' => 'application/pdf', // Change content type according to your file type
+        'Content-Type' => $mimeType, 
     ];
 
     return response()->download($filePath, $document->original_name, $headers);
