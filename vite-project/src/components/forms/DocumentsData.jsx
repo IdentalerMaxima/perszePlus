@@ -39,39 +39,63 @@ export default function DocumentsData() {
     fetchDocuments();
   }, []);
 
+  const fetchDocuments = async () => {
+    try {
+      const response = await axiosClient.get('/user/documents');
+      setUploadedFiles(response.data.documents);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+    }
+  };
 
   const downloadFile = async (fileId) => {
     try {
       const response = await axiosClient.get(`/user/documents/${fileId}`, {
         responseType: 'blob',
       });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      console.log('Response:', response);
+
+      const contentType = response.headers['content-type'];
+      console.log('Content type:', contentType);
+      const blob = new Blob([response.data], { type: contentType });
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link
-        .setAttribute('href', url);
-      link.setAttribute('download', response.headers['content-disposition'].split('=')[1]);
+
+      let fileName = 'd';
+      if (response.headers && response.headers['content-disposition']) {
+        const contentDisposition = response.headers['content-disposition'];
+        const match = contentDisposition.match(/filename=([^;]+)/);
+        
+        if (match && match[1]) {
+          fileName = match[1].trim();
+          console.log('Filename:', fileName);
+        } else {
+          console.warn('Filename not found in Content-Disposition header.');
+        }
+      }
+  
+      link.href = url;
+      link.setAttribute('download', fileName);
       document.body.appendChild(link);
       link.click();
-      link.remove();
+      document.body.removeChild(link);
+  
+      // Revoke the object URL to free up memory
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading file:', error);
     }
   };
+  
 
   const downloadSelectedFiles = async () => {
-    checkboxedDocuments.forEach(file => {
-      downloadFile(file.id);
-    });
-  }
-  const fetchDocuments = async () => {
-    try {
-      const response = await axiosClient.get('/user/documents');
-      setUploadedFiles(response.data.documents);
-      setLoading(false); // Set loading to false when data is fetched
-    } catch (error) {
-      console.error('Error fetching documents:', error);
+    for (const file of checkboxedDocuments) {
+      await downloadFile(file.id);
     }
-  };
+  };  
+  
 
   const getFileExtension = (fileName) => {
     const parts = fileName.split('.');
