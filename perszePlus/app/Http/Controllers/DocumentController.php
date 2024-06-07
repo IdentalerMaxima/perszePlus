@@ -103,11 +103,14 @@ class DocumentController extends Controller
 
     $mimeType = Storage::mimeType($document->file_path);
 
-    $headers = [
-        'Content-Type' => $mimeType, 
-    ];
+    $fileName = $document->name;
 
-    return response()->download($filePath, $document->original_name, $headers);
+    $headers = [
+        'Content-Type' => $mimeType,
+        'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        'Access-Control-Expose-Headers' => 'Content-Disposition',
+    ];
+    return response()->download($filePath, $fileName, $headers);
 }
 
 
