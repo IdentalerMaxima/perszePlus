@@ -82,7 +82,6 @@ export default function DocumentsData() {
       link.click();
       document.body.removeChild(link);
   
-      // Revoke the object URL to free up memory
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading file:', error);
@@ -106,6 +105,7 @@ export default function DocumentsData() {
   const getFileIcon = (file) => {
     switch (getFileExtension(file.file_path)) {
       case 'jpeg':
+      case 'jpg':
       case 'png':
         return '../../src/assets/IconIMG.png';
       case 'pdf':
