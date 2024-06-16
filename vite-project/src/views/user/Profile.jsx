@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PageComponent from '../../components/PageComponent';
 import Avatar from '@mui/material/Avatar';
-import { MenuItem, CircularProgress } from '@mui/material';
+import { MenuItem, CircularProgress, useMediaQuery } from '@mui/material';
 import PersonalData from '../../components/forms/PersonalData';
 import DocumentsData from '../../components/forms/DocumentsData';
 import UniversityData from '../../components/forms/UniversityData';
@@ -19,6 +19,9 @@ export default function Profile() {
   const { currentUser, setCurrentUser } = useStateContext();
   const [activeContent, setActiveContent] = useState('Personal data');
   const [loading, setLoading] = useState(true);
+
+  // Media query to check if the screen size is small (mobile view)
+  const isMobile = useMediaQuery('(max-width: 600px)');
 
   const fetchUserData = async () => {
     try {
@@ -53,8 +56,11 @@ export default function Profile() {
 
   return (
     <PageComponent title={'Profile'}>
-      <div className="flex min-h-full">
-        <div className="basis-1/4 mr-4 bg-white rounded-lg shadow-2xl" style={{ height: '27rem' }}>
+      <div className={`flex ${isMobile ? 'flex-col items-center' : 'flex-row'} min-h-full`}>
+        <div
+          className={`bg-white rounded-lg shadow-2xl ${isMobile ? 'w-full mb-4' : 'basis-1/4 mr-4'}`}
+          style={{ height: isMobile ? 'auto' : '27rem' }}
+        >
           {loading ? (
             <div className="flex justify-center items-center h-72">
               <CircularProgress />
@@ -63,19 +69,16 @@ export default function Profile() {
             <>
               <div className="flex justify-center mt-3">
                 <Avatar
-                    alt={currentUser.name}
-                    src={currentUser.avatar_path || "../../src/assets/defaultAvatar.PNG"}
-                    sx={{ width: 156, height: 156 }}
-                  />
+                  alt={currentUser.name}
+                  src={currentUser.avatar_path || "../../src/assets/defaultAvatar.PNG"}
+                  sx={{ width: 156, height: 156 }}
+                />
               </div>
               <div className="mt-3 flex justify-center">
-
                 <AvatarUpload
                   onSuccess={handleAvatarUpload}
                   onError={(error) => console.error("Error uploading avatar:", error)}
-                >
-                </AvatarUpload>
-
+                />
               </div>
               <div className="mt-16 flex justify-center font-bold">{currentUser.first_name + " " + currentUser.last_name}</div>
               <div className="mt-3">
@@ -94,7 +97,7 @@ export default function Profile() {
             </>
           )}
         </div>
-        <div className="basis-3/4 p-4 bg-white rounded-lg shadow-2xl">
+        <div className={`bg-white rounded-lg shadow-2xl ${isMobile ? 'w-full p-4' : 'basis-3/4 p-4'}`}>
           {loading ? (
             <div className="flex justify-center items-center h-full">
               <CircularProgress />

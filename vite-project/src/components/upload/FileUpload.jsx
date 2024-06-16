@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import axiosClient from '../../axios';
+import { useMediaQuery } from '@mui/material';
 
 export default function FileUpload({handleClose, refreshFiles}) {
 
@@ -9,6 +10,7 @@ export default function FileUpload({handleClose, refreshFiles}) {
   const [tempDocument, setTempDocument] = useState(null);
   const [tempDocumentUrl, setTempDocumentUrl] = useState(null);
   const [error, setError] = useState(null);
+  const isMobile = useMediaQuery('(max-width: 600px)');
 
   const closeDialog = () => {
     handleClose();
@@ -95,7 +97,7 @@ export default function FileUpload({handleClose, refreshFiles}) {
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Upload Document</DialogTitle>
-      <DialogContent sx={{ width: 400 }}>
+      <DialogContent sx={{ width: `${isMobile ? "200":"400"}` }}>
         <TextField
           autoFocus
           margin="dense"
