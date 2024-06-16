@@ -6,7 +6,7 @@ import Dashboard from './views/Dashboard.jsx'
 import Calendar from './views/Calendar.jsx'
 import Courses from './views/Courses.jsx'
 import News from './views/News.jsx'
-import MyData from './views/MyData.jsx'
+import Members from './views/Members.jsx'
 import Attendance from './views/Attendance.jsx'
 
 import Settings from './views/user/Settings.jsx'
@@ -35,8 +35,8 @@ const router = createBrowserRouter([
                 element: <News />,
             },
             {
-                path: '/mydata',
-                element: <MyData />
+                path: '/members',
+                element: <Members />
             },
             {
                 path: '/calendar',
@@ -57,8 +57,7 @@ const router = createBrowserRouter([
             {
                 path: '/profile',
                 element: <Profile />
-            }
-
+            },
         ]
     },
     {
