@@ -45,7 +45,7 @@ export default function DefaultLayout() {
     { name: 'Naptár', to: '/calendar' },
     { name: 'Kurzusok', to: '/courses' },
     { name: 'Jelenléti', to: '/attendance' },
-    { name: 'Adataim', to: '/mydata' },
+    { name: 'Tagok', to: '/members' },
   ]
 
 
@@ -58,13 +58,6 @@ export default function DefaultLayout() {
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
-                    {/* <div className="flex-shrink-0"> //LOGO
-                      <img
-                        className="h-8 w-8"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                        alt="Your Company"
-                      />
-                    </div> */}
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
                         {navigation.map((item) => (
@@ -178,13 +171,6 @@ export default function DefaultLayout() {
                 </div>
                 <div className="border-t border-gray-700 pb-3 pt-4">
                   <div className="flex items-center px-5">
-                    <div className="flex-shrink-0">
-                      <img className="h-10 w-10 rounded-full" src={currentUser.imageUrl} alt="" />
-                    </div>
-                    <div className="ml-3">
-                      <div className="text-base font-medium leading-none text-white">{currentUser.name}</div>
-                      <div className="text-sm font-medium leading-none text-gray-400">{currentUser.email}</div>
-                    </div>
                     <button
                       type="button"
                       className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
