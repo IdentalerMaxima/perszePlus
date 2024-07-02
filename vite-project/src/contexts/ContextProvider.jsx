@@ -5,7 +5,8 @@ const StateContext = createContext({
     currentUser: {},
     setCurrentUser: () => { },
     userToken: null,
-    setUserToken: () => { }
+    setUserToken: () => { },
+    userIsAdmin: () => { }
 });
 
 export const ContextProvider = ({ children }) => {
@@ -25,6 +26,12 @@ export const ContextProvider = ({ children }) => {
         fetchUserData();
       }, []);
 
+    //   useEffect(() => {
+    //     console.log('User token:', userToken);
+    //     console.log('Current user:', currentUser);
+    //     console.log('Is user admin?', userIsAdmin());
+    // }, [userToken, currentUser]);
+
     const setUserToken = (token) => { 
         if(token){
             localStorage.setItem('TOKEN', token);
@@ -34,13 +41,18 @@ export const ContextProvider = ({ children }) => {
         _setUserToken(token);
     }
 
+    const userIsAdmin = () => {
+        return currentUser.category === 'vezetőség' || currentUser.category === 'admin';
+    }
+
 
     return (
         <StateContext.Provider value={{
             currentUser,
             setCurrentUser,
             userToken,
-            setUserToken
+            setUserToken,
+            userIsAdmin
         }}>
             { children }
         </StateContext.Provider>
