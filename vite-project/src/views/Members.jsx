@@ -1,110 +1,68 @@
-import PageComponent from "../components/PageComponent";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-
-const testMemberList = [
-  { name: 'Test Elek', category: 'vezetőség' },
-  { name: 'Test Elek 2', category: 'vezetőség' },
-  { name: 'Test Elek 3', category: 'vezeőség' },
-  { name: 'Test Elek 4', category: 'munkatárs' },
-  { name: 'Test Elek 5', category: 'munkatárs' },
-  { name: 'Test Elek 6', category: 'munkatárs' },
-  { name: 'Test Elek 7', category: 'munkatárs' },
-  { name: 'Test Elek 8', category: 'hallgató' },
-  { name: 'Test Elek 9', category: 'hallgató' },
-  { name: 'Test Elek 10', category: 'hallgató' },
-  { name: 'Test Elek 11', category: 'hallgató' },
-  { name: 'Test Elek 12', category: 'hallgató' },
-  { name: 'Test Elek 13', category: 'hallgató' },
-  { name: 'Test Elek 14', category: 'hallgató' },
-  { name: 'Test Elek 15', category: 'hallgató' },
-  { name: 'Test Elek 16', category: 'hallgató' },
-  { name: 'Test Elek 17', category: 'hallgató' },
-  { name: 'Test Elek 18', category: 'hallgató' },
-  { name: 'Test Elek 19', category: 'hallgató' },
-  { name: 'Test Elek 20', category: 'hallgató' },
-  { name: 'Test Elek 21', category: 'hallgató' },
-];
-
-const getInitials = (name) => {
-  const nameParts = name.split(' ');
-  if (nameParts.length === 1) return nameParts[0][0];
-  return nameParts[0][0] + nameParts[1][0];
-};
+import CircularProgress from '@mui/material/CircularProgress';
+import PageComponent from '../components/PageComponent'; // Adjust the import path based on your actual file structure
+import axiosClient from '../axios';
 
 export default function Members() {
+  const [memberList, setMemberList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const getMembers = async () => {
+    console.log('Fetching members');
+    try {
+      const response = await axiosClient.get('/getMemberList');
+      console.log(response.data); // Log the response data
+      setMemberList(response.data.users);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching members:', error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getMembers();
+  }, []);
+
   return (
     <PageComponent title={'Tagok'}>
-      <div className="flex flex-col space-y-4">
-        <div className="flex flex-col">
-          <h2 className="text-xl font-bold mb-2">Vezetőség</h2>
-          <div className="flex flex-wrap -m-2">
-            {testMemberList.map((member) => {
-              if (member.category === 'vezetőség') {
-                return (
-                  <Card key={member.name} className="m-2 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
-                    <CardContent>
-                      <div className="flex flex-row items-center space-x-4">
-                        <Avatar>{getInitials(member.name)}</Avatar>
-                        <div className="flex flex-col">
-                          <p>{member.name}</p>
-                          <p className="text-sm text-gray-500">{member.category}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              }
-            })}
-          </div>
+      {loading ? (
+        <div className="flex items-center justify-center h-screen">
+          <CircularProgress />
         </div>
-        <div className="flex flex-col">
-          <h2 className="text-xl font-bold mb-2">Munkatársak</h2>
-          <div className="flex flex-wrap -m-2">
-            {testMemberList.map((member) => {
-              if (member.category === 'munkatárs') {
-                return (
-                  <Card key={member.name} className="m-2 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
-                    <CardContent>
-                      <div className="flex flex-row items-center space-x-4">
-                        <Avatar>{getInitials(member.name)}</Avatar>
-                        <div className="flex flex-col">
-                          <p>{member.name}</p>
-                          <p className="text-sm text-gray-500">{member.category}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              }
-            })}
-          </div>
+      ) : (
+        <div className="flex flex-col space-y-4">
+          {['vezetőség', 'munkatárs', 'hallgató'].map((category) => (
+            <div key={category} className="flex flex-col">
+              <h2 className="text-xl font-bold mb-2">{category === 'vezetőség' ? 'Vezetőség' : category === 'munkatárs' ? 'Munkatársak' : 'Hallgatók'}</h2>
+              <div className="flex flex-wrap">
+                {memberList.map((member) => {
+                  if (member.category === category) {
+                    return (
+                      <Card key={member.first_name} className="m-2 w-full sm:w-1/2 md:w-1/3 lg:w-1/5 xl:w-1/5">
+                        <a href={`/profile/${encodeURIComponent(member.first_name + " " + member.last_name)}`} className="block px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg hover:bg-gray-100 hover:underline transition-all duration-300 ease-in-out">
+                          <div className="flex items-center space-x-4">
+                            <Avatar src={member.avatar_path} className="w-12 h-12 rounded-full" />
+                            <div className="flex flex-col">
+                              <span className="text-lg font-medium text-gray-800">{`${member.first_name} ${member.last_name}`}</span>
+                              {/* <p className="text-sm text-gray-500">{member.university ? member.university : ""}</p>
+                              <p className="text-sm text-gray-500">{member.faculty ? member.faculty : ""}</p> */}
+                            </div>
+                          </div>
+                        </a>
+                      </Card>
+                    );
+                  }
+                  return null; // Return null for categories that don't match
+                })}
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="flex flex-col">
-          <h2 className="text-xl font-bold mb-2">Hallgatók</h2>
-          <div className="flex flex-wrap -m-2">
-            {testMemberList.map((member) => {
-              if (member.category === 'hallgató') {
-                return (
-                  <Card key={member.name} className="m-2 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
-                    <CardContent>
-                      <div className="flex flex-row items-center space-x-4">
-                        <Avatar>{getInitials(member.name)}</Avatar>
-                        <div className="flex flex-col">
-                          <p>{member.name}</p>
-                          <p className="text-sm text-gray-500">{member.category}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              }
-            })}
-          </div>
-        </div>
-      </div>
+      )}
     </PageComponent>
   );
 }
