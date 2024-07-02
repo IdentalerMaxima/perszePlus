@@ -37,7 +37,7 @@ class UserDataController extends Controller
 
     public function getAllUsers()
     {
-        $users = User::all(['first_name','last_name', 'category', 'avatar_path', 'university', 'faculty']);
+        $users = User::all(['id','first_name','last_name', 'category', 'avatar_path', 'university', 'faculty']);
 
         //Log::info('Users: ' . json_encode($users));
 
@@ -46,5 +46,15 @@ class UserDataController extends Controller
         ]);
     }
 
+    public function getUserById($id)
+    {
+        $user = User::find($id);
+
+        Log::info('User: ' . json_encode($user));
+
+        return response()->json([
+            'user' => $user
+        ]);
+    }
 
 }
