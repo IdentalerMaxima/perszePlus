@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
     Route::get('/user/documents', [DocumentController::class, 'index']);
     Route::get('/user/documents/{id}', [DocumentController::class, 'download']);
+    Route::get('/getMemberList', [UserDataController::class, 'getAllUsers']);
 
     Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
 
