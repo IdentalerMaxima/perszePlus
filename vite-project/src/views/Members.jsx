@@ -11,10 +11,10 @@ export default function Members() {
   const [loading, setLoading] = useState(true);
 
   const getMembers = async () => {
-    console.log('Fetching members');
+    // console.log('Fetching members');
     try {
       const response = await axiosClient.get('/getMemberList');
-      console.log(response.data); // Log the response data
+      // console.log(response.data); // Log the response data
       setMemberList(response.data.users);
       setLoading(false);
     } catch (error) {
@@ -42,9 +42,8 @@ export default function Members() {
                 {memberList.map((member) => {
                   if (member.category === category) {
                     return (
-                      <Card key={member.first_name} className="m-2 w-full sm:w-1/2 md:w-1/3 lg:w-1/5 xl:w-1/5">
-                        {/* <a href={`/profile/${encodeURIComponent(member.first_name + " " + member.last_name)}`} className="block px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg hover:bg-gray-100 hover:underline transition-all duration-300 ease-in-out"> */}
-                        <Link to={`/members/${encodeURIComponent(member.first_name + " " + member.last_name)}`} className="block px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg hover:bg-gray-100 hover:underline transition-all duration-300 ease-in-out">
+                      <Card key={member.id} className="m-2 w-full sm:w-1/2 md:w-1/3 lg:w-1/5 xl:w-1/5">
+                        <Link to={`/members/${member.id}`} className="block px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg hover:bg-gray-100 hover:underline transition-all duration-300 ease-in-out">
                           <div className="flex items-center space-x-4">
                             <Avatar src={member.avatar_path} className="w-12 h-12 rounded-full" />
                             <div className="flex flex-col">
@@ -53,7 +52,6 @@ export default function Members() {
                               <p className="text-sm text-gray-500">{member.faculty ? member.faculty : ""}</p> */}
                             </div>
                           </div>
-                        {/* </a> */}
                         </Link>
                       </Card>
                     );
