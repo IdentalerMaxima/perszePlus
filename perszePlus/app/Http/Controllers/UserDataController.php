@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class UserDataController extends Controller
 {
@@ -31,6 +32,17 @@ class UserDataController extends Controller
         return response()->json([
             'message' => 'User data saved successfully',
             'user' => $user
+        ]);
+    }
+
+    public function getAllUsers()
+    {
+        $users = User::all(['first_name','last_name', 'category', 'avatar_path', 'university', 'faculty']);
+
+        //Log::info('Users: ' . json_encode($users));
+
+        return response()->json([
+            'users' => $users
         ]);
     }
 
