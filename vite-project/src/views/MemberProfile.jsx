@@ -42,15 +42,15 @@ const MemberProfile = () => {
   return (
     <PageComponent>
       <div className={`flex flex-col ${isMobile ? 'items-center' : 'items-start'} bg-white rounded-lg shadow-2xl p-8`}>
-        <IconButton onClick={goBack} className="">
-          <ArrowBackIcon />
-        </IconButton>
         {loading ? (
           <div className="flex justify-center items-center h-72 w-full">
             <CircularProgress />
           </div>
         ) : (
           <div className="flex flex-col md:flex-row items-center w-full">
+            <IconButton onClick={goBack} className="">
+              <ArrowBackIcon />
+            </IconButton>
             <div className="flex flex-col items-center md:w-1/5 mb-8 md:mb-0">
               <Avatar
                 alt={userData.first_name + " " + userData.last_name}
