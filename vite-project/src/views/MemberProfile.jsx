@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axiosClient from '../axios';
 import { useStateContext } from '../contexts/ContextProvider';
 import PageComponent from '../components/PageComponent';
 import Avatar from '@mui/material/Avatar';
-import { CircularProgress, useMediaQuery } from '@mui/material';
+import { CircularProgress, useMediaQuery, Button, IconButton } from '@mui/material';
+import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 
 const MemberProfile = () => {
   const { id } = useParams();
   const { currentUser } = useStateContext();
+  const navigate = useNavigate();
 
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -33,9 +35,16 @@ const MemberProfile = () => {
     fetchUserData();
   }, []);
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   return (
     <PageComponent>
       <div className={`flex flex-col ${isMobile ? 'items-center' : 'items-start'} bg-white rounded-lg shadow-2xl p-8`}>
+        <IconButton onClick={goBack} className="">
+          <ArrowBackIcon />
+        </IconButton>
         {loading ? (
           <div className="flex justify-center items-center h-72 w-full">
             <CircularProgress />

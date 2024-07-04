@@ -50,7 +50,7 @@ class UserDataController extends Controller
     {
         $user = User::find($id);
 
-        Log::info('User: ' . json_encode($user));
+        //Log::info('User: ' . json_encode($user));
 
         return response()->json([
             'user' => $user
