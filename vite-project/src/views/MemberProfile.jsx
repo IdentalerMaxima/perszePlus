@@ -48,28 +48,36 @@ const MemberProfile = () => {
                 src={userData.avatar_path ? userData.avatar_path : '/images/avatar.png'}
                 sx={{ width: 156, height: 156 }}
               />
-              <div className="mt-4 text-center md:text-left font-bold">
+              <div className="mt-4 text-center md:text-left font-bold text-xl">
                 {userData.first_name + " " + userData.last_name}
+              </div>
+              <div className="text-center md:text-left italic">
+                {userData.category}
               </div>
             </div>
             <div className="flex flex-col md:ml-8 w-full md:w-4/5">
-              <p><strong>Email:</strong> {userData.email}</p>
-              <p><strong>Role:</strong> {userData.category}</p>
-              <p><strong>University:</strong> {userData.university}</p>
-              <p><strong>Faculty:</strong> {userData.faculty}</p>
+              <div className="py-2">
+                <p><strong>Email:</strong> {userData.email}</p>
+                <p><strong>University:</strong> {userData.university}</p>
+                <p><strong>Faculty:</strong> {userData.faculty}</p>
+              </div>
               {isAdmin && (
                 <>
-                <p><strong>Neptun code:</strong> {userData.neptun_code}</p>
-                <p><strong>Start year:</strong> {userData.start_year}</p>
-                <p><strong>Current semester:</strong> {userData.current_semester}</p>
-                <p><strong>Educational format:</strong> {userData.educational_format}</p>
-                <p><strong>Level of education:</strong> {userData.level_of_education}</p>
-                <p><strong>Birth date:</strong> {userData.birth_date}</p>
-                <p><strong>Birth place:</strong> {userData.birth_place}</p>
-                <p><strong>Mother's name:</strong> {userData.mothers_name}</p>
-                <p><strong>Phone number:</strong> {userData.phone_number}</p>
-                <p><strong>Address:</strong> {userData.street_address}, {userData.city}, {userData.state}, {userData.zip}</p>
-                <p><strong>Temporary address:</strong> {userData.temp_addr_street}, {userData.temp_addr_city}, {userData.temp_addr_state}, {userData.temp_addr_zip}</p>
+                  <div className="border-y border-gray-900/10 py-2">
+                    <p><strong>Neptun code:</strong> {userData.neptun_code}</p>
+                    <p><strong>Start year:</strong> {userData.start_year}</p>
+                    <p><strong>Current semester:</strong> {userData.current_semester}</p>
+                    <p><strong>Educational format:</strong> {userData.educational_format}</p>
+                    <p><strong>Level of education:</strong> {userData.level_of_education}</p>
+                  </div>
+                  <div className="pt-2">
+                    <p><strong>Birth date:</strong> {userData.birth_date}</p>
+                    <p><strong>Birth place:</strong> {userData.birth_place}</p>
+                    <p><strong>Mother's name:</strong> {userData.mothers_name}</p>
+                    <p><strong>Phone number:</strong> {userData.phone_number}</p>
+                    <p><strong>Address:</strong> {userData.street_address} {userData.city} {userData.state} {userData.zip}</p>
+                    <p><strong>Temporary address:</strong> {userData.temp_addr_street} {userData.temp_addr_city} {userData.temp_addr_state} {userData.temp_addr_zip}</p>
+                  </div>
                 </>
               )}
             </div>
