@@ -6,34 +6,30 @@ const StateContext = createContext({
     setCurrentUser: () => { },
     userToken: null,
     setUserToken: () => { },
-    userIsAdmin: () => { }
+    isAdmin: false,
 });
 
 export const ContextProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState({})
+    const [currentUser, setCurrentUser] = useState({});
     const [userToken, _setUserToken] = useState(localStorage.getItem('TOKEN') || '');
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const fetchUserData = async () => {
         try {
-          const response = await axiosClient.get('/user/info');
-          setCurrentUser(response.data.user);
+            const response = await axiosClient.get('/user/info');
+            setCurrentUser(response.data.user);
+            setIsAdmin(response.data.user.category === 'admin' || response.data.user.category === 'vezetőség');
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
-      };
-    
-      useEffect(() => {
+    };
+
+    useEffect(() => {
         fetchUserData();
-      }, []);
+    }, []);
 
-    //   useEffect(() => {
-    //     console.log('User token:', userToken);
-    //     console.log('Current user:', currentUser);
-    //     console.log('Is user admin?', userIsAdmin());
-    // }, [userToken, currentUser]);
-
-    const setUserToken = (token) => { 
-        if(token){
+    const setUserToken = (token) => {
+        if (token) {
             localStorage.setItem('TOKEN', token);
         } else {
             localStorage.removeItem('TOKEN');
@@ -41,20 +37,15 @@ export const ContextProvider = ({ children }) => {
         _setUserToken(token);
     }
 
-    const userIsAdmin = () => {
-        return currentUser.category === 'vezetőség' || currentUser.category === 'admin';
-    }
-
-
     return (
         <StateContext.Provider value={{
             currentUser,
             setCurrentUser,
             userToken,
             setUserToken,
-            userIsAdmin
+            isAdmin,
         }}>
-            { children }
+            {children}
         </StateContext.Provider>
     )
 };
