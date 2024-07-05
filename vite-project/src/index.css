@@ -4,15 +4,25 @@
 
 
 .ring-transparent {
-    --tw-ring-opacity: 0;
-    --tw-ring-color: transparent;
-    --tw-ring-offset-width: 0px;
-    --tw-ring-offset-color: #fff;
-    --tw-ring-inset: var(--tw-empty, /*!*/ /*!*/);
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
-  }
+  --tw-ring-opacity: 0;
+  --tw-ring-color: transparent;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-inset: var(--tw-empty,
+      /*!*/
+      /*!*/
+    );
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
+}
 
-  input[type="checkbox"]:focus {
-    outline: none;
-    box-shadow: none !important;
-  }
+input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: none !important;
+}
+
+.create-event-dialog [type="text"]:focus,
+.create-event-dialog [type="date"]:focus,
+.create-event-dialog textarea:focus {
+  outline: none;
+  box-shadow: none !important;
+}
