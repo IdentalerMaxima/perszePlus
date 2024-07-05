@@ -9,14 +9,11 @@ import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 
 const MemberProfile = () => {
   const { id } = useParams();
-  const { currentUser } = useStateContext();
+  const { isAdmin } = useStateContext();
   const navigate = useNavigate();
 
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(true);
-
-  const { userIsAdmin } = useStateContext();
-  const isAdmin = userIsAdmin(currentUser);
 
   // Media query to check if the screen size is small (mobile view)
   const isMobile = useMediaQuery('(max-width: 600px)');
