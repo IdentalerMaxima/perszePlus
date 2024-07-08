@@ -1,42 +1,72 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button } from '@mui/material';
 import axiosClient from '../../axios';
 
-const EventData = ({ open, handleClose, handleEventCreated, fetchEvents }) => {
-  const [newEvent, setNewEvent] = useState({ title: '', date: '', description: '' });
+const EventData = ({ open, handleClose, editMode, event, saveEditedEvent, handleEventCreated, fetchEvents }) => {
+  const initialEventState = {
+    title: editMode ? event.title : '',
+    date: editMode ? event.date : '',
+    description: editMode ? event.description : '',
+  };
+  const [editedEvent, setEditedEvent] = useState(initialEventState);
+
+  useEffect(() => {
+    if (editMode && event) {
+      setEditedEvent({
+        title: event.title,
+        date: event.date,
+        description: event.description,
+      });
+    } else {
+      setEditedEvent(initialEventState);
+    }
+  }, [editMode, event]);
 
   const handleChange = (ev) => {
     const { name, value } = ev.target;
-    setNewEvent((prevEvent) => ({ ...prevEvent, [name]: value }));
+    setEditedEvent((prevEvent) => ({ ...prevEvent, [name]: value }));
   };
 
   const handleSubmit = async (ev) => {
     ev.preventDefault();
 
-    console.log('Creating event:', newEvent);
+    if (editMode) {
+      // Update existing event
+      try {
+        await saveEditedEvent({
+          id: event.id,
+          title: editedEvent.title,
+          date: editedEvent.date,
+          description: editedEvent.description,
+        });
+      } catch (error) {
+        console.error('Error editing event:', error);
+      }
+    } else {
+      // Create new event
+      const formData = new FormData();
+      formData.append('title', editedEvent.title);
+      formData.append('date', editedEvent.date);
+      formData.append('description', editedEvent.description);
 
-    const formData = new FormData();
-    formData.append('title', newEvent.title);
-    formData.append('date', newEvent.date);
-    formData.append('description', newEvent.description);
-
-    try {
-      const response = await axiosClient.post('/addEvent', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      setNewEvent({ title: '', date: '', description: '' });
-      handleClose();
-      fetchEvents();
-    } catch (error) {
-      console.error('Error creating event:', error);
+      try {
+        const response = await axiosClient.post('/addEvent', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        setEditedEvent(initialEventState);
+        handleClose();
+        fetchEvents();
+      } catch (error) {
+        console.error('Error creating event:', error);
+      }
     }
   };
 
   return (
     <Dialog open={open} onClose={handleClose} className='create-event-dialog'>
-      <DialogTitle>Create Event</DialogTitle>
+      <DialogTitle>{editMode ? 'Edit Event' : 'Create Event'}</DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <TextField
@@ -46,7 +76,7 @@ const EventData = ({ open, handleClose, handleEventCreated, fetchEvents }) => {
             label="Event Title"
             type="text"
             fullWidth
-            value={newEvent.title}
+            value={editedEvent.title}
             onChange={handleChange}
           />
           <TextField
@@ -55,7 +85,7 @@ const EventData = ({ open, handleClose, handleEventCreated, fetchEvents }) => {
             label="Event Date"
             type="date"
             fullWidth
-            value={newEvent.date}
+            value={editedEvent.date}
             onChange={handleChange}
             InputLabelProps={{
               shrink: true,
@@ -69,7 +99,7 @@ const EventData = ({ open, handleClose, handleEventCreated, fetchEvents }) => {
             fullWidth
             multiline
             rows={4}
-            value={newEvent.description}
+            value={editedEvent.description}
             onChange={handleChange}
           />
           <DialogActions>
@@ -77,7 +107,7 @@ const EventData = ({ open, handleClose, handleEventCreated, fetchEvents }) => {
               Cancel
             </Button>
             <Button type="submit" color="primary">
-              Create
+              {editMode ? 'Save Changes' : 'Create'}
             </Button>
           </DialogActions>
         </form>
