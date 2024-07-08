@@ -7,6 +7,9 @@ import { Delete } from '@mui/icons-material';
 import axiosClient from '../axios';
 import EventData from '../components/forms/EventData';
 import AttendeesDialog from '../components/popups/AttendeesDialog';
+import { Edit } from '@mui/icons-material';
+import Box from '@mui/material/Box';
+
 
 export default function Calendar() {
   const { currentUser, isAdmin } = useStateContext();
@@ -16,6 +19,7 @@ export default function Calendar() {
   const [open, setOpen] = useState(false); // State for event modal
   const [selectedEvent, setSelectedEvent] = useState(null); // State for selected event
   const [showAttendees, setShowAttendees] = useState(false); // State for showing attendees list
+  const [editMode, setEditMode] = useState(false); // State for edit mode
 
 
   const handleOpen = () => {
@@ -39,6 +43,25 @@ export default function Calendar() {
     const { name, value } = ev.target;
     setNewEvent((prevEvent) => ({ ...prevEvent, [name]: value }));
   }
+
+  const handleEdit = (event) => {
+    setEditMode(true);
+    setSelectedEvent(event);
+    setOpen(true);
+  }
+
+  const saveEditedEvent = async (editedEvent) => {
+    try {
+      await axiosClient.put(`/editEvent/${editedEvent.id}`, editedEvent); // Example put request for updating event
+      fetchEvents(); // Refresh events after edit
+      setSelectedEvent(null);
+      setEditMode(false);
+      setOpen(false); // Close the form dialog after editing
+    } catch (error) {
+      console.error('Error editing event:', error);
+    }
+  };
+
 
   const fetchEvents = async () => {
     console.log('Fetching events...');
@@ -109,7 +132,7 @@ export default function Calendar() {
                 {event.description}
               </Typography>
               <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
-              <Button
+                <Button
                   variant="contained"
                   color="primary"
                   onClick={() => updateAttendance(event.id, currentUser.id, 'going')}
@@ -130,19 +153,35 @@ export default function Calendar() {
                 </Button>
               </div>
               {isAdmin && (
-                <IconButton
-                  style={{ position: 'absolute', top: '8px', right: '8px' }}
-                  onClick={() => deleteEvent(event.id)}
-                >
-                  <Delete />
-                </IconButton>
+                <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px', alignItems: 'center' }}>
+                  <IconButton
+                    style={{ position: 'absolute', top: '8px', right: '40px' }}
+                    onClick={() => deleteEvent(event.id)}
+                  >
+                    <Delete />
+                  </IconButton>
+                  <IconButton
+                    style={{ position: 'absolute', top: '8px', right: '8px' }}
+                    onClick={() => {handleEdit(event)}}
+                  >
+                    <Edit />
+                  </IconButton>
+                </Box>
               )}
             </CardContent>
           </Card>
         ))}
       </InfiniteScroll>
 
-      <EventData open={open} handleClose={handleClose} handleChange={handleChange} fetchEvents={fetchEvents} />
+      <EventData
+        open={open}
+        handleClose={handleClose}
+        handleChange={handleChange}
+        fetchEvents={fetchEvents}
+        editMode={editMode}
+        event={selectedEvent}
+        saveEditedEvent={saveEditedEvent}
+      />
       <AttendeesDialog open={showAttendees} handleClose={handleCloseAttendees} event={selectedEvent} />
 
     </PageComponent>
