@@ -20,6 +20,8 @@ export default function Calendar() {
   const [selectedEvent, setSelectedEvent] = useState(null); // State for selected event
   const [showAttendees, setShowAttendees] = useState(false); // State for showing attendees list
   const [editMode, setEditMode] = useState(false); // State for edit mode
+  const [showOldEvents, setShowOldEvents] = useState(false); // State for toggling old events
+
 
 
   const handleOpen = () => {
@@ -110,6 +112,18 @@ export default function Calendar() {
           Create Event
         </Button>
       )}
+
+      {isAdmin && (
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ marginBottom: '16px', marginLeft: '16px' }}
+          onClick={() => setShowOldEvents(prevState => !prevState)}
+        >
+          {showOldEvents ? 'Hide Old Events' : 'Show Old Events'}
+        </Button>
+      )}
+
       <InfiniteScroll
         dataLength={events.length}
         loader={<CircularProgress />}
@@ -120,56 +134,59 @@ export default function Calendar() {
         }
       >
         {events.map((event) => (
-          <Card key={event.id} style={{ marginBottom: '16px', position: 'relative' }}>
-            <CardContent>
-              <Typography variant="h5" component="div">
-                {event.title}
-              </Typography>
-              <Typography color="text.secondary" gutterBottom>
-                {event.date}
-              </Typography>
-              <Typography variant="body2">
-                {event.description}
-              </Typography>
-              <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => updateAttendance(event.id, currentUser.id, 'going')}
-                  disabled={getUserAttendanceStatus(event, currentUser.id) === 'going'}
-                >
-                  Attend
-                </Button>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => updateAttendance(event.id, currentUser.id, 'not_going')}
-                  disabled={getUserAttendanceStatus(event, currentUser.id) === 'not_going'}
-                >
-                  Can't Attend
-                </Button>
-                <Button variant="outlined" color="primary" onClick={() => handleShowAttendees(event)}>
-                  Show Attendees
-                </Button>
-              </div>
-              {isAdmin && (
-                <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px', alignItems: 'center' }}>
-                  <IconButton
-                    style={{ position: 'absolute', top: '8px', right: '40px' }}
-                    onClick={() => deleteEvent(event.id)}
+          // Only render event if showOldEvents is true or event date is in the future
+          (showOldEvents || new Date(event.date) >= new Date()) && (
+            <Card key={event.id} style={{ marginBottom: '16px', position: 'relative' }}>
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  {event.title}
+                </Typography>
+                <Typography color="text.secondary" gutterBottom>
+                  {event.date}
+                </Typography>
+                <Typography variant="body2">
+                  {event.description}
+                </Typography>
+                <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => updateAttendance(event.id, currentUser.id, 'going')}
+                    disabled={getUserAttendanceStatus(event, currentUser.id) === 'going'}
                   >
-                    <Delete />
-                  </IconButton>
-                  <IconButton
-                    style={{ position: 'absolute', top: '8px', right: '8px' }}
-                    onClick={() => {handleEdit(event)}}
+                    Attend
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => updateAttendance(event.id, currentUser.id, 'not_going')}
+                    disabled={getUserAttendanceStatus(event, currentUser.id) === 'not_going'}
                   >
-                    <Edit />
-                  </IconButton>
-                </Box>
-              )}
-            </CardContent>
-          </Card>
+                    Can't Attend
+                  </Button>
+                  <Button variant="outlined" color="primary" onClick={() => handleShowAttendees(event)}>
+                    Show Attendees
+                  </Button>
+                </div>
+                {isAdmin && (
+                  <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px', alignItems: 'center' }}>
+                    <IconButton
+                      style={{ position: 'absolute', top: '8px', right: '40px' }}
+                      onClick={() => deleteEvent(event.id)}
+                    >
+                      <Delete />
+                    </IconButton>
+                    <IconButton
+                      style={{ position: 'absolute', top: '8px', right: '8px' }}
+                      onClick={() => {handleEdit(event)}}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Box>
+                )}
+              </CardContent>
+            </Card>
+          )
         ))}
       </InfiniteScroll>
 
