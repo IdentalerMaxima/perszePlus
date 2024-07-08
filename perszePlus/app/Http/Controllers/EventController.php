@@ -25,7 +25,7 @@ class EventController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'date' => 'required|date',
+            'date' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
         $event = new Event();
@@ -74,11 +74,6 @@ class EventController extends Controller
         $event = Event::find($eventId);
         $user = User::find($userId);
 
-        //log the data
-        //Log::info('Event and user data', ['eventId' => $eventId, 'userId' => $userId, 'status' => $status]);
-
-
-
         // Check if the event and user exist
         if (!$event || !$user) {
             return response()->json([
@@ -99,7 +94,7 @@ class EventController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'date' => 'required|date',
+            'date' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
         $event = Event::find($id);

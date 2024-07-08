@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button } from '@mui/material';
 import axiosClient from '../../axios';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import dayjs from 'dayjs';
 
 const EventData = ({ open, handleClose, editMode, event, saveEditedEvent, handleEventCreated, fetchEvents }) => {
   const initialEventState = {
     title: editMode ? event.title : '',
-    date: editMode ? event.date : '',
+    date: editMode ? dayjs(event.date) : null,
     description: editMode ? event.description : '',
   };
   const [editedEvent, setEditedEvent] = useState(initialEventState);
@@ -14,7 +18,7 @@ const EventData = ({ open, handleClose, editMode, event, saveEditedEvent, handle
     if (editMode && event) {
       setEditedEvent({
         title: event.title,
-        date: event.date,
+        date: dayjs(event.date),
         description: event.description,
       });
     } else {
@@ -27,26 +31,28 @@ const EventData = ({ open, handleClose, editMode, event, saveEditedEvent, handle
     setEditedEvent((prevEvent) => ({ ...prevEvent, [name]: value }));
   };
 
+  const handleDateChange = (date) => {
+    setEditedEvent((prevEvent) => ({ ...prevEvent, date }));
+  };
+
   const handleSubmit = async (ev) => {
     ev.preventDefault();
 
     if (editMode) {
-      // Update existing event
       try {
         await saveEditedEvent({
           id: event.id,
           title: editedEvent.title,
-          date: editedEvent.date,
+          date: editedEvent.date.format('YYYY-MM-DD HH:mm:ss'),
           description: editedEvent.description,
         });
       } catch (error) {
         console.error('Error editing event:', error);
       }
     } else {
-      // Create new event
       const formData = new FormData();
       formData.append('title', editedEvent.title);
-      formData.append('date', editedEvent.date);
+      formData.append('date', editedEvent.date.format('YYYY-MM-DD HH:mm:ss'));
       formData.append('description', editedEvent.description);
 
       try {
@@ -65,7 +71,7 @@ const EventData = ({ open, handleClose, editMode, event, saveEditedEvent, handle
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} className='create-event-dialog'>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth className='create-event-dialog'>
       <DialogTitle>{editMode ? 'Edit Event' : 'Create Event'}</DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit}>
@@ -79,18 +85,14 @@ const EventData = ({ open, handleClose, editMode, event, saveEditedEvent, handle
             value={editedEvent.title}
             onChange={handleChange}
           />
-          <TextField
-            margin="dense"
-            name="date"
-            label="Event Date"
-            type="date"
-            fullWidth
-            value={editedEvent.date}
-            onChange={handleChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateTimePicker
+              label="Event Date and Time"
+              value={editedEvent.date}
+              onChange={handleDateChange}
+              sx={{ width: '100%', marginTop: '1rem'}}
+            />
+          </LocalizationProvider>
           <TextField
             margin="dense"
             name="description"
@@ -101,6 +103,7 @@ const EventData = ({ open, handleClose, editMode, event, saveEditedEvent, handle
             rows={4}
             value={editedEvent.description}
             onChange={handleChange}
+            sx={ { marginTop: '1rem' }  }
           />
           <DialogActions>
             <Button onClick={handleClose} color="primary">
