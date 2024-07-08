@@ -64,4 +64,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function events()
+    {
+        return $this->belongsToMany(Event::class)->withPivot('status')->withTimestamps();
+    }
 }
