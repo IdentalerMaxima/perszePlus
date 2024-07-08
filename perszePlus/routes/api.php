@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AvatarUploadController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\UserDataController;
 use App\Http\Controllers\DocumentController;
@@ -24,6 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/upload/avatar', [AvatarUploadController::class, 'upload']);
     Route::post('/upload/file', [DocumentController::class, 'upload']);
     Route::post('/user/info', [UserDataController::class, 'saveUserData']);
+    Route::post('/addEvent', [EventController::class, 'store']);
+    Route::post('/updateAttendance', [EventController::class, 'updateAttendance']);
 
 
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
@@ -31,8 +34,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/documents/{id}', [DocumentController::class, 'download']);
     Route::get('/getMemberList', [UserDataController::class, 'getAllUsers']);
     Route::get('/user/{id}', [UserDataController::class, 'getUserById']);
+    Route::get('/getEvents', [EventController::class, 'index']);
 
     Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
+    Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);
 
 
 
