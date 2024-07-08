@@ -17,7 +17,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline'; // Icon for "not 
 const AttendeesDialog = ({ open, handleClose, event }) => {
     return (
         <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>{event ? event.title : ''} - Attendees</DialogTitle>
+            <DialogTitle>{event ? event.title : ''}</DialogTitle>
             <DialogContent dividers>
                 {event &&
                     event.users.map((user) => (
