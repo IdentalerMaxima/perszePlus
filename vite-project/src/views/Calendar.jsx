@@ -9,18 +9,20 @@ import EventData from '../components/forms/EventData';
 import AttendeesDialog from '../components/popups/AttendeesDialog';
 import { Edit } from '@mui/icons-material';
 import Box from '@mui/material/Box';
+import { useMediaQuery } from '@mui/material';
 
 
 export default function Calendar() {
   const { currentUser, isAdmin } = useStateContext();
   const [events, setEvents] = useState([]);
-  const [newEvent, setNewEvent] = useState({ title: '', date: '', description: '' });
-  const [hasMore, setHasMore] = useState(true);
   const [open, setOpen] = useState(false); // State for event modal
   const [selectedEvent, setSelectedEvent] = useState(null); // State for selected event
   const [showAttendees, setShowAttendees] = useState(false); // State for showing attendees list
   const [editMode, setEditMode] = useState(false); // State for edit mode
   const [showOldEvents, setShowOldEvents] = useState(false); // State for toggling old events
+
+  // Media query to check if the screen size is small (mobile view)
+  const isMobile = useMediaQuery('(max-width: 600px)');
 
 
 
@@ -106,23 +108,28 @@ export default function Calendar() {
   }, []);
 
   return (
-    <PageComponent title="Naptar">
-      {isAdmin && (
-        <Button variant="contained" color="primary" style={{ marginBottom: '16px' }} onClick={handleOpen}>
-          Create Event
-        </Button>
-      )}
+    <PageComponent title="Esemenyek">
 
-      {isAdmin && (
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ marginBottom: '16px', marginLeft: '16px' }}
-          onClick={() => setShowOldEvents(prevState => !prevState)}
-        >
-          {showOldEvents ? 'Hide Old Events' : 'Show Old Events'}
-        </Button>
-      )}
+      <div className={`flex flex-row ${isMobile ? 'justify-center' : ''}`}>
+        {isAdmin && (
+          <Button variant="contained" color="primary" style={{ marginBottom: '16px' }} onClick={handleOpen}>
+            Create Event
+          </Button>
+        )}
+
+        {isAdmin && (
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ marginBottom: '16px', marginLeft: '16px' }}
+            onClick={() => setShowOldEvents(prevState => !prevState)}
+          >
+            {showOldEvents ? 'Hide Old Events' : 'Show Old Events'}
+          </Button>
+        )}
+
+
+      </div>
 
       <InfiniteScroll
         dataLength={events.length}
@@ -136,7 +143,7 @@ export default function Calendar() {
         {events.map((event) => (
           // Only render event if showOldEvents is true or event date is in the future
           (showOldEvents || new Date(event.date) >= new Date()) && (
-            <Card key={event.id} style={{ marginBottom: '16px', position: 'relative' }}>
+            <Card key={event.id} style={{ marginBottom: '16px', position: 'relative'}}>
               <CardContent>
                 <Typography variant="h5" component="div">
                   {event.title}
@@ -169,16 +176,16 @@ export default function Calendar() {
                   </Button>
                 </div>
                 {isAdmin && (
-                  <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px', alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px'}}>
                     <IconButton
-                      style={{ position: 'absolute', top: '8px', right: '40px' }}
+                      style={{ position: 'absolute', bottom: '2px', right: '40px' }}
                       onClick={() => deleteEvent(event.id)}
                     >
                       <Delete />
                     </IconButton>
                     <IconButton
-                      style={{ position: 'absolute', top: '8px', right: '8px' }}
-                      onClick={() => {handleEdit(event)}}
+                      style={{ position: 'absolute', bottom: '2px', right: '8px'}}
+                      onClick={() => { handleEdit(event) }}
                     >
                       <Edit />
                     </IconButton>
