@@ -11,7 +11,9 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::all();
+        $events = Event::with(['users' => function ($query) {
+            $query->withPivot('status'); // Include 'status' pivot attribute
+        }])->get();
 
         //Log::info('Events fetched successfully', ['events' => $events]);
 
@@ -73,7 +75,7 @@ class EventController extends Controller
         $user = User::find($userId);
 
         //log the data
-        Log::info('Event and user data', ['eventId' => $eventId, 'userId' => $userId, 'status' => $status]);
+        //Log::info('Event and user data', ['eventId' => $eventId, 'userId' => $userId, 'status' => $status]);
 
 
 
