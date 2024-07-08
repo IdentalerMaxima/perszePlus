@@ -94,4 +94,32 @@ class EventController extends Controller
 
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'date' => 'required|date',
+        ]);
+
+        $event = Event::find($id);
+
+        if (!$event) {
+            return response()->json([
+                'message' => 'Event not found'
+            ], 404);
+        }
+
+        $event->title = $request->title;
+        $event->description = $request->description;
+        $event->date = $request->date;
+
+        $event->save();
+
+        return response()->json([
+            'message' => 'Event updated successfully',
+            'event' => $event
+        ], 200);
+    }
+
 }
