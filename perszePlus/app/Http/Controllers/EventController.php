@@ -13,7 +13,9 @@ class EventController extends Controller
     {
         $events = Event::with(['users' => function ($query) {
             $query->withPivot('status'); // Include 'status' pivot attribute
-        }])->get();
+        }])
+        ->orderBy('date', 'asc')
+        ->get();
 
         //Log::info('Events fetched successfully', ['events' => $events]);
 
