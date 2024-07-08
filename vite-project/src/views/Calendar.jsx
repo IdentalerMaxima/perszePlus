@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import PageComponent from "../components/PageComponent";
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Card, CardContent, Typography, Button, CircularProgress, IconButton } from '@mui/material';
+import { Card, CardContent, Typography, Button, CircularProgress, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, List, ListItem, ListItemText } from '@mui/material'; // Import necessary components
 import { useStateContext } from '../contexts/ContextProvider';
 import { Delete } from '@mui/icons-material';
 import axiosClient from '../axios';
 import EventData from '../components/forms/EventData';
-import { use } from 'i18next';
+import AttendeesDialog from '../components/popups/AttendeesDialog';
 
 export default function Calendar() {
   const { currentUser, isAdmin } = useStateContext();
   const [events, setEvents] = useState([]);
   const [newEvent, setNewEvent] = useState({ title: '', date: '', description: '' });
   const [hasMore, setHasMore] = useState(true);
+  const [open, setOpen] = useState(false); // State for event modal
+  const [selectedEvent, setSelectedEvent] = useState(null); // State for selected event
+  const [showAttendees, setShowAttendees] = useState(false); // State for showing attendees list
 
-  const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -22,6 +24,15 @@ export default function Calendar() {
 
   const handleClose = () => {
     setOpen(false);
+  }
+
+  const handleShowAttendees = (event) => {
+    setSelectedEvent(event);
+    setShowAttendees(true);
+  }
+
+  const handleCloseAttendees = () => {
+    setShowAttendees(false);
   }
 
   const handleChange = (ev) => {
@@ -34,6 +45,7 @@ export default function Calendar() {
     try {
       const response = await axiosClient.get('/getEvents');
       setEvents(response.data);
+      console.log('Events:', response.data);
     } catch (error) {
       console.error('Error fetching events:', error);
     }
@@ -53,15 +65,16 @@ export default function Calendar() {
     console.log('Updating attendance:', eventId, userId, status);
     try {
       await axiosClient.post('/updateAttendance', { eventId, userId, status });
+      fetchEvents();
     } catch (error) {
       console.error('Error updating attendance:', error);
     }
   };
 
-  useEffect(() => {
-    console.log(currentUser);
-    console.log(isAdmin);
-  }, [currentUser, isAdmin]);
+  const getUserAttendanceStatus = (event, userId) => {
+    const userAttendance = event.users.find(user => user.id === userId);
+    return userAttendance ? userAttendance.pivot.status : null;
+  };
 
   useEffect(() => {
     fetchEvents();
@@ -76,8 +89,6 @@ export default function Calendar() {
       )}
       <InfiniteScroll
         dataLength={events.length}
-        //next={fetchMoreEvents}
-        //hasMore={hasMore}
         loader={<CircularProgress />}
         endMessage={
           <p style={{ textAlign: 'center' }}>
@@ -98,11 +109,24 @@ export default function Calendar() {
                 {event.description}
               </Typography>
               <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
-                <Button variant="contained" color="primary" onClick={() => updateAttendance(event.id, currentUser.id, 'going')}>
+              <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => updateAttendance(event.id, currentUser.id, 'going')}
+                  disabled={getUserAttendanceStatus(event, currentUser.id) === 'going'}
+                >
                   Attend
                 </Button>
-                <Button variant="contained" color="secondary" onClick={() => updateAttendance(event.id, currentUser.id, 'not_going')}>
-                  I can't attend
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => updateAttendance(event.id, currentUser.id, 'not_going')}
+                  disabled={getUserAttendanceStatus(event, currentUser.id) === 'not_going'}
+                >
+                  Can't Attend
+                </Button>
+                <Button variant="outlined" color="primary" onClick={() => handleShowAttendees(event)}>
+                  Show Attendees
                 </Button>
               </div>
               {isAdmin && (
@@ -119,6 +143,7 @@ export default function Calendar() {
       </InfiniteScroll>
 
       <EventData open={open} handleClose={handleClose} handleChange={handleChange} fetchEvents={fetchEvents} />
+      <AttendeesDialog open={showAttendees} handleClose={handleCloseAttendees} event={selectedEvent} />
 
     </PageComponent>
   );
