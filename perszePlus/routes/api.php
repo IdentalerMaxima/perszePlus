@@ -39,6 +39,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
     Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);
 
+    Route::put('editEvent/{id}', [EventController::class, 'update']);
+
 
 
 });
