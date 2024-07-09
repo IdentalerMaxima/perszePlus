@@ -46,6 +46,7 @@ export default function DefaultLayout() {
     { name: 'Kurzusok', to: '/courses' },
     { name: 'Jelenléti', to: '/attendance' },
     { name: 'Tagok', to: '/members' },
+    { name: 'Statisztikák', to: '/stats' },
   ]
 
 
