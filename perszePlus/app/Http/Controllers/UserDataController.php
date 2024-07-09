@@ -37,7 +37,7 @@ class UserDataController extends Controller
 
     public function getAllUsers()
     {
-        $users = User::all(['id','first_name','last_name', 'category', 'avatar_path', 'university', 'faculty']);
+        $users = User::all(['id', 'first_name', 'last_name', 'category', 'avatar_path', 'university', 'faculty']);
 
         //Log::info('Users: ' . json_encode($users));
 
@@ -56,5 +56,27 @@ class UserDataController extends Controller
             'user' => $user
         ]);
     }
+
+    public function getUsersByCategory()
+    {
+        // Retrieve all distinct categories from the User model
+        $categories = User::select('category')->distinct()->get();
+
+        // Initialize an empty array to store category counts
+        $categoryCount = [];
+
+        // Iterate through each category
+        foreach ($categories as $category) {
+            // Exclude 'admin' category
+            if ($category->category !== 'admin') {
+                // Count users for the current category
+                $categoryCount[$category->category] = User::where('category', $category->category)->count();
+            }
+        }
+        
+        // Return JSON response with category counts
+        return response()->json($categoryCount);
+    }
+
 
 }

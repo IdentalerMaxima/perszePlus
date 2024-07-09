@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto'; // Importing Chart.js
 import { Card, CardContent, Typography, Grid } from '@mui/material'; // Importing Material-UI components
 import PageComponent from '../components/PageComponent';
+import axiosClient from '../axios';
 
 export default function Stats() {
     const totalUsersDoughnutRef = useRef(null);
@@ -12,13 +13,33 @@ export default function Stats() {
     let documentsBar = useRef(null); // To store the Bar Chart instance
     let levelOfEducationBar = useRef(null); // To store the Bar Chart instance
 
+    const [chartData, setChartData] = useState(null); // State to store the chart data [Optional
+    const [loading, setLoading] = useState(true); // State to store the loading status [Optional]
+    const [totalUsers, setTotalUsers] = useState(0); // State to store the total users
+
+    const usersByCategory = async () => {
+        try {
+            const response = await axiosClient.get('/getUsersByCategory');
+            const data = response.data;
+            console.log('Total users and categories:', data);
+            const usersByCategory = [data.vezetőség, data.munkatárs, data.hallgató]; 
+            console.log('Users by category:', usersByCategory);
+            const totalUsers = usersByCategory.reduce((acc, value) => acc + value, 0); // Calculate total users
+            setTotalUsers(totalUsers); // Set the total users
+            setChartData(usersByCategory); // Set the chart data
+            setLoading(false); // Set loading to false
+        } catch (error) {
+            console.error('Error fetching total users and categories:', error);
+        }
+    };
+
     useEffect(() => {
         // Mock data for doughnut chart
         const doughnutChartData = {
             labels: ['Vezetőség', 'Munkatárs', 'Hallgató'], // Labels for three types of users
             datasets: [{
                 label: 'Total Users', // Label for the dataset (optional)
-                data: [300, 200, 100], // Example data for three types of users
+                data: chartData, // Data for the doughnut chart
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.6)', // Red
                     'rgba(54, 162, 235, 0.6)', // Blue
@@ -71,9 +92,6 @@ export default function Stats() {
                                 callbacks: {
                                     label: (tooltipItem) => {
                                         return tooltipItem.label + ': ' + tooltipItem.raw.toLocaleString();
-                                    },
-                                    afterLabel: () => {
-                                        return 'Total: ' + calculateTotalUsers(doughnutChartData).toLocaleString();
                                     },
                                 },
                             },
@@ -171,7 +189,14 @@ export default function Stats() {
                 levelOfEducationBar.current.destroy();
             }
         };
+    }, [chartData]);
+
+    useEffect(() => {
+        usersByCategory();
     }, []);
+
+
+
 
     return (
         <PageComponent title={'Statisztikák'}>
@@ -181,11 +206,17 @@ export default function Stats() {
                     <Card>
                         <CardContent>
                             <Typography variant="h6" component="div" align="center">
-                                Total Users (Doughnut Chart)
+                                Total Users: {totalUsers}
                             </Typography>
-                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                <canvas ref={totalUsersDoughnutRef} style={{ maxWidth: '100%', height: 'auto', maxHeight: '282px'}} />
-                            </div>
+                            {loading ? (
+                                <div className="flex items-center justify-center h-64">
+                                    Loading...
+                                </div>
+                            ) : (
+                                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                                    <canvas ref={totalUsersDoughnutRef} style={{ maxWidth: '100%', height: 'auto' , maxHeight: '282px'}} />
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </Grid>
