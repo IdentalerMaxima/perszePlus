@@ -37,6 +37,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/getEvents', [EventController::class, 'index']);
     Route::get('/getUsersByCategory', [UserDataController::class, 'getUsersByCategory']);
     Route::get('/getCountOfDocumentsByType', [DocumentController::class, 'getCountOfDocumentsByType']);
+    Route::get('/getUsersByLevelOfEducation', [UserDataController::class, 'getUsersByLevelOfEducation']);
+    Route::get('/getUsersByYearsInEducation', [UserDataController::class, 'getUsersByYearsInEducation']);
 
     Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
     Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);

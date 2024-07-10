@@ -8,10 +8,12 @@ export default function Stats() {
     const totalUsersDoughnutRef = useRef(null);
     const documentsBarRef = useRef(null);
     const levelOfEducationBarRef = useRef(null);
+    const yearsInEducationBarRef = useRef(null);
 
     let totalUsersDoughnut = useRef(null); // To store the Doughnut Chart instance
     let documentsBar = useRef(null); // To store the Bar Chart instance
     let levelOfEducationBar = useRef(null); // To store the Bar Chart instance
+    let yearsInEducationBar = useRef(null); // To store the Bar Chart instance
 
     const [loading, setLoading] = useState(true); // State to store the loading status [Optional]
 
@@ -21,6 +23,12 @@ export default function Stats() {
 
     const [typesOfDocs, setTypesOfDocs] = useState([]);
     const [usersWithEachTypeOfDoc, setUsersWithEachTypeOfDoc] = useState([]);
+
+    const [levelsOfEducation, setLevelsOfEducation] = useState([]);
+    const [usersWithEachLevelOfEducation, setUsersWithEachLevelOfEducation] = useState([]);
+
+    const [yearsInEducation, setYearsInEducation] = useState([]);
+    const [usersWithEachYearInEducation, setUsersWithEachYearInEducation] = useState([]);
 
 
     const usersByCategory = async () => {
@@ -57,6 +65,37 @@ export default function Stats() {
         }
     };
 
+    const usersByLevelOfEducation = async () => {
+        try {
+            const response = await axiosClient.get('/getUsersByLevelOfEducation');
+            const data = response.data;
+
+            const levelsOfEducation = data.map((item) => item.level_of_education);
+            const usersWithEachLevelOfEducation = data.map((item) => item.count);
+
+            setLevelsOfEducation(levelsOfEducation);
+            setUsersWithEachLevelOfEducation(usersWithEachLevelOfEducation);
+        } catch (error) {
+            console.error('Error fetching users by level of education:', error);
+        }
+    }
+
+    const usersByYearsInEducation = async () => {
+        try {
+            const response = await axiosClient.get('/getUsersByYearsInEducation');
+            const data = response.data;
+            console.log(data);
+
+            const yearsInEducation = data.map((item) => item.current_semester);
+            const usersWithEachYearInEducation = data.map((item) => item.count);
+
+            setYearsInEducation(yearsInEducation);
+            setUsersWithEachYearInEducation(usersWithEachYearInEducation);
+        } catch (error) {
+            console.error('Error fetching users by years in education:', error);
+        }
+    }
+
     useEffect(() => {
         const doughnutChartData = {
             labels: userCategories,
@@ -71,7 +110,6 @@ export default function Stats() {
             }],
         };
 
-    
         const barChartData = {
             labels: typesOfDocs,
             datasets: [{
@@ -81,15 +119,24 @@ export default function Stats() {
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
             }],
         };
-
-        // Mock data for level of education bar chart
+        
         const levelOfEducationBarData = {
-            labels: ['Alapfokú', 'Középfokú', 'Felsőfokú', 'PhD'],
+            labels: levelsOfEducation,
             datasets: [{
                 label: 'Level of Education',
-                data: [50, 100, 200, 50],
+                data: usersWithEachLevelOfEducation,
                 borderColor: 'rgba(255, 99, 132, 1)',
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            }],
+        };
+
+        const yearsInEducationBarData = {
+            labels: yearsInEducation,
+            datasets: [{
+                label: 'Years in Education',
+                data: usersWithEachYearInEducation,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
             }],
         };
 
@@ -184,10 +231,41 @@ export default function Stats() {
             }
         };
 
+        const renderYearsInEducationBarChart = () => {
+            if (yearsInEducationBarRef.current) {
+                if (yearsInEducationBar.current) {
+                    // If chart instance already exists, destroy it first
+                    yearsInEducationBar.current.destroy();
+                }
+
+                // Create new bar chart instance
+                yearsInEducationBar.current = new Chart(yearsInEducationBarRef.current, {
+                    type: 'bar', // Bar chart type
+                    data: yearsInEducationBarData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                },
+                            }],
+                        },
+                    },
+                });
+            }
+        }
+
         // Render all charts
         renderDoughnutChart();
         renderBarChart();
         renderLevelOfEducationBarChart();
+        renderYearsInEducationBarChart();
 
         // Clean up function to destroy the charts on unmount
         return () => {
@@ -200,12 +278,17 @@ export default function Stats() {
             if (levelOfEducationBar.current) {
                 levelOfEducationBar.current.destroy();
             }
+            if (yearsInEducationBar.current) {
+                yearsInEducationBar.current.destroy();
+            }
         };
-    }, [usersByEachCategory]);
+    }, [usersByEachCategory, usersWithEachTypeOfDoc, usersWithEachLevelOfEducation, usersWithEachYearInEducation]);
 
     useEffect(() => {
         usersByCategory();
         countOfDocumentsByType();
+        usersByLevelOfEducation();
+        usersByYearsInEducation();
     }, []);
 
 
@@ -249,7 +332,7 @@ export default function Stats() {
                 </Grid>
 
                 {/* Level of Education Bar Chart */}
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={6}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" component="div" align="center">
@@ -257,6 +340,20 @@ export default function Stats() {
                             </Typography>
                             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                                 <canvas ref={levelOfEducationBarRef} style={{ maxWidth: '100%', height: 'auto', maxHeight: '300px' }} />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                {/* Years in Education Bar Chart */}
+                <Grid item xs={12} sm={6}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h6" component="div" align="center">
+                                Years in Education Bar Chart
+                            </Typography>
+                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                                <canvas ref={yearsInEducationBarRef} style={{ maxWidth: '100%', height: 'auto', maxHeight: '300px' }} />
                             </div>
                         </CardContent>
                     </Card>

@@ -83,6 +83,60 @@ class UserDataController extends Controller
         return response()->json($categoryCount);
     }
 
+    //getUsersByLevelOfEducation
+    public function getUsersByLevelOfEducation()
+    {
+        // Retrieve all distinct levels of education from the User model
+        $levelsOfEducation = User::select('level_of_education')->distinct()->get();
+
+        // Initialize an empty array to store level of education counts
+        $levelOfEducationCount = [];
+
+        // Iterate through each level of education
+        foreach ($levelsOfEducation as $levelOfEducation) {
+            // Count users for the current level of education
+            $count = User::where('level_of_education', $levelOfEducation->level_of_education)->count();
+            // Add the level of education and count as an object to the array
+            $levelOfEducationCount[] = [
+                'level_of_education' => $levelOfEducation->level_of_education,
+                'count' => $count
+            ];
+        }
+
+        // Return JSON response with level of education counts as an array of objects
+        return response()->json($levelOfEducationCount);
+    }
+
+    //getUsersByCurrentSemester
+    public function getUsersByYearsInEducation()
+    {
+        // Retrieve all distinct years in education from the User model, excluding null values
+        $yearsInEducation = User::select('current_semester')->whereNotNull('current_semester')->distinct()->get();
+
+        //log
+        Log::info('Years in education: ' . json_encode($yearsInEducation));
+
+        // Initialize an empty array to store years in education counts
+        $yearsInEducationCount = [];
+
+        // Iterate through each year in education
+        foreach ($yearsInEducation as $yearInEducation) {
+            // Count users for the current year in education
+            $count = User::where('current_semester', $yearInEducation->current_semester)->count();
+            // Add the year in education and count as an object to the array
+            $yearsInEducationCount[] = [
+                'current_semester' => $yearInEducation->current_semester,
+                'count' => $count
+            ];
+        }
+
+        //log
+        Log::info('Years in education count: ' . json_encode($yearsInEducationCount));
+
+        // Return JSON response with years in education counts as an array of objects
+        return response()->json($yearsInEducationCount);
+    }
+
 
 
 }
