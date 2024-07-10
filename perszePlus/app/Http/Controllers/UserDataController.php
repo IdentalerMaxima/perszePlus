@@ -70,13 +70,19 @@ class UserDataController extends Controller
             // Exclude 'admin' category
             if ($category->category !== 'admin') {
                 // Count users for the current category
-                $categoryCount[$category->category] = User::where('category', $category->category)->count();
+                $count = User::where('category', $category->category)->count();
+                // Add the category and count as an object to the array
+                $categoryCount[] = [
+                    'category' => $category->category,
+                    'count' => $count
+                ];
             }
         }
-        
-        // Return JSON response with category counts
+
+        // Return JSON response with category counts as an array of objects
         return response()->json($categoryCount);
     }
+
 
 
 }

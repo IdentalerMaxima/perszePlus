@@ -13,33 +13,56 @@ export default function Stats() {
     let documentsBar = useRef(null); // To store the Bar Chart instance
     let levelOfEducationBar = useRef(null); // To store the Bar Chart instance
 
-    const [chartData, setChartData] = useState(null); // State to store the chart data [Optional
     const [loading, setLoading] = useState(true); // State to store the loading status [Optional]
-    const [totalUsers, setTotalUsers] = useState(0); // State to store the total users
+
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [userCategories, setUserCategories] = useState([]);
+    const [usersByEachCategory, setUsersByEachCategory] = useState(null);
+
+    const [typesOfDocs, setTypesOfDocs] = useState([]);
+    const [usersWithEachTypeOfDoc, setUsersWithEachTypeOfDoc] = useState([]);
+
 
     const usersByCategory = async () => {
         try {
             const response = await axiosClient.get('/getUsersByCategory');
             const data = response.data;
-            console.log('Total users and categories:', data);
-            const usersByCategory = [data.vezetőség, data.munkatárs, data.hallgató]; 
-            console.log('Users by category:', usersByCategory);
-            const totalUsers = usersByCategory.reduce((acc, value) => acc + value, 0); // Calculate total users
-            setTotalUsers(totalUsers); // Set the total users
-            setChartData(usersByCategory); // Set the chart data
-            setLoading(false); // Set loading to false
+
+            const userCategories = data.map((item) => item.category);
+            const usersByCategory = data.map((item) => item.count);
+            const totalUsers = usersByCategory.reduce((acc, curr) => acc + curr, 0);
+
+            setUserCategories(userCategories);
+            setUsersByEachCategory(usersByCategory);
+            setTotalUsers(totalUsers);
+
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching total users and categories:', error);
         }
     };
 
+    const countOfDocumentsByType = async () => {
+        try {
+            const response = await axiosClient.get('/getCountOfDocumentsByType');
+            const data = response.data;
+
+            const typesOfDocs = data.map((item) => item.type);
+            const usersWithEachTypeOfDoc = data.map((item) => item.user_count);
+
+            setTypesOfDocs(typesOfDocs);
+            setUsersWithEachTypeOfDoc(usersWithEachTypeOfDoc);
+        } catch (error) {
+            console.error('Error fetching count of documents by type:', error);
+        }
+    };
+
     useEffect(() => {
-        // Mock data for doughnut chart
         const doughnutChartData = {
-            labels: ['Vezetőség', 'Munkatárs', 'Hallgató'], // Labels for three types of users
+            labels: userCategories,
             datasets: [{
-                label: 'Total Users', // Label for the dataset (optional)
-                data: chartData, // Data for the doughnut chart
+                label: 'Total Users', 
+                data: usersByEachCategory, 
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.6)', // Red
                     'rgba(54, 162, 235, 0.6)', // Blue
@@ -48,12 +71,12 @@ export default function Stats() {
             }],
         };
 
-        // Mock data for bar chart
+    
         const barChartData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: typesOfDocs,
             datasets: [{
-                label: 'Bar Chart',
-                data: [65, 59, 80, 81, 56, 55, 40],
+                label: 'Number of users with each type of document',
+                data: usersWithEachTypeOfDoc,
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
             }],
@@ -105,13 +128,11 @@ export default function Stats() {
         const renderBarChart = () => {
             if (documentsBarRef.current) {
                 if (documentsBar.current) {
-                    // If chart instance already exists, destroy it first
                     documentsBar.current.destroy();
                 }
 
-                // Create new bar chart instance
                 documentsBar.current = new Chart(documentsBarRef.current, {
-                    type: 'bar', // Bar chart type
+                    type: 'bar',
                     data: barChartData,
                     options: {
                         responsive: true,
@@ -163,15 +184,6 @@ export default function Stats() {
             }
         };
 
-        // Function to calculate total users
-        const calculateTotalUsers = (data) => {
-            let total = 0;
-            data.datasets[0].data.forEach(value => {
-                total += value;
-            });
-            return total;
-        };
-
         // Render all charts
         renderDoughnutChart();
         renderBarChart();
@@ -189,10 +201,11 @@ export default function Stats() {
                 levelOfEducationBar.current.destroy();
             }
         };
-    }, [chartData]);
+    }, [usersByEachCategory]);
 
     useEffect(() => {
         usersByCategory();
+        countOfDocumentsByType();
     }, []);
 
 
@@ -226,7 +239,7 @@ export default function Stats() {
                     <Card>
                         <CardContent>
                             <Typography variant="h6" component="div" align="center">
-                                Bar Chart
+                                Dokumentumok
                             </Typography>
                             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                                 <canvas ref={documentsBarRef} style={{ maxWidth: '100%', height: 'auto' }} />

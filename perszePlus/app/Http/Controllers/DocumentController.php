@@ -87,31 +87,44 @@ class DocumentController extends Controller
     }
 
     public function download(Request $request, $fileId)
-{
-    $userId = $request->user()->id;
-    $document = Document::where('user_id', $userId)->where('id', $fileId)->first();
-    
-    if (!$document) {
-        return response()->json(['message' => 'File not found'], 404);
+    {
+        $userId = $request->user()->id;
+        $document = Document::where('user_id', $userId)->where('id', $fileId)->first();
+
+        if (!$document) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+
+        $filePath = storage_path('app/' . $document->file_path);
+
+        if (!file_exists($filePath)) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+
+        $mimeType = Storage::mimeType($document->file_path);
+
+        $fileName = $document->name;
+
+        $headers = [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+            'Access-Control-Expose-Headers' => 'Content-Disposition',
+        ];
+        return response()->download($filePath, $fileName, $headers);
     }
 
-    $filePath = storage_path('app/' . $document->file_path);
+    public function getCountOfDocumentsByType()
+    {
+        $usersByDocumentType = Document::select('type', Document::raw('count(distinct user_id) as user_count'))
+            ->where('type', '!=', 'Egyeb')
+            ->groupBy('type')
+            ->get();
 
-    if (!file_exists($filePath)) {
-        return response()->json(['message' => 'File not found'], 404);
+        // Log the retrieved data for debugging or informational purposes
+        Log::info($usersByDocumentType);
+
+        return response()->json($usersByDocumentType);
     }
-
-    $mimeType = Storage::mimeType($document->file_path);
-
-    $fileName = $document->name;
-
-    $headers = [
-        'Content-Type' => $mimeType,
-        'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
-        'Access-Control-Expose-Headers' => 'Content-Disposition',
-    ];
-    return response()->download($filePath, $fileName, $headers);
-}
 
 
 
