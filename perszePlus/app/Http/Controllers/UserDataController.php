@@ -110,30 +110,17 @@ class UserDataController extends Controller
     //getUsersByCurrentSemester
     public function getUsersByYearsInEducation()
     {
-        // Retrieve all distinct years in education from the User model, excluding null values
         $yearsInEducation = User::select('current_semester')->whereNotNull('current_semester')->distinct()->get();
-
-        //log
-        Log::info('Years in education: ' . json_encode($yearsInEducation));
-
-        // Initialize an empty array to store years in education counts
         $yearsInEducationCount = [];
 
-        // Iterate through each year in education
         foreach ($yearsInEducation as $yearInEducation) {
-            // Count users for the current year in education
             $count = User::where('current_semester', $yearInEducation->current_semester)->count();
-            // Add the year in education and count as an object to the array
             $yearsInEducationCount[] = [
                 'current_semester' => $yearInEducation->current_semester,
                 'count' => $count
             ];
         }
 
-        //log
-        Log::info('Years in education count: ' . json_encode($yearsInEducationCount));
-
-        // Return JSON response with years in education counts as an array of objects
         return response()->json($yearsInEducationCount);
     }
 
