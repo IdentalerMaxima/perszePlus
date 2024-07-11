@@ -13,6 +13,7 @@ import Attendance from './views/Attendance.jsx';
 import Settings from './views/user/Settings.jsx';
 import Profile from './views/user/Profile.jsx';
 import Stats from './views/Stats.jsx';
+import ForgotPassword from './components/forms/ForgotPassword.jsx';
 
 import Login from './views/Login.jsx';
 import Signup from './views/Signup.jsx';
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       { path: '/settings', element: <Settings /> },
       { path: '/profile', element: <Profile />},
       { path: '/stats', element: <Stats />},
+      
       // Redirect /dashboard to root /
       { path: '/dashboard', element: <Navigate to="/" /> },
     ],
@@ -43,6 +45,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/login', element: <Login /> },
       { path: '/signup', element: <Signup /> },
+      { path: '/forgotPassword', element: <ForgotPassword />},
     ],
   },
 ]);
