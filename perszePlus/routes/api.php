@@ -3,10 +3,12 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AvatarUploadController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\UserDataController;
 use App\Http\Controllers\DocumentController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ResetPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +56,13 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/universities', [UniversityController::class, 'getUniversities']);
 Route::get('/universities/{universityName}/faculties', [UniversityController::class, 'getFacultiesForUniversity']);
+
+Route::post('/forgotPassword', [ForgotPasswordController::class, 'forgotPassword'])->name('password.request');  
+Route::get('/resetPassword/{token}', [ResetPasswordController::class, 'showReset'])->name('password.reset');
+Route::post('/resetPassword', [ResetPasswordController::class, 'resetPassword'])->name('password.update');
+
+
+
 
 
 
