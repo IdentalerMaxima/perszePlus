@@ -121,7 +121,7 @@ class DocumentController extends Controller
             ->get();
 
         // Log the retrieved data for debugging or informational purposes
-        Log::info($usersByDocumentType);
+        // Log::info($usersByDocumentType);
 
         return response()->json($usersByDocumentType);
     }
