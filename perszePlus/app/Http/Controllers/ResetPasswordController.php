@@ -15,7 +15,7 @@ class ResetPasswordController extends Controller
     //Return react view
     public function showReset($token)
     {
-        return view('auth.reset-password', ['token' => $token]);
+        return redirect('http://localhost:3000/resetPassword/' . $token);
     }
 
     public function resetPassword(Request $request)
