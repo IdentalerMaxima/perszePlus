@@ -22,6 +22,9 @@ export default function DefaultLayout() {
   const { currentUser, userToken, setCurrentUser, setUserToken } = useStateContext('');
   const [avatarPath, setAvatarPath] = useState(currentUser.avatar_path || '');
 
+  console.log("GuestLayout loaded");
+
+
   useEffect(() => {
     setAvatarPath(currentUser.avatar_path || '');
   }, [currentUser]);
