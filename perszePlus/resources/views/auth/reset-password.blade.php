@@ -8,7 +8,7 @@
     <title>Reset Password</title>
 </head>
 <body>
-    <div>
+    <!-- <div>
         @if(session('status'))
             <div>
                 {{ session('status') }}
@@ -40,6 +40,8 @@
                 </button>
             </div>
         </form>
-    </div>
+    </div> -->
+    <!-- Load the React app from localhost:3000 -->
+    <script src="http://localhost:3000/resetPassword"></script>
 </body>
 </html>
