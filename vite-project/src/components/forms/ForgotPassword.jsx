@@ -1,22 +1,28 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, Alert } from '@mui/material';
+import { Alert } from '@mui/material';
 import axiosClient from '../../axios';
 import { useTranslation } from "react-i18next";
+import { CircularProgress } from '@mui/material';
 
 const ForgotPassword = () => {
     const { t } = useTranslation(['translation']);
 
     const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true);
             const response = await axiosClient.post('/forgotPassword', { email });
             console.log(response.data);
+            //store email in local storage
+            localStorage.setItem('reset_email', email);
             setSuccessMessage(response.data.message);
             setErrorMessage('');
+            setLoading(false);
         } catch (error) {
             setErrorMessage(error.response.data.message);
             setSuccessMessage('');
@@ -65,7 +71,7 @@ const ForgotPassword = () => {
                             className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm
                              hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                            {'Reset Password'}
+                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Send Email'}
                         </button>
                     </div>
                 </form>
