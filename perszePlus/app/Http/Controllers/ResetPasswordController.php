@@ -8,13 +8,14 @@ use Illuminate\Validation\Rules\Password as PasswordRules;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Log; // Import Log facade
 use App\Models\User;
 
 class ResetPasswordController extends Controller
 {
-    //Return react view
     public function showReset($token)
     {
+        //Log::info('Password reset token received', ['token' => $token]);
         return redirect('http://localhost:3000/resetPassword/' . $token);
     }
 
@@ -34,6 +35,11 @@ class ResetPasswordController extends Controller
             ],
         ]);
 
+        // Log::info('Password reset attempt', [
+        //     'email' => $request->input('email'),
+        //     'token' => $request->input('token'),
+        // ]);
+
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (User $user, string $password) {
@@ -44,12 +50,18 @@ class ResetPasswordController extends Controller
                 $user->save();
      
                 event(new PasswordReset($user));
+
+                //Log::info('Password has been reset for user', ['email' => $user->email]);
             }
         );
-     
-        return $status === Password::PASSWORD_RESET
-                    ? redirect('http://localhost:3000/login')->with(['status' => __($status)])
-                    : back()->withErrors(['email' => [__($status)]]);
+
+        if ($status === Password::PASSWORD_RESET) {
+            //Log::info('Password reset successful', ['email' => $request->input('email')]);
+            return response()->json(['message' => __('Your password has been reset!')], 200);
+        } else {
+            //Log::warning('Password reset failed', ['email' => $request->input('email'), 'status' => $status]);
+            return response()->json(['error' => __($status)], 400);
+        }
+        
     }
 }
-
