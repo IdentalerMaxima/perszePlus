@@ -14,6 +14,7 @@ import Settings from './views/user/Settings.jsx';
 import Profile from './views/user/Profile.jsx';
 import Stats from './views/Stats.jsx';
 import ForgotPassword from './components/forms/ForgotPassword.jsx';
+import ResetPassword from './components/forms/ResetPassword.jsx';
 
 import Login from './views/Login.jsx';
 import Signup from './views/Signup.jsx';
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
       { path: '/login', element: <Login /> },
       { path: '/signup', element: <Signup /> },
       { path: '/forgotPassword', element: <ForgotPassword />},
+      { path: '/resetPassword/:token', element: <ResetPassword />},
     ],
   },
 ]);
