@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rules\Password as PasswordRules;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\PasswordReset;
@@ -23,7 +23,15 @@ class ResetPasswordController extends Controller
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required|confirmed'
+            'password' => [
+                'required',
+                'confirmed',
+                PasswordRules::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
+            ],
         ]);
 
         $status = Password::reset(
@@ -44,3 +52,4 @@ class ResetPasswordController extends Controller
                     : back()->withErrors(['email' => [__($status)]]);
     }
 }
+
