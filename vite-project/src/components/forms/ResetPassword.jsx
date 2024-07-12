@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, CircularProgress } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
+import { CircularProgress } from '@mui/material';
+import axiosClient from '../../axios';
 
 const PasswordResetForm = () => {
     const navigate = useNavigate();
@@ -10,29 +11,42 @@ const PasswordResetForm = () => {
     const [error, setError] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
+    const { token } = useParams();
+    const resetEmail = localStorage.getItem('reset_email');
+
     const handleSubmit = (event) => {
         event.preventDefault();
+
+        console.log('token', token);
 
         if (password !== confirmPassword) {
             setError('Passwords do not match');
             return;
         }
 
-        setLoading(true);
-        setError('');
+        try {
+            setLoading(true);
+            setError('');
 
-        // Simulate API call or actual backend integration here
-        setTimeout(() => {
-            setLoading(false);
+            // Call your API here
+            axiosClient.post('resetPassword', {
+                token,
+                email : resetEmail,
+                password,
+                password_confirmation: confirmPassword,
+            });
             setSubmitted(true);
-            // Redirect to login after successful reset
             setTimeout(() => {
                 navigate('/login');
-            }, 2000); // Redirect after 2 seconds
-        }, 2000); // Simulating a delay
+            }, 3000);
 
-        setPassword('');
-        setConfirmPassword('');
+        }
+        catch (error) {
+            console.error(error);
+            setError('An error occurred');
+            setLoading(false);
+        }
+
     };
 
     return (
