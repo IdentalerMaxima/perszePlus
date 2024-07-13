@@ -11,7 +11,7 @@ const StateContext = createContext({
 
 export const ContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState({});
-    const [userToken, _setUserToken] = useState(localStorage.getItem('TOKEN') || null);
+    const [userToken, _setUserToken] = useState(localStorage.getItem('token') || sessionStorage.getItem('token') || null);
     const [isAdmin, setIsAdmin] = useState(false);
 
     const fetchUserData = async () => {
@@ -47,12 +47,19 @@ export const ContextProvider = ({ children }) => {
 
     const setUserToken = (token) => {
         if (token) {
-            localStorage.setItem('TOKEN', token);
+            if (rememberMe) {
+                localStorage.setItem('token', token);
+                sessionStorage.setItem('token', token);
+            } else {
+                sessionStorage.setItem('token', token);
+            }
         } else {
-            localStorage.removeItem('TOKEN');
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
         }
         _setUserToken(token);
-    }
+    };
+    
 
     return (
         <StateContext.Provider value={{
