@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Link, NavLink, Navigate, Outlet } from 'react-router-dom'
+import { Link, NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { useStateContext } from '../contexts/ContextProvider'
 import axiosClient from '../axios'
 
@@ -16,22 +16,23 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-
-
 export default function DefaultLayout() {
   const { currentUser, userToken, setCurrentUser, setUserToken } = useStateContext('');
   const [avatarPath, setAvatarPath] = useState(currentUser.avatar_path || '');
-
-  console.log("GuestLayout loaded");
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     setAvatarPath(currentUser.avatar_path || '');
   }, [currentUser]);
 
-  if (!userToken) {
-    return <Navigate to="/login" />
-  }
+  useEffect(() => {
+    if (!userToken) {
+      setUserToken(null);
+      navigate('/login');
+    }
+  }, [userToken]);
+
+
 
   const logout = (ev) => {
     ev.preventDefault();
