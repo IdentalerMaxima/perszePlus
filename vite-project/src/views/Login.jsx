@@ -13,6 +13,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState({ __html: '' });
+  const [rememberMe, setRememberMe] = useState(localStorage.getItem('token') ? true : false);
 
   useEffect(() => {
     setError({ __html: '' });
@@ -24,7 +25,11 @@ export default function Login() {
     setError({ __html: translatedErrors.join('<br>') });
   };
 
-  const onSubmit = (ev) => {
+  useEffect(() => {
+    console.log('Remember me:', rememberMe);
+  }, [rememberMe]);
+
+  const handleLogin = (ev) => {
     ev.preventDefault();
     setError({ __html: '' }); // Reset errors if there are some
     
@@ -33,9 +38,15 @@ export default function Login() {
       password,
     })
       .then(({ data }) => {
-        
-        sessionStorage.setItem('user', JSON.stringify(data.user));
-        sessionStorage.setItem('token', data.token);
+        // Store user and token based on remember me selection
+        if (rememberMe) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('token', data.token);
+          
+        } else {
+          sessionStorage.setItem('user', JSON.stringify(data.user));
+          sessionStorage.setItem('token', data.token);
+        }
 
         setCurrentUser(data.user);
         setUserToken(data.token);
@@ -47,10 +58,6 @@ export default function Login() {
         }
         if (error.response){
           console.log(error.response.data);
-          // const finalErrors = Object.values(error.response.data.errors)
-          //   .reduce((accum, next) => [...accum, ...next], [])
-          //   .join('<br>');
-            //translateErrors(finalErrors);
         }
       });
   };
@@ -67,7 +74,7 @@ export default function Login() {
           dangerouslySetInnerHTML={error}>
         </div>)}
 
-        <form onSubmit={onSubmit} className="space-y-6" action="#" method="POST">
+        <form onSubmit={handleLogin} className="space-y-6" action="#" method="POST">
           <div>
             <div className="mt-14">
               <input
@@ -100,7 +107,8 @@ export default function Login() {
           </div>
           <div className="flex items-center mt-2 justify-between">
             <div>
-              <input type="checkbox" id="rememberMe" name="rememberMe" className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4" />
+              <input type="checkbox" id="rememberMe" name="rememberMe" checked={rememberMe} onChange={(ev) => setRememberMe(ev.target.checked)}
+              className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4" />
               <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-600">
                 {t('remember me')}
               </label>
