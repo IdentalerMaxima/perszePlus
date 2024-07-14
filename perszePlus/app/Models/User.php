@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Event::class)->withPivot('status')->withTimestamps();
     }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'author_id');
+    }
 }
