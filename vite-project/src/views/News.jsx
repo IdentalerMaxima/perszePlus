@@ -34,18 +34,8 @@ export default function Posts() {
         fetchPosts();
     }, []);
 
-    useEffect(() => {
-        console.log('currentUser:', currentUser);
-        console.log('posts:', posts);
-        if (currentUser && posts.length > 0) {
-            console.log('Setting canEdit to true');
-            setCanEdit(true);
-        }
-    }, [currentUser, posts]);
-
     //Post logic
     const fetchPosts = async () => {
-        console.log('Fetching posts...');
         try {
             const response = await axiosClient.get('/getPosts');
             setPosts(response.data);
@@ -77,7 +67,6 @@ export default function Posts() {
     };
 
     const editPost = (post) => {
-        console.log('Editing post:', post);
         setShowPostEditor(true);
         setSelectedPost(post);
         setOpenEditPost(true);
@@ -129,7 +118,6 @@ export default function Posts() {
     };
 
     const editComment = (comment) => {
-        console.log('Editing comment:', comment);
         setShowCommentEditor(true);
         setSelectedComment(comment);
         setOpenEditComment(true);
@@ -155,7 +143,6 @@ export default function Posts() {
     };
 
     const deleteComment = async (commentId) => {
-        console.log('Deleting comment:', commentId);
         try {
             const response = await axiosClient.delete(`/deleteComment/${commentId}`);
             fetchPosts();
