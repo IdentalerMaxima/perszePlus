@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
 
-export default function PostData({ open, handleClose, fetchPosts, editMode, post, saveEditedPost }) {
-  const [newPost, setNewPost] = useState({ title: '', content: '' });
+export default function PostData({ open, handleClose, editMode, post, saveEditedPost }) {
+  const [newPost, setNewPost] = useState({content: '' });
 
   useEffect(() => {
-    if (editMode && post) {
-      setNewPost({ title: post.title, content: post.content });
+    if (post) {
+      setNewPost({content: post.content });
     } else {
-      setNewPost({ title: '', content: '' });
+      setNewPost({content: '' });
     }
   }, [editMode, post]);
 
@@ -26,9 +26,8 @@ export default function PostData({ open, handleClose, fetchPosts, editMode, post
   };
 
   return (
-    <div className='create-event-dialog'>
-      <Dialog open={open} onClose={handleClose} PaperProps={{ style: { width: '600px' } }}>
-        <DialogTitle>{editMode ? "Edit Post" : "Create Post"}</DialogTitle>
+      <Dialog open={open} onClose={handleClose} PaperProps={{ style: { width: '600px' }, className: 'create-event-dialog' }}>
+        <DialogTitle>{"Edit Post"}</DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
@@ -45,9 +44,8 @@ export default function PostData({ open, handleClose, fetchPosts, editMode, post
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">Cancel</Button>
-          <Button onClick={handleSubmit} color="primary">{editMode ? "Save" : "Post"}</Button>
+          <Button onClick={handleSubmit} color="primary">{"Save"}</Button>
         </DialogActions>
       </Dialog>
-    </div>
   );
 }
