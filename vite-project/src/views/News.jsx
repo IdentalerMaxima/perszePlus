@@ -6,80 +6,44 @@ import { useStateContext } from '../contexts/ContextProvider';
 import { Delete, Edit, ThumbUp, Comment } from '@mui/icons-material';
 import axiosClient from '../axios';
 import PostData from '../components/forms/PostData';
-
-const dummyPosts = [
-    {
-        id: 1,
-        content: "We are launching our new product next week!",
-        image: "https://via.placeholder.com/150",
-        author: {
-            first_name: "John",
-            last_name: "Doe",
-            avatar_path: "https://via.placeholder.com/150"
-        },
-        date: "2024-07-10",
-        comments: [
-            { user: "Bob Smith", comment: "Can't wait to see it!" },
-            { user: "Jane Doe", comment: "This is amazing news!" }
-        ],
-        likes: 5
-    },
-    {
-        id: 2,
-        content: "We are hiring!",
-        image: "https://via.placeholder.com/150",
-        author: {
-            first_name: "Jane",
-            last_name: "Doe",
-            avatar_path: "https://via.placeholder.com/150"
-        },
-        date: "2024-07-12",
-        comments: [
-            { user: "John Doe", comment: "Great news!" },
-            { user: "Bob Smith", comment: "I'm interested!" }
-        ],
-        likes: 3
-    }
-];
+import CommentData from '../components/forms/CommentData';
+import { use } from 'i18next';
 
 export default function Posts() {
-    const { currentUser, isAdmin } = useStateContext();
-    const [posts, setPosts] = useState(dummyPosts);
-    const [open, setOpen] = useState(false);
+    const { currentUser } = useStateContext();
+    const [posts, setPosts] = useState([]);
+    const [comments, setComments] = useState([]);
+
+    const [openEditPost, setOpenEditPost] = useState(false);
+    const [openEditComment, setOpenEditComment] = useState(false);
+
     const [selectedPost, setSelectedPost] = useState(null);
-    const [editMode, setEditMode] = useState(false);
+    const [selectedComment, setSelectedComment] = useState(null);
+
+    const [showPostEditor, setShowPostEditor] = useState(false);
+    const [showCommentEditor, setShowCommentEditor] = useState(false);
+
     const [newComment, setNewComment] = useState({});
-    const [commentBoxVisible, setCommentBoxVisible] = useState({}); // Track visibility of comment box per post
-    const [postLikes, setPostLikes] = useState(4); // Track likes per post
-    const [postComments, setPostComments] = useState(4); // Track comments per post
-    const [postContent, setPostContent] = useState(''); // Track content per post
+    const [commentBoxVisible, setCommentBoxVisible] = useState({});
+    const [postContent, setPostContent] = useState('');
 
-    const handleOpen = () => {
-        setOpen(true);
-    };
+    const [canEdit, setCanEdit] = useState(false);
 
-    const handleClose = () => {
-        setOpen(false);
-    };
 
-    const handleEdit = (post) => {
-        setEditMode(true);
-        setSelectedPost(post);
-        setOpen(true);
-    };
+    useEffect(() => {
+        fetchPosts();
+    }, []);
 
-    const saveEditedPost = async (editedPost) => {
-        try {
-            await axiosClient.put(`/editPost/${editedPost.id}`, editedPost);
-            fetchPosts();
-            setSelectedPost(null);
-            setEditMode(false);
-            setOpen(false);
-        } catch (error) {
-            console.error('Error editing post:', error);
+    useEffect(() => {
+        console.log('currentUser:', currentUser);
+        console.log('posts:', posts);
+        if (currentUser && posts.length > 0) {
+            console.log('Setting canEdit to true');
+            setCanEdit(true);
         }
-    };
+    }, [currentUser, posts]);
 
+    //Post logic
     const fetchPosts = async () => {
         console.log('Fetching posts...');
         try {
@@ -88,36 +52,6 @@ export default function Posts() {
         } catch (error) {
             console.error('Error fetching posts:', error);
         }
-    };
-
-    useEffect(() => {
-        fetchPosts();
-    }, []);
-
-    const deletePost = async (postId) => {
-        try {
-            await axiosClient.delete(`/deletePost/${postId}`);
-            fetchPosts();
-        } catch (error) {
-            console.error('Error deleting post:', error);
-        }
-    };
-
-    const likePost = (postId) => {
-        const updatedPosts = posts.map(post => {
-            if (post.id === postId) {
-                return {
-                    ...post,
-                    likes: post.likes + 1
-                };
-            }
-            return post;
-        });
-        setPosts(updatedPosts);
-    };
-
-    const toggleCommentBox = (postId) => {
-        setCommentBoxVisible(prev => ({ ...prev, [postId]: !prev[postId] }));
     };
 
     const submitPost = async () => {
@@ -133,6 +67,53 @@ export default function Posts() {
         }
     };
 
+    const deletePost = async (postId) => {
+        try {
+            await axiosClient.delete(`/deletePost/${postId}`);
+            fetchPosts();
+        } catch (error) {
+            console.error('Error deleting post:', error);
+        }
+    };
+
+    const editPost = (post) => {
+        console.log('Editing post:', post);
+        setShowPostEditor(true);
+        setSelectedPost(post);
+        setOpenEditPost(true);
+    };
+
+
+    const closeEditPost = () => {
+        setOpenEditPost(false);
+    };
+
+    const likePost = (postId) => {
+        const updatedPosts = posts.map(post => {
+            if (post.id === postId) {
+                return {
+                    ...post,
+                    likes: post.likes + 1
+                };
+            }
+            return post;
+        });
+        setPosts(updatedPosts);
+    };
+
+    const saveEditedPost = async (editedPost) => {
+        try {
+            await axiosClient.put(`/editPost/${editedPost.id}`, editedPost);
+            fetchPosts();
+            setSelectedPost(null);
+            setShowPostEditor(false);
+            setOpenEditPost(false);
+        } catch (error) {
+            console.error('Error editing post:', error);
+        }
+    };
+
+    //Comment logic
     const submitComment = async (postId) => {
         try {
             const response = await axiosClient.post('/addComment', {
@@ -146,6 +127,44 @@ export default function Posts() {
             console.error('Error creating comment:', error);
         }
     };
+
+    const editComment = (comment) => {
+        console.log('Editing comment:', comment);
+        setShowCommentEditor(true);
+        setSelectedComment(comment);
+        setOpenEditComment(true);
+    };
+
+    const saveEditedComment = async (editedComment) => {
+        try {
+            await axiosClient.put(`/editComment/${editedComment.id}`, editedComment);
+            fetchPosts();
+            setShowCommentEditor(false);
+            setOpenEditComment(false);
+        } catch (error) {
+            console.error('Error editing comment:', error);
+        }
+    };
+
+    const closeEditComment = () => {
+        setOpenEditComment(false);
+    };
+
+    const toggleCommentBox = (postId) => {
+        setCommentBoxVisible(prev => ({ ...prev, [postId]: !prev[postId] }));
+    };
+
+    const deleteComment = async (commentId) => {
+        console.log('Deleting comment:', commentId);
+        try {
+            const response = await axiosClient.delete(`/deleteComment/${commentId}`);
+            fetchPosts();
+        }
+        catch (error) {
+            console.error('Error deleting comment:', error);
+        }
+    };
+
 
     return (
         <PageComponent title="Posts">
@@ -195,10 +214,10 @@ export default function Posts() {
                                 {post.content}
                             </Typography>
 
-                            <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px', position: 'absolute', bottom: 4, left: 4  }}>
-                                <IconButton onClick={() => likePost(post.id)}>
+                            <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px', position: 'absolute', bottom: 4, left: 4 }}>
+                                {/* <IconButton onClick={() => likePost(post.id)}>
                                     <ThumbUp /> {post.likes}
-                                </IconButton>
+                                </IconButton> */}
                                 <IconButton onClick={() => toggleCommentBox(post.id)}>
                                     <Comment /> {post.comments.length}
                                 </IconButton>
@@ -207,24 +226,29 @@ export default function Posts() {
                             {commentBoxVisible[post.id] && (
                                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                     <Divider style={{ margin: '16px 0' }} />
-                                    {post.comments.map((comment, index) => (
-                                        <Box key={index} display="flex" alignItems="flex-start" style={{ marginLeft: '16px', width: '100%', position: 'relative' }}>
+                                    {post.comments.map((comment) => (
+                                        <Box key={comment.id} display="flex" alignItems="flex-start" style={{ marginLeft: '16px', width: '100%', position: 'relative' }}>
                                             <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
                                                 <Avatar src={comment.avatar_path} style={{ marginRight: '8px', width: '32px', height: '32px' }} />
                                                 <Box>
                                                     <Typography variant="body2" fontWeight="bold">{comment.user}</Typography>
-                                                    <Typography variant="body2">{comment.comment}</Typography>
+                                                    <Typography
+                                                        variant="body2"
+                                                        paddingRight={'32px'}
+                                                    >{comment.comment}</Typography>
                                                 </Box>
                                             </Box>
 
-                                            <Box sx={{ position: 'absolute', top: 4, right: 8, display: 'flex', gap: '4px' }}>
-                                                <IconButton size="small" onClick={() => deletePost(post.id)} style={{ padding: 0 }}>
-                                                    <Delete fontSize="small" />
-                                                </IconButton>
-                                                <IconButton size="small" onClick={() => handleEdit(post)} style={{ padding: 0 }}>
-                                                    <Edit fontSize="small" />
-                                                </IconButton>
-                                            </Box>
+                                            {currentUser && (currentUser.id === comment.author_id || currentUser.category == 'admin') && (
+                                                <Box sx={{ position: 'absolute', top: 4, right: 8, display: 'flex', gap: '4px' }}>
+                                                    <IconButton size="small" onClick={() => deleteComment(comment.id)} style={{ padding: 0 }}>
+                                                        <Delete fontSize="small" />
+                                                    </IconButton>
+                                                    <IconButton size="small" onClick={() => editComment(comment)} style={{ padding: 0 }}>
+                                                        <Edit fontSize="small" />
+                                                    </IconButton>
+                                                </Box>
+                                            )}
                                         </Box>
                                     ))}
                                 </Box>
@@ -233,10 +257,12 @@ export default function Posts() {
 
                             <div className='create-event-dialog'>
                                 {commentBoxVisible[post.id] && (
-                                    <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px',  paddingBottom: '22px' }}>
+                                    <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px', paddingBottom: '22px' }}>
+                                        <Avatar src={currentUser.avatar_path} style={{ marginRight: '8px' }} />
                                         <TextField
                                             label="Add a comment"
                                             variant="outlined"
+                                            wordWrap="break-word"
                                             fullWidth
                                             value={newComment[post.id] || ''}
                                             size='small'
@@ -248,7 +274,7 @@ export default function Posts() {
                                     </Box>
                                 )}
                             </div>
-                            {isAdmin && (
+                            {currentUser && (currentUser.id === post.author.id || currentUser.category == 'admin') && (
                                 <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
                                     <IconButton
                                         style={{ position: 'absolute', top: '2px', right: '40px' }}
@@ -258,7 +284,7 @@ export default function Posts() {
                                     </IconButton>
                                     <IconButton
                                         style={{ position: 'absolute', top: '2px', right: '8px' }}
-                                        onClick={() => handleEdit(post)}
+                                        onClick={() => editPost(post)}
                                     >
                                         <Edit />
                                     </IconButton>
@@ -270,13 +296,21 @@ export default function Posts() {
             </InfiniteScroll>
 
             <PostData
-                open={open}
-                handleClose={handleClose}
-                fetchPosts={fetchPosts}
-                editMode={editMode}
+                open={openEditPost}
+                handleClose={closeEditPost}
+                editMode={showPostEditor}
                 post={selectedPost}
                 saveEditedPost={saveEditedPost}
             />
+
+            <CommentData
+                open={openEditComment}
+                handleClose={closeEditComment}
+                editMode={showCommentEditor}
+                comment={selectedComment}
+                saveEditedComment={saveEditedComment}
+            />
+
         </PageComponent>
     );
 }
