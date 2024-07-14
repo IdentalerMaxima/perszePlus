@@ -26,13 +26,16 @@ class PostController extends Controller
                 'likes' => $post->likes,
                 'date' => $post->created_at->toDateTimeString(),
                 'author' => [
+                    'id' => $post->author->id,
                     'first_name' => $post->author->first_name,
                     'last_name' => $post->author->last_name,
                     'avatar_path' => $post->author->avatar_path,
                 ],
                 'comments' => $post->comments->map(function ($comment) {
                     return [
+                        'id' => $comment->id,
                         'user' => $comment->author->first_name . ' ' . $comment->author->last_name,
+                        'author_id' => $comment->author->id,
                         'comment' => $comment->content,
                         'avatar_path' => $comment->author->avatar_path,
                     ];
@@ -93,7 +96,16 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'content' => 'required|string',
+        ]);
+
+        $post = Post::findOrFail($id);
+
+        $post->content = $validatedData['content'];
+        $post->save();
+
+        return response()->json($post, 200);
     }
 
     /**
