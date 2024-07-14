@@ -12,8 +12,12 @@ const dummyPosts = [
         id: 1,
         content: "We are launching our new product next week!",
         image: "https://via.placeholder.com/150",
-        author: "John Doe",
-        createdAt: "2024-07-10",
+        author: {
+            first_name: "John",
+            last_name: "Doe",
+            avatar_path: "https://via.placeholder.com/150"
+        },
+        date: "2024-07-10",
         comments: [
             { user: "Bob Smith", comment: "Can't wait to see it!" },
             { user: "Jane Doe", comment: "This is amazing news!" }
@@ -24,8 +28,12 @@ const dummyPosts = [
         id: 2,
         content: "We are hiring!",
         image: "https://via.placeholder.com/150",
-        author: "Jane Doe",
-        createdAt: "2024-07-12",
+        author: {
+            first_name: "Jane",
+            last_name: "Doe",
+            avatar_path: "https://via.placeholder.com/150"
+        },
+        date: "2024-07-12",
         comments: [
             { user: "John Doe", comment: "Great news!" },
             { user: "Bob Smith", comment: "I'm interested!" }
@@ -80,6 +88,10 @@ export default function Posts() {
             console.error('Error fetching posts:', error);
         }
     };
+
+    useEffect(() => {
+        fetchPosts();
+    }, []);
 
     const deletePost = async (postId) => {
         try {
@@ -167,9 +179,9 @@ export default function Posts() {
                     <Card key={post.id} style={{ marginBottom: '16px', position: 'relative' }}>
                         <CardContent>
                             <Box display="flex" alignItems="center" marginBottom={'16px'}>
-                                <Avatar src={currentUser.avatar_path} style={{ marginRight: '16px' }} />
+                                <Avatar src={post.author.avatar_path} style={{ marginRight: '16px' }} />
                                 <Typography color="text.secondary">
-                                    {post.author} - {post.createdAt}
+                                    {`${post.author.first_name} ${post.author.last_name}`} - {post.date}
                                 </Typography>
                             </Box>
 
@@ -179,10 +191,10 @@ export default function Posts() {
 
                             <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
                                 <IconButton onClick={() => likePost(post.id)}>
-                                    <ThumbUp /> {postLikes}
+                                    <ThumbUp /> {post.likes}
                                 </IconButton>
                                 <IconButton onClick={() => toggleCommentBox(post.id)}>
-                                    <Comment /> {postComments}
+                                    <Comment /> {post.comments.length}
                                 </IconButton>
                             </Box>
 
@@ -191,7 +203,7 @@ export default function Posts() {
                                     <Divider style={{ margin: '16px 0' }} />
                                     {post.comments.map((comment, index) => (
                                         <Box key={index} display="flex" alignItems="flex-start" style={{ marginLeft: '16px' }}>
-                                            <Avatar src={currentUser.avatar_path} style={{ marginRight: '8px', width: '32px', height: '32px' }} />
+                                            <Avatar src={comment.avatar_path} style={{ marginRight: '8px', width: '32px', height: '32px' }} />
                                             <Box>
                                                 <Typography variant="body2" fontWeight="bold">{comment.user}</Typography>
                                                 <Typography variant="body2">{comment.comment}</Typography>
@@ -200,8 +212,6 @@ export default function Posts() {
                                     ))}
                                 </Box>
                             )}
-
-                            
 
                             <div className='create-event-dialog'>
                                 {commentBoxVisible[post.id] && (
