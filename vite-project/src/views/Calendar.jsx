@@ -15,11 +15,11 @@ import { useMediaQuery } from '@mui/material';
 export default function Calendar() {
   const { currentUser, isAdmin } = useStateContext();
   const [events, setEvents] = useState([]);
-  const [open, setOpen] = useState(false); // State for event modal
-  const [selectedEvent, setSelectedEvent] = useState(null); // State for selected event
-  const [showAttendees, setShowAttendees] = useState(false); // State for showing attendees list
-  const [editMode, setEditMode] = useState(false); // State for edit mode
-  const [showOldEvents, setShowOldEvents] = useState(false); // State for toggling old events
+  const [open, setOpen] = useState(false); 
+  const [selectedEvent, setSelectedEvent] = useState(null); 
+  const [showAttendees, setShowAttendees] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [showOldEvents, setShowOldEvents] = useState(false);
 
   // Media query to check if the screen size is small (mobile view)
   const isMobile = useMediaQuery('(max-width: 600px)');
