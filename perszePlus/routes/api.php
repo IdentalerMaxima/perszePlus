@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AvatarUploadController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\UserDataController;
 use App\Http\Controllers\DocumentController;
@@ -41,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/getCountOfDocumentsByType', [DocumentController::class, 'getCountOfDocumentsByType']);
     Route::get('/getUsersByLevelOfEducation', [UserDataController::class, 'getUsersByLevelOfEducation']);
     Route::get('/getUsersByYearsInEducation', [UserDataController::class, 'getUsersByYearsInEducation']);
+    Route::get('/getPosts', [PostController::class, 'index']);
 
     Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
     Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);
