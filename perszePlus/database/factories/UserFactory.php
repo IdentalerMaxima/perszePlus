@@ -2,37 +2,42 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
- */
 class UserFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = User::class;
+
+    public function definition()
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName,
+            'email' => $this->faker->unique()->safeEmail,
+            'phone_number' => $this->faker->phoneNumber,
+            'birth_date' => $this->faker->date(),
+            'birth_place' => $this->faker->city,
+            'mothers_name' => $this->faker->name,
+            'street_address' => $this->faker->streetAddress,
+            'city' => $this->faker->city,
+            'state' => $this->faker->state,
+            'zip' => $this->faker->postcode,
+            'temp_addr' => $this->faker->boolean ? $this->faker->city : null,
+            'temp_addr_street' => $this->faker->boolean ? $this->faker->streetAddress : null,
+            'temp_addr_city' => $this->faker->boolean ? $this->faker->city : null,
+            'temp_addr_state' => $this->faker->boolean ? $this->faker->state : null,
+            'temp_addr_zip' => $this->faker->boolean ? $this->faker->postcode : null,
+            'password' => bcrypt('password'), // or Hash::make('password')
+            'avatar_path' => $this->faker->imageUrl(),
+            'neptun_code' => $this->faker->unique()->word,
+            'university' => $this->faker->randomElement(['Pécsi Tudományegyetem', 'Budapesti Műszaki és Gazdaságtudományi Egyetem', 'Debreceni Egyetem']),
+            'faculty' => $this->faker->randomElement(['Általános Orvostudományi Kar', 'Műszaki Informatikai Kar', 'Bölcsészettudományi Kar']),
+            'start_year' => $this->faker->year(),
+            'current_semester' => $this->faker->numberBetween(1, 8),
+            'educational_format' => $this->faker->randomElement(['nappali', 'levelező']),
+            'level_of_education' => $this->faker->randomElement(['BSc', 'MSc', 'PhD']),
+            'category' => $this->faker->randomElement(['hallgató', 'munkatárs', 'vezetőség']),
         ];
-    }
-
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
     }
 }
