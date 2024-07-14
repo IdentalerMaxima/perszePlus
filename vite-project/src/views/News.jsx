@@ -48,10 +48,11 @@ export default function Posts() {
     const [open, setOpen] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
     const [editMode, setEditMode] = useState(false);
-    const [newComment, setNewComment] = useState('');
+    const [newComment, setNewComment] = useState({});
     const [commentBoxVisible, setCommentBoxVisible] = useState({}); // Track visibility of comment box per post
     const [postLikes, setPostLikes] = useState(4); // Track likes per post
     const [postComments, setPostComments] = useState(4); // Track comments per post
+    const [postContent, setPostContent] = useState(''); // Track content per post
 
     const handleOpen = () => {
         setOpen(true);
@@ -102,22 +103,6 @@ export default function Posts() {
         }
     };
 
-    const toggleComment = (postId) => {
-        if (!newComment) return;
-        const updatedPosts = posts.map(post => {
-            if (post.id === postId) {
-                return {
-                    ...post,
-                    comments: [...post.comments, { user: currentUser.name, comment: newComment }]
-                };
-            }
-            return post;
-        });
-        setPosts(updatedPosts);
-        setNewComment('');
-        setCommentBoxVisible(prev => ({ ...prev, [postId]: false }));
-    };
-
     const likePost = (postId) => {
         const updatedPosts = posts.map(post => {
             if (post.id === postId) {
@@ -137,9 +122,28 @@ export default function Posts() {
 
     const submitPost = async () => {
         try {
-            const response = await axiosClient.post('/addPost', {});
+            const response = await axiosClient.post('/addPost', {
+                content: postContent,
+                author_id: currentUser.id
+            });
+            setPostContent('');
+            fetchPosts();
         } catch (error) {
             console.error('Error creating post:', error);
+        }
+    };
+
+    const submitComment = async (postId) => {
+        try {
+            const response = await axiosClient.post('/addComment', {
+                content: newComment[postId],
+                post_id: postId,
+                author_id: currentUser.id
+            });
+            setNewComment({ ...newComment, [postId]: '' });
+            fetchPosts();
+        } catch (error) {
+            console.error('Error creating comment:', error);
         }
     };
 
@@ -156,6 +160,8 @@ export default function Posts() {
                                 fullWidth
                                 size="small"
                                 style={{ marginRight: '8px' }}
+                                value={postContent}
+                                onChange={(e) => setPostContent(e.target.value)}
                             />
                             <Button
                                 variant="contained"
@@ -181,15 +187,15 @@ export default function Posts() {
                             <Box display="flex" alignItems="center" marginBottom={'16px'}>
                                 <Avatar src={post.author.avatar_path} style={{ marginRight: '16px' }} />
                                 <Typography color="text.secondary">
-                                    {`${post.author.first_name} ${post.author.last_name}`} - {post.date}
+                                    {`${post.author.first_name} ${post.author.last_name}`} - {post.date} {post.id}
                                 </Typography>
                             </Box>
 
-                            <Typography variant="h6">
+                            <Typography variant="h6" paddingBottom={'22px'}>
                                 {post.content}
                             </Typography>
 
-                            <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+                            <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px', position: 'absolute', bottom: 4, left: 4  }}>
                                 <IconButton onClick={() => likePost(post.id)}>
                                     <ThumbUp /> {post.likes}
                                 </IconButton>
@@ -199,32 +205,44 @@ export default function Posts() {
                             </Box>
 
                             {commentBoxVisible[post.id] && (
-                                <Box sx={{ display: 'flex', gap: '8px', marginTop: '', flexDirection: 'column',justifyItems: 'center' }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                     <Divider style={{ margin: '16px 0' }} />
                                     {post.comments.map((comment, index) => (
-                                        <Box key={index} display="flex" alignItems="flex-start" style={{ marginLeft: '16px' }}>
-                                            <Avatar src={comment.avatar_path} style={{ marginRight: '8px', width: '32px', height: '32px' }} />
-                                            <Box>
-                                                <Typography variant="body2" fontWeight="bold">{comment.user}</Typography>
-                                                <Typography variant="body2">{comment.comment}</Typography>
+                                        <Box key={index} display="flex" alignItems="flex-start" style={{ marginLeft: '16px', width: '100%', position: 'relative' }}>
+                                            <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                                                <Avatar src={comment.avatar_path} style={{ marginRight: '8px', width: '32px', height: '32px' }} />
+                                                <Box>
+                                                    <Typography variant="body2" fontWeight="bold">{comment.user}</Typography>
+                                                    <Typography variant="body2">{comment.comment}</Typography>
+                                                </Box>
+                                            </Box>
+
+                                            <Box sx={{ position: 'absolute', top: 4, right: 8, display: 'flex', gap: '4px' }}>
+                                                <IconButton size="small" onClick={() => deletePost(post.id)} style={{ padding: 0 }}>
+                                                    <Delete fontSize="small" />
+                                                </IconButton>
+                                                <IconButton size="small" onClick={() => handleEdit(post)} style={{ padding: 0 }}>
+                                                    <Edit fontSize="small" />
+                                                </IconButton>
                                             </Box>
                                         </Box>
                                     ))}
                                 </Box>
                             )}
 
+
                             <div className='create-event-dialog'>
                                 {commentBoxVisible[post.id] && (
-                                    <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+                                    <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px',  paddingBottom: '22px' }}>
                                         <TextField
                                             label="Add a comment"
                                             variant="outlined"
                                             fullWidth
-                                            value={newComment}
+                                            value={newComment[post.id] || ''}
                                             size='small'
-                                            onChange={(e) => setNewComment(e.target.value)}
+                                            onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })}
                                         />
-                                        <Button variant="contained" color="primary" onClick={() => toggleComment(post.id)}>
+                                        <Button variant="contained" color="primary" onClick={() => submitComment(post.id)}>
                                             Comment
                                         </Button>
                                     </Box>

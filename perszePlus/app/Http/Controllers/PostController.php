@@ -14,7 +14,9 @@ class PostController extends Controller
     public function index()
     {
         // Fetch posts with their related author and comments
-        $posts = Post::with(['author', 'comments'])->get();
+        $posts = Post::with(['author', 'comments'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         // Structure the response to include the author's name and avatar path, and the comments
         $posts = $posts->map(function ($post) {
@@ -39,7 +41,7 @@ class PostController extends Controller
         });
 
         // Log the posts
-        Log::info('Posts fetched successfully', ['posts' => $posts]);
+        //Log::info('Posts fetched successfully', ['posts' => $posts]);
 
         return response()->json($posts, 200);
     }
@@ -57,7 +59,17 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'content' => 'required|string',
+            'author_id' => 'required|integer',
+        ]);
+
+        $post = Post::create([
+            'content' => $validatedData['content'],
+            'author_id' => $validatedData['author_id'],
+        ]);
+
+        return response()->json($post, 201);
     }
 
     /**
@@ -87,8 +99,16 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        // Using findOrFail to get the post by ID
+        $post = Post::findOrFail($id);
+
+        try {
+            $post->delete();
+            return response()->json(['message' => 'Post deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error deleting post'], 500);
+        }
     }
 }

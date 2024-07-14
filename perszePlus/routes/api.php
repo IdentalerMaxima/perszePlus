@@ -8,6 +8,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\UserDataController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ResetPasswordController;
 
@@ -30,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/info', [UserDataController::class, 'saveUserData']);
     Route::post('/addEvent', [EventController::class, 'store']);
     Route::post('/updateAttendance', [EventController::class, 'updateAttendance']);
+    Route::post('/addPost', [PostController::class, 'store']);
+    Route::post('/addComment', [CommentController::class, 'store']);
 
 
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
@@ -46,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
     Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);
+    Route::delete('/deletePost/{id}', [PostController::class, 'destroy']);
 
     Route::put('editEvent/{id}', [EventController::class, 'update']);
 
