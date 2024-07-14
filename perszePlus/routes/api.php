@@ -46,12 +46,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/getUsersByLevelOfEducation', [UserDataController::class, 'getUsersByLevelOfEducation']);
     Route::get('/getUsersByYearsInEducation', [UserDataController::class, 'getUsersByYearsInEducation']);
     Route::get('/getPosts', [PostController::class, 'index']);
+    Route::get('/getComments', [CommentController::class, 'index']);
 
     Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
     Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);
     Route::delete('/deletePost/{id}', [PostController::class, 'destroy']);
+    Route::delete('/deleteComment/{id}', [CommentController::class, 'destroy']);
 
     Route::put('editEvent/{id}', [EventController::class, 'update']);
+    Route::put('editPost/{id}', [PostController::class, 'update']);
+    Route::put('editComment/{id}', [CommentController::class, 'update']);
 
 
 
