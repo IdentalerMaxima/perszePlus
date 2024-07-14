@@ -64,7 +64,16 @@ class CommentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'content' => 'required|string',
+        ]);
+
+        $comment = Comment::findOrFail($id);
+
+        $comment->content = $validatedData['content'];
+        $comment->save();
+
+        return response()->json($comment, 200);
     }
 
     /**
@@ -72,6 +81,10 @@ class CommentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Using findOrFail to get the comment by ID
+        $comment = Comment::findOrFail($id);
+        $comment->delete();
+
+        return response()->json(null, 204);
     }
 }
