@@ -7,6 +7,7 @@ import DefaultLayout from './components/DefaultLayout.jsx';
 import Dashboard from './views/Dashboard.jsx';
 import Calendar from './views/Calendar.jsx';
 import Courses from './views/Courses.jsx';
+import CourseDetails from './views/CourseDetails.jsx';
 import News from './views/News.jsx';
 import Members from './views/Members.jsx';
 import Attendance from './views/Attendance.jsx';
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
       { path: '/members/:id', element: <MemberProfile /> },
       { path: '/calendar', element: <Calendar /> },
       { path: '/courses', element: <Courses /> },
+      { path: '/courses/:id', element: <CourseDetails /> },
       { path: '/attendance', element: <Attendance /> },
       { path: '/settings', element: <Settings /> },
       { path: '/profile', element: <Profile />},
