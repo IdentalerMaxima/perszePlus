@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AvatarUploadController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\PostController;
@@ -47,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/getUsersByYearsInEducation', [UserDataController::class, 'getUsersByYearsInEducation']);
     Route::get('/getPosts', [PostController::class, 'index']);
     Route::get('/getComments', [CommentController::class, 'index']);
+    Route::get('/getCourses', [CourseController::class, 'index']);
 
     Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
     Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);
