@@ -33,7 +33,7 @@ const CourseCard = ({ course, onEdit, onDelete }) => {
                             {/* Edit and Delete buttons */}
                             <IconButton color="primary" onClick={(e) => {
                                 e.preventDefault();
-                                onEdit(course.id);
+                                onEdit(course);
                             }}>
                                 <EditIcon />
                             </IconButton>

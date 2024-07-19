@@ -10,14 +10,17 @@ export default function Dashboard() {
     const { currentUser, isAdmin } = useStateContext();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [openCreateCourse, setOpenCreateCourse] = useState(false);
+    const [openCourseDialog, setOpenCourseDialog] = useState(false);
+    const [dialogMode, setDialogMode] = useState('');
+    const [selectedCourse, setSelectedCourse] = useState(null);
 
     useEffect(() => {
         fetchCourses();
     }, []);
 
     const handleCreateCourse = () => {
-        setOpenCreateCourse(true);
+        setDialogMode('create');
+        setOpenCourseDialog(true);
     };
 
     const fetchCourses = async () => {
@@ -29,6 +32,23 @@ export default function Dashboard() {
             console.error('Error fetching courses:', error);
             setLoading(false);
         }
+    };
+
+    const handleDeleteCourse = async (id) => {
+        try {
+            await axiosClient.delete(`/deleteCourse/${id}`);
+            fetchCourses();
+        } catch (error) {
+            console.error('Error deleting course:', error);
+        }
+    };
+
+    const handleEditCourse = (course) => {
+        console.log('edit course', course);
+        setSelectedCourse(course);
+        setDialogMode('edit');
+        setOpenCourseDialog(true);
+
     };
 
     return (
@@ -55,17 +75,15 @@ export default function Dashboard() {
                     </Grid>
                 ) : (
                     courses.map(course => (
-                        //log
-                        console.log('Courses:', courses),
                         <Grid item key={course.id} xs={12} sm={6} md={4} style={{ display: 'flex' }}>
-                            <CourseCard course={course} />
+                            <CourseCard course={course} onDelete={handleDeleteCourse} onEdit={handleEditCourse}/>
                         </Grid>
                     ))
                 )}
             </Grid>
 
-            {openCreateCourse && (
-                <CourseData open={openCreateCourse} handleClose={() => setOpenCreateCourse(false)} fetchCourses={fetchCourses} />
+            {openCourseDialog && (
+                <CourseData open={openCourseDialog} handleClose={() => setOpenCourseDialog(false)} fetchCourses={fetchCourses} mode={dialogMode} course={selectedCourse}/>
             )}
 
         </PageComponent>

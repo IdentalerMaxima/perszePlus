@@ -6,7 +6,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
 
-const EventData = ({ open, handleClose, editMode, event, saveEditedEvent, handleEventCreated, fetchEvents }) => {
+const EventData = ({ open, handleClose, editMode, event, saveEditedEvent, fetchEvents }) => {
   const initialEventState = {
     title: editMode ? event.title : '',
     date: editMode ? dayjs(event.date) : null,

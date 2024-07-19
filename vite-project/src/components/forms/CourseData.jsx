@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, IconButton } from "@mui/material";
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axiosClient from "../../axios";
 
-const CourseData = ({ open, handleClose, fetchCourses }) => {
+const CourseData = ({ open, handleClose, fetchCourses, mode, course }) => {
     const [file, setFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
-    const [editMode, setEditMode] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -17,6 +16,33 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
         dates: '',
         requirements: '',
     });
+
+    useEffect(() => {
+        if (mode === 'edit') {
+            setFormData({
+                name: course.name,
+                description: course.description,
+                host: course.host,
+                semester: course.semester,
+                recommended_year: course.recommended_year,
+                dates: course.dates,
+                requirements: course.requirements,
+            });
+            setImagePreview(course.image_path);
+        } else {
+            setFormData({
+                name: '',
+                description: '',
+                host: '',
+                semester: '',
+                recommended_year: '',
+                dates: '',
+                requirements: '',
+            });
+            setImagePreview(null);
+        }
+    }, [mode, course]);
+    
     const [errors, setErrors] = useState({});
 
     const handleChange = (ev) => {
@@ -28,8 +54,9 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
             setFile(selectedFile);
-            setImagePreview(URL.createObjectURL(selectedFile)); // Set the preview URL
+            setImagePreview(URL.createObjectURL(selectedFile));
         }
+        
     };
 
     const triggerFileInput = () => {
@@ -83,28 +110,37 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
         formDataToSubmit.append('requirements', formData.requirements);
 
         if (file) {
-            formDataToSubmit.append('image', file); // Append file directly
+            formDataToSubmit.append('image', file);
         }
+
+
 
         try {
-            console.log('Form data to submit:', formDataToSubmit);
-            const response = await axiosClient.post('/addCourse', formDataToSubmit, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            });
-            console.log(response.data);
+            if (mode === 'edit') {
+                await axiosClient.put(`/editCourse/${course.id}`, formData);
+                await axiosClient.post(`/changeCourseImage/${course.id}`, formDataToSubmit, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+            }
+            else {
+                await axiosClient.post('/addCourse', formDataToSubmit, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+            }
             fetchCourses();
         } catch (error) {
-            console.error('Error creating course:', error);
+            console.error('Error submitting course:', error);
         }
-
         handleClose();
     };
 
     return (
         <Dialog open={open} onClose={handleClose} className="create-event-dialog">
-            <DialogTitle>{editMode ? 'Edit event' : 'Add new course'}</DialogTitle>
+            <DialogTitle>{ mode === 'edit' ? 'Edit event' : 'Add new course'}</DialogTitle>
             <DialogContent>
                 <TextField
                     autoFocus
@@ -245,7 +281,7 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
                     Cancel
                 </Button>
                 <Button onClick={handleSubmit} color="primary">
-                    {editMode ? 'Save' : 'Add'}
+                    {mode === 'edit' ? 'Save' : 'Add'}
                 </Button>
             </DialogActions>
         </Dialog>
