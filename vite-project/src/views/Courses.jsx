@@ -1,16 +1,24 @@
-import { Grid, CircularProgress } from "@mui/material";
+import { Grid, CircularProgress, Button } from "@mui/material";
 import PageComponent from "../components/PageComponent";
 import CourseCard from "../components/cards/CourseCard";
 import axiosClient from "../axios";
 import { useEffect, useState } from "react";
+import { useStateContext } from "../contexts/ContextProvider";
+import CourseData from "../components/forms/CourseData";
 
 export default function Dashboard() {
+    const { currentUser, isAdmin } = useStateContext();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [openCreateCourse, setOpenCreateCourse] = useState(false);
 
     useEffect(() => {
         fetchCourses();
     }, []);
+
+    const handleCreateCourse = () => {
+        setOpenCreateCourse(true);
+    };
 
     const fetchCourses = async () => {
         try {
@@ -25,6 +33,13 @@ export default function Dashboard() {
 
     return (
         <PageComponent title={'Kurzusok'}>
+            {isAdmin && (
+                <Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-start', paddingBottom: '20px' }}>
+                    <Button variant="contained" color="primary" onClick={handleCreateCourse}>
+                        Új kurzus
+                    </Button>
+                </Grid>
+            )}
             <Grid container spacing={2} style={{ display: 'flex' }}>
                 {loading ? (
                     <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
@@ -48,6 +63,11 @@ export default function Dashboard() {
                     ))
                 )}
             </Grid>
+
+            {openCreateCourse && (
+                <CourseData open={openCreateCourse} handleClose={() => setOpenCreateCourse(false)} fetchCourses={fetchCourses} />
+            )}
+
         </PageComponent>
     );
 }

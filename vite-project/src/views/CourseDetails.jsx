@@ -17,8 +17,8 @@ const CourseDetails = () => {
 
     return (
         <PageComponent title="Kurzus részletei">
-            <div className={`flex ${isMobile ? 'flex-col' : 'flex-row'} pt-3`}>
-                <IconButton onClick={goBack} className="">
+            <div className={`flex ${isMobile ? 'flex-col' : 'flex-row items-center'} pt-3`}>
+                <IconButton onClick={goBack}>
                     <ArrowBackIcon />
                 </IconButton>
                 <Card style={{ display: 'flex', height: '100%' }}>
@@ -30,8 +30,8 @@ const CourseDetails = () => {
                                     image={course.image_path}
                                     alt={course.name}
                                     style={{
-                                        width: '100%',
-                                        height: '100%',
+                                        width: '900px',
+                                        height: '300px',
                                         objectFit: 'cover',
                                         borderRadius: '1% 0 0 1%',
                                         borderRadius: isMobile ? '1% 1% 0 0' : '1% 0 0 1%'

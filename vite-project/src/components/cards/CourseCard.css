@@ -10,3 +10,9 @@
   transform: translateY(-5px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+.card img {
+  object-fit: cover; /* Ensures the image covers the entire area */
+  height: 200px; /* Adjust the height as necessary */
+  width: 100%; /* Ensures the image width matches the container */
+}
