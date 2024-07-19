@@ -35,6 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/addPost', [PostController::class, 'store']);
     Route::post('/addComment', [CommentController::class, 'store']);
     Route::post('/addCourse', [CourseController::class, 'store']);
+    //change courseImage
+    Route::post('/changeCourseImage/{id}', [CourseController::class, 'changeCourseImage']);
 
 
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
@@ -55,10 +57,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);
     Route::delete('/deletePost/{id}', [PostController::class, 'destroy']);
     Route::delete('/deleteComment/{id}', [CommentController::class, 'destroy']);
+    Route::delete('/deleteCourse/{id}', [CourseController::class, 'destroy']);
 
     Route::put('editEvent/{id}', [EventController::class, 'update']);
     Route::put('editPost/{id}', [PostController::class, 'update']);
     Route::put('editComment/{id}', [CommentController::class, 'update']);
+    Route::put('editCourse/{id}', [CourseController::class, 'update']);
 
 
 
