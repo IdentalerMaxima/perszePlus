@@ -55,5 +55,66 @@ class CourseController extends Controller
     
         return response()->json($course, 201);
     }
+
+    public function destroy($id)
+    {
+        $course = Course::find($id);
+        if (!$course) {
+            return response()->json(['message' => 'Course not found'], 404);
+        }
+        $course->delete();
+        return response()->json(['message' => 'Course deleted'], 200);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request -> validate([
+            'name' => 'required|string',
+            'description' => 'required|string',
+            'semester' => 'required|string',
+            'recommended_year' => 'required|string',
+            'host' => 'required|string',
+            'requirements' => 'required|string',
+            'dates' => 'required|string',
+        ]);
+
+        $course = Course::find($id);
+        if (!$course) {
+            return response()->json(['message' => 'Course not found'], 404);
+        }
+
+        $course->name = $request->name;
+        $course->description = $request->description;
+        $course->semester = $request->semester;
+        $course->recommended_year = $request->recommended_year;
+        $course->host = $request->host;
+        $course->requirements = $request->requirements;
+        $course->dates = $request->dates;
+
+        $course->save();
+
+        return response()->json($course, 200);
+    }
+
+    public function changeCourseImage(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,jpg,png|max:2048',
+        ]);
+
+        $course = Course::find($request->id);
+        if (!$course) {
+            return response()->json(['message' => 'Course not found'], 404);
+        }
+
+        $image = $request->file('image')->store('public/images');
+        $imagePath = asset(Storage::url($image));
+
+        $course->image_path = $imagePath;
+        $course->save();
+
+        return response()->json($course, 200);
+    }
     
 }
