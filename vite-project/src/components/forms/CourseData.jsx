@@ -17,6 +17,7 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
         dates: '',
         requirements: '',
     });
+    const [errors, setErrors] = useState({});
 
     const handleChange = (ev) => {
         const { name, value } = ev.target;
@@ -40,7 +41,38 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
         setImagePreview(null); // Clear the preview
     };
 
+    const validateForm = () => {
+        let formErrors = {};
+        if (!formData.name) {
+            formErrors.name = "Name is required";
+        }
+        if (!formData.description) {
+            formErrors.description = "Description is required";
+        }
+        if (!formData.host) {
+            formErrors.host = "Host is required";
+        }
+        if (!formData.semester) {
+            formErrors.semester = "Semester is required";
+        }
+        if (!formData.recommended_year) {
+            formErrors.recommended_year = "Recommended year is required";
+        }
+        if (!formData.dates) {
+            formErrors.dates = "Dates are required";
+        }
+        if (!formData.requirements) {
+            formErrors.requirements = "Requirements are required";
+        }
+        setErrors(formErrors);
+        return Object.keys(formErrors).length === 0;
+    };
+
     const handleSubmit = async () => {
+        if (!validateForm()) {
+            return;
+        }
+
         const formDataToSubmit = new FormData();
         formDataToSubmit.append('name', formData.name);
         formDataToSubmit.append('description', formData.description);
@@ -83,6 +115,9 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
                     type="text"
                     fullWidth
                     value={formData.name}
+                    required
+                    error={!!errors.name}
+                    helperText={errors.name}
                     onChange={handleChange}
                 />
                 <TextField
@@ -95,6 +130,9 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
                     rows={4}
                     fullWidth
                     value={formData.description}
+                    required
+                    error={!!errors.description}
+                    helperText={errors.description}
                     onChange={handleChange}
                 />
                 <TextField
@@ -105,6 +143,9 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
                     type="text"
                     fullWidth
                     value={formData.host}
+                    required
+                    error={!!errors.host}
+                    helperText={errors.host}
                     onChange={handleChange}
                 />
                 <div style={{ display: 'flex', gap: '16px' }}>
@@ -116,6 +157,9 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
                         type="text"
                         fullWidth
                         value={formData.semester}
+                        required
+                        error={!!errors.semester}
+                        helperText={errors.semester}
                         onChange={handleChange}
                     />
                     <TextField
@@ -126,6 +170,9 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
                         type="text"
                         fullWidth
                         value={formData.recommended_year}
+                        required
+                        error={!!errors.recommended_year}
+                        helperText={errors.recommended_year}
                         onChange={handleChange}
                     />
                 </div>
@@ -137,6 +184,9 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
                     type="text"
                     fullWidth
                     value={formData.dates}
+                    required
+                    error={!!errors.dates}
+                    helperText={errors.dates}
                     onChange={handleChange}
                 />
                 <TextField
@@ -147,6 +197,9 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
                     type="text"
                     fullWidth
                     value={formData.requirements}
+                    required
+                    error={!!errors.requirements}
+                    helperText={errors.requirements}
                     onChange={handleChange}
                 />
 
@@ -182,7 +235,7 @@ const CourseData = ({ open, handleClose, fetchCourses }) => {
                         <img
                             src={imagePreview}
                             alt="Preview"
-                            style={{ width: '100%', maxHeight: '200px', objectFit: 'contain'}}
+                            style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }}
                         />
                     </div>
                 )}
