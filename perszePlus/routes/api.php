@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/updateAttendance', [EventController::class, 'updateAttendance']);
     Route::post('/addPost', [PostController::class, 'store']);
     Route::post('/addComment', [CommentController::class, 'store']);
+    Route::post('/addCourse', [CourseController::class, 'store']);
 
 
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
