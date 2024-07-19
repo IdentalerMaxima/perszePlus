@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('image_path')->nullable();
             $table->string('semester');
-            $table->integer('recommended_year');
+            $table->string('recommended_year');
             $table->string('host');
             $table->text('requirements');
             $table->string('dates');
