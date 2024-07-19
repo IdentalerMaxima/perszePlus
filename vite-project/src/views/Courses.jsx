@@ -15,7 +15,6 @@ export default function Dashboard() {
     const fetchCourses = async () => {
         try {
             const response = await axiosClient.get('/getCourses');
-            console.log(response.data); // Log the response data
             setCourses(response.data);
             setLoading(false);
         } catch (error) {
@@ -41,8 +40,10 @@ export default function Dashboard() {
                     </Grid>
                 ) : (
                     courses.map(course => (
+                        //log
+                        console.log('Courses:', courses),
                         <Grid item key={course.id} xs={12} sm={6} md={4} style={{ display: 'flex' }}>
-                            <CourseCard course={course} style={{ height: '100%' }} />
+                            <CourseCard course={course} />
                         </Grid>
                     ))
                 )}
