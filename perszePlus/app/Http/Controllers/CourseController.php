@@ -133,5 +133,32 @@ class CourseController extends Controller
 
         return response()->json($course, 200);
     }
+
+    public function subscribeToCourse(Request $request, $id)
+    {
+        //logs
+        Log::info('User with id ' . $request->user()->id . ' subscribed to course with id ' . $id);
+
+        $course = Course::find($id);
+        if (!$course) {
+            return response()->json(['message' => 'Course not found'], 404);
+        }
+
+        $course->users()->attach($request->user()->id , ['status' => 'subscribed']);
+
+        return response()->json(['message' => 'Subscribed to course'], 200);
+    }
+
+    public function unsubscribeFromCourse(Request $request, $id)
+    {
+        $course = Course::find($id);
+        if (!$course) {
+            return response()->json(['message' => 'Course not found'], 404);
+        }
+
+        $course->users()->detach($request->user()->id );
+
+        return response()->json(['message' => 'Unsubscribed from course'], 200);
+    }
     
 }

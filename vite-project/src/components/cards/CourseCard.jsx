@@ -1,22 +1,42 @@
-import React from 'react';
+import { useState } from 'react';
 import { Card, CardActions, CardMedia, CardContent, Button, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Link } from 'react-router-dom';
 import './CourseCard.css'; 
 import { useStateContext } from '../../contexts/ContextProvider';
+import axiosClient from '../../axios';
 
 const MAX_DESCRIPTION_LENGTH = 100;
 
 const CourseCard = ({ course, onEdit, onDelete }) => {
 
-    const { isAdmin } = useStateContext();
+    const { currentUser, isAdmin } = useStateContext();
+    const [enrollClicked, setEnrollClicked] = useState(false);
     
     const truncateDescription = (description) => {
         if (description.length > MAX_DESCRIPTION_LENGTH) {
             return description.substring(0, MAX_DESCRIPTION_LENGTH) + '...';
         }
         return description;
+    };
+
+    const handleEnroll = async () => {
+        if (enrollClicked) {
+            try {
+                await axiosClient.post(`/unsubscribeFromCourse/${course.id}`, currentUser.id);
+                setEnrollClicked(false);
+            } catch (error) {
+                console.error('Error unsubscribing from course:', error);
+            }
+        } else {
+            try {
+                await axiosClient.post(`/subscribeToCourse/${course.id}`, currentUser.id);
+                setEnrollClicked(true);
+            } catch (error) {
+                console.error('Error subscribing to course:', error);
+            }
+        };
     };
 
     return (
@@ -53,11 +73,19 @@ const CourseCard = ({ course, onEdit, onDelete }) => {
                     <p>{truncateDescription(course.description)}</p>
                 </CardContent>
                 <CardActions style={{ marginTop: 'auto' }}>
-                    <Button fullWidth variant="contained" color="secondary">
-                        Enroll
-                    </Button>
-                    <Button fullWidth variant="contained" color="secondary">
-                        Results
+                    <Button 
+                        fullWidth 
+                        variant="contained" 
+                        color="secondary" 
+                        onClick={ 
+                            (e) => { e.preventDefault();
+                            handleEnroll();
+                        }}
+                        style={
+                            enrollClicked ? { backgroundColor: 'grey' } : { backgroundColor: 'green' }
+                        }
+                        >
+                        {enrollClicked ? 'Leiratkozás' : 'Feliratkozás'}
                     </Button>
                 </CardActions>
             </Card>
