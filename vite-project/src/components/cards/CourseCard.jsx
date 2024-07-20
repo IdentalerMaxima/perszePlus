@@ -4,10 +4,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Link } from 'react-router-dom';
 import './CourseCard.css'; 
+import { useStateContext } from '../../contexts/ContextProvider';
 
 const MAX_DESCRIPTION_LENGTH = 100;
 
 const CourseCard = ({ course, onEdit, onDelete }) => {
+
+    const { isAdmin } = useStateContext();
     
     const truncateDescription = (description) => {
         if (description.length > MAX_DESCRIPTION_LENGTH) {
@@ -29,7 +32,8 @@ const CourseCard = ({ course, onEdit, onDelete }) => {
                     {/* Container for name and icons */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <h2>{course.name}</h2>
-                        <div>
+                        {isAdmin && (
+                            <div>
                             {/* Edit and Delete buttons */}
                             <IconButton color="primary" onClick={(e) => {
                                 e.preventDefault();
@@ -44,6 +48,7 @@ const CourseCard = ({ course, onEdit, onDelete }) => {
                                 <DeleteIcon />
                             </IconButton>
                         </div>
+                        )}
                     </div>
                     <p>{truncateDescription(course.description)}</p>
                 </CardContent>

@@ -30,7 +30,7 @@ class CourseController extends Controller
             'dates' => 'required|string',
         ]);
 
-        $defaultImage = 'public/images/default_banner.jpg';
+        $defaultImage = 'public/images/default_images/default_banner.jpg';
     
         if ($request->hasFile('image')) {
             $image = $request->file('image')->store('public/images');
@@ -57,14 +57,31 @@ class CourseController extends Controller
     }
 
     public function destroy($id)
-    {
-        $course = Course::find($id);
-        if (!$course) {
-            return response()->json(['message' => 'Course not found'], 404);
-        }
-        $course->delete();
-        return response()->json(['message' => 'Course deleted'], 200);
+{
+    $course = Course::find($id);
+    if (!$course) {
+        return response()->json(['message' => 'Course not found'], 404);
     }
+
+    $strippedImagePath = strstr($course->image_path, 'images');
+
+    $defaultImagePath = 'images/default_images/default_banner.jpg';
+    if ($strippedImagePath !== null && $strippedImagePath !== $defaultImagePath) {
+
+        if (Storage::disk('public')->exists($strippedImagePath)) {
+
+            Storage::disk('public')->delete($strippedImagePath);
+
+        } else {
+            Log::warning('File does not exist: ' . $strippedImagePath);
+        }
+    }
+
+    $course->delete();
+
+    return response()->json(['message' => 'Course deleted'], 200);
+}
+
 
     public function update(Request $request, $id)
     {
