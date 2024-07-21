@@ -33,7 +33,6 @@ const CourseDetails = () => {
                                         width: '900px',
                                         height: '300px',
                                         objectFit: 'cover',
-                                        borderRadius: '1% 0 0 1%',
                                         borderRadius: isMobile ? '1% 1% 0 0' : '1% 0 0 1%'
                                     }}
                                 />
