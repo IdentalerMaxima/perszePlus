@@ -160,5 +160,17 @@ class CourseController extends Controller
 
         return response()->json(['message' => 'Unsubscribed from course'], 200);
     }
+
+    public function checkEnrollment(Request $request, $id)
+    {
+        $course = Course::find($id);
+        if (!$course) {
+            return response()->json(['message' => 'Course not found'], 404);
+        }
+
+        $isEnrolled = $course->users()->where('user_id', $request->user()->id)->exists();
+
+        return response()->json(['isEnrolled' => $isEnrolled], 200);
+    }
     
 }

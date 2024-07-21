@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardActions, CardMedia, CardContent, Button, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -7,18 +7,36 @@ import './CourseCard.css';
 import { useStateContext } from '../../contexts/ContextProvider';
 import axiosClient from '../../axios';
 
+
 const MAX_DESCRIPTION_LENGTH = 100;
 
 const CourseCard = ({ course, onEdit, onDelete }) => {
 
     const { currentUser, isAdmin } = useStateContext();
     const [enrollClicked, setEnrollClicked] = useState(false);
+
+    useEffect(() => {
+        checkEnrollment();
+    }, []);
     
     const truncateDescription = (description) => {
         if (description.length > MAX_DESCRIPTION_LENGTH) {
             return description.substring(0, MAX_DESCRIPTION_LENGTH) + '...';
         }
         return description;
+    };
+
+    const checkEnrollment = async () => {
+        try {
+            const response = await axiosClient.get(`/checkEnrollment/${course.id}`, currentUser.id);
+            console.log(response);
+            if (response.data.isEnrolled === true) {
+                setEnrollClicked(true);
+            }
+        }
+        catch (error) {
+            console.error('Error checking enrollment:', error);
+        }
     };
 
     const handleEnroll = async () => {

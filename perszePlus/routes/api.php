@@ -54,6 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/getPosts', [PostController::class, 'index']);
     Route::get('/getComments', [CommentController::class, 'index']);
     Route::get('/getCourses', [CourseController::class, 'index']);
+    Route::get('/checkEnrollment/{id}', [CourseController::class, 'checkEnrollment']);
 
     Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
     Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);
