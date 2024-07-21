@@ -10,11 +10,13 @@ export default function Members() {
   const [memberList, setMemberList] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    getMembers();
+  }, []);
+
   const getMembers = async () => {
-    // console.log('Fetching members');
     try {
       const response = await axiosClient.get('/getMemberList');
-      // console.log(response.data); // Log the response data
       setMemberList(response.data.users);
       setLoading(false);
     } catch (error) {
@@ -22,10 +24,6 @@ export default function Members() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    getMembers();
-  }, []);
 
   return (
     <PageComponent title={'Tagok'}>
@@ -48,8 +46,6 @@ export default function Members() {
                             <Avatar src={member.avatar_path} className="w-12 h-12 rounded-full" />
                             <div className="flex flex-col">
                               <span className="text-lg font-medium text-gray-800">{`${member.first_name} ${member.last_name}`}</span>
-                              {/* <p className="text-sm text-gray-500">{member.university ? member.university : ""}</p>
-                              <p className="text-sm text-gray-500">{member.faculty ? member.faculty : ""}</p> */}
                             </div>
                           </div>
                         </Link>

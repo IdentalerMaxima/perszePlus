@@ -4,8 +4,9 @@ import axiosClient from '../axios';
 import { useStateContext } from '../contexts/ContextProvider';
 import PageComponent from '../components/PageComponent';
 import Avatar from '@mui/material/Avatar';
-import { CircularProgress, useMediaQuery, Button, IconButton } from '@mui/material';
+import { CircularProgress, useMediaQuery, Button, IconButton, Card, CardContent, Typography, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
+import FileViewerDialog from '../components/popups/FileViewerDialog';
 
 const MemberProfile = () => {
   const { id } = useParams();
@@ -14,9 +15,17 @@ const MemberProfile = () => {
 
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(true);
+  const [documents, setDocuments] = useState([]);
+  const [selectedDocument, setSelectedDocument] = useState(null);
 
-  // Media query to check if the screen size is small (mobile view)
   const isMobile = useMediaQuery('(max-width: 600px)');
+
+  useEffect(() => {
+    fetchUserData();
+    if (isAdmin) {
+      fetchDocuments();
+    }
+  }, [id, isAdmin]);
 
   const fetchUserData = async () => {
     try {
@@ -28,24 +37,56 @@ const MemberProfile = () => {
     }
   };
 
-  useEffect(() => {
-    fetchUserData();
-  }, []);
+  const fetchDocuments = async () => {
+    try {
+      const response = await axiosClient.get(`/user/getDocumentsOfUser/${id}`);
+      setDocuments(response.data.documents);
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+    }
+  };
 
   const goBack = () => {
     navigate(-1);
   };
 
+  const handleViewDocument = (document) => {
+    console.log('document:', document);
+    getFile(document);
+  };
+
+  const getFile = async (file) => {
+    try {
+        console.log('file:', file);
+        const retrievedFile = await axiosClient.get(`/user/documents/show/${file.id}`, {
+            responseType: 'blob',
+        });
+        console.log('retrievedFile:', retrievedFile);
+        const fileURL = URL.createObjectURL(retrievedFile.data);
+        setSelectedDocument({
+            title: file.name,
+            type: file.type,
+            url: fileURL,
+        });
+    } catch (error) {
+        console.error('Error viewing file:', error);
+    }
+  };
+
+  const handleCloseDocument = () => {
+    setSelectedDocument(null);
+  };
+
   return (
     <PageComponent>
-      <div className={`flex flex-col ${isMobile ? 'items-center' : 'items-start'} bg-white rounded-lg shadow-2xl p-8`}>
+      <div className={`flex flex-col ${isMobile ? 'items-center' : 'items-start'} bg-white rounded-lg shadow-2xl p-8 mb-8`}>
         {loading ? (
           <div className="flex justify-center items-center h-72 w-full">
             <CircularProgress />
           </div>
         ) : (
           <div className="flex flex-col md:flex-row items-center w-full">
-            <IconButton onClick={goBack} className="">
+            <IconButton onClick={goBack}>
               <ArrowBackIcon />
             </IconButton>
             <div className="flex flex-col items-center md:w-1/5 mb-8 md:mb-0">
@@ -90,6 +131,55 @@ const MemberProfile = () => {
           </div>
         )}
       </div>
+      
+      {isAdmin && (
+        <Card className="bg-white rounded-lg shadow-2xl p-2">
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Documents uploaded by {userData.first_name} {userData.last_name}
+            </Typography>
+            {documents.length > 0 ? (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Title</TableCell>
+                    <TableCell>Description</TableCell>
+                    <TableCell>Date Uploaded</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {documents.map((doc) => (
+                    <TableRow key={doc.id}>
+                      <TableCell>{doc.name}</TableCell>
+                      <TableCell>{doc.type}</TableCell>
+                      <TableCell>{doc.last_modified}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleViewDocument(doc)}
+                        >
+                          View
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <Typography>No documents uploaded</Typography>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {selectedDocument && (
+        <FileViewerDialog
+          document={selectedDocument}
+          onClose={handleCloseDocument}
+        />
+      )}
     </PageComponent>
   );
 };
