@@ -42,8 +42,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
+
     Route::get('/user/documents', [DocumentController::class, 'index']);
+    Route::get('/user/getDocumentsOfUser/{id}', [DocumentController::class, 'getDocumentsOfUser']);
     Route::get('/user/documents/{id}', [DocumentController::class, 'download']);
+    Route::get('/user/documents/show/{id}', [DocumentController::class, 'show']);
+
     Route::get('/getMemberList', [UserDataController::class, 'getAllUsers']);
     Route::get('/user/{id}', [UserDataController::class, 'getUserById']);
     Route::get('/getEvents', [EventController::class, 'index']);
