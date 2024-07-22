@@ -7,7 +7,7 @@ import { useStateContext } from "../contexts/ContextProvider";
 import CourseData from "../components/forms/CourseData";
 
 export default function Dashboard() {
-    const { currentUser, isAdmin } = useStateContext();
+    const { isAdmin } = useStateContext();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [openCourseDialog, setOpenCourseDialog] = useState(false);
@@ -44,7 +44,6 @@ export default function Dashboard() {
     };
 
     const handleEditCourse = (course) => {
-        console.log('edit course', course);
         setSelectedCourse(course);
         setDialogMode('edit');
         setOpenCourseDialog(true);
@@ -62,7 +61,7 @@ export default function Dashboard() {
             )}
             <Grid container spacing={2} style={{ display: 'flex' }}>
                 {loading ? (
-                    <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Grid item xs={12} style={{ display: 'flex' }}>
                         <div className="flex items-center justify-center" style={{ minHeight: '200px' }}>
                             <CircularProgress />
                         </div>
@@ -75,7 +74,7 @@ export default function Dashboard() {
                     </Grid>
                 ) : (
                     courses.map(course => (
-                        <Grid item key={course.id} xs={12} sm={6} md={4} style={{ display: 'flex' }}>
+                        <Grid item key={course.id} xs={12} sm={12} md={5} lg={4} style={{ display: 'flex'}}>
                             <CourseCard course={course} onDelete={handleDeleteCourse} onEdit={handleEditCourse}/>
                         </Grid>
                     ))

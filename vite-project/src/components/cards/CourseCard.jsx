@@ -59,7 +59,7 @@ const CourseCard = ({ course, onEdit, onDelete }) => {
 
     return (
         <Link to={`/courses/${course.id}`} className="card" state={{ course }}>
-            <Card style={{ display: 'flex', flexDirection: 'column', height: '100%', minWidth: '400px'}}>
+            <Card style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '380px', justifyContent: 'center'}}>
                 <CardMedia
                     component="img"
                     height="100"
