@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FileUpload from '../../components/upload/FileUpload';
 import axiosClient from '../../axios';
 import DeleteFile from '../../components/popups/DeleteFile';
+import FileViewerDialog from '../../components/popups/FileViewerDialog';
 
 export default function DocumentsData() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -16,6 +17,7 @@ export default function DocumentsData() {
   const [checkboxedDocuments, setCheckboxedDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const isMobile = useMediaQuery('(max-width: 600px)');
+  const [selectedDocumentToView, setSelectedDocumentToView] = useState(null);
 
   const openUploadDialog = () => {
     setIsUploadClicked(true);
@@ -64,33 +66,33 @@ export default function DocumentsData() {
       if (response.headers && response.headers['content-disposition']) {
         const contentDisposition = response.headers['content-disposition'];
         const match = contentDisposition.match(/filename=([^;]+)/);
-        
+
         if (match && match[1]) {
           fileName = match[1].trim();
         } else {
           console.warn('Filename not found in Content-Disposition header.');
         }
       }
-  
+
       link.href = url;
       link.setAttribute('download', fileName);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-  
+
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading file:', error);
     }
   };
-  
+
 
   const downloadSelectedFiles = async () => {
     for (const file of checkboxedDocuments) {
       await downloadFile(file.id);
     }
-  };  
-  
+  };
+
 
   const getFileExtension = (fileName) => {
     const parts = fileName.split('.');
@@ -165,11 +167,37 @@ export default function DocumentsData() {
     }
   };
 
+  const handleViewDocument = (document) => {
+    getFile(document);
+  };
+
+  const getFile = async (file) => {
+    try {
+      console.log('file:', file);
+      const retrievedFile = await axiosClient.get(`/user/documents/show/${file.id}`, {
+        responseType: 'blob',
+      });
+      console.log('retrievedFile:', retrievedFile);
+      const fileURL = URL.createObjectURL(retrievedFile.data);
+      setSelectedDocumentToView({
+        title: file.name,
+        type: file.type,
+        url: fileURL,
+      });
+    } catch (error) {
+      console.error('Error viewing file:', error);
+    }
+  };
+
+  const handleCloseDocument = () => {
+    setSelectedDocumentToView(null);
+  }
+
 
   return (
     <div className='h-full relative'>
       {/* //"text-base font-semibold leading-7 text-gray-900 */}
-      <h2 className={ ` ${isMobile ? "text-base font-semibold leading-7 text-gray-900 mb-6 text-center" : "text-base font-semibold leading-7 text-gray-900" }` }>Uploaded Documents</h2>
+      <h2 className={` ${isMobile ? "text-base font-semibold leading-7 text-gray-900 mb-6 text-center" : "text-base font-semibold leading-7 text-gray-900"}`}>Uploaded Documents</h2>
 
       <div className='flex justify-end mb-10 space-x-4'>
         <div className="">
@@ -206,8 +234,8 @@ export default function DocumentsData() {
           />
           <div className="text-gray-600 font-semibold w-2/6 flex justify-start pl-20">Name</div>
           <div className="text-gray-600 font-semibold w-2/6 flex justify-start">Type</div>
-          <div className="text-gray-600 font-semibold w-1/6 flex justify-start pl-4">Size</div>
           <div className="text-gray-600 font-semibold w-1/6 flex justify-centre pl-4">Upload date</div>
+          <div className="text-gray-600 font-semibold w-1/6 flex justify-centre pl-4">Actions</div>
         </div>
       )}
 
@@ -244,13 +272,20 @@ export default function DocumentsData() {
                       <p>{file.type}</p>
                     </div>
 
-                    <div className="w-1/6 px-4">
-                      <p>{formatSize(file.size)}</p>
-                    </div>
-
                     <div className="w-1/6 pl-4 justify-end">
                       <p>{formatDate(file.last_modified)}</p>
                     </div>
+
+                    <div className="w-1/6 px-4">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleViewDocument(file)}
+                      >
+                        View
+                      </Button>
+                    </div>
+
                   </>
                 )}
               </div>
@@ -260,7 +295,7 @@ export default function DocumentsData() {
       </div>
 
       {!selectedDocument && (
-        <div className={ ` ${isMobile ? "flex justify-end" : "absolute bottom-4 right-4" } `}>
+        <div className={` ${isMobile ? "flex justify-end" : "absolute bottom-4 right-4"} `}>
           <Fab
             color="primary"
             aria-label="add"
@@ -282,21 +317,13 @@ export default function DocumentsData() {
         refreshFiles={fetchDocuments}
       />}
 
-      {selectedDocument && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <iframe
-            title="document"
-            className="w-3/4 h-3/4"
-            src={`http://127.0.0.1:8000/${selectedDocument.file_path}`}
-          />
-          <div
-            className="absolute top-4 right-4 bg-white rounded-full p-2 cursor-pointer"
-            onClick={() => setSelectedDocument(null)}
-          >
-            <CloseIcon />
-          </div>
-        </div>
+      {selectedDocumentToView && (
+        <FileViewerDialog
+          document={selectedDocumentToView}
+          onClose={handleCloseDocument}
+        />
       )}
+
     </div>
   );
 }
