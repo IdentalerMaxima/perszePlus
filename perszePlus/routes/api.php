@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AvatarUploadController;
+use App\Http\Controllers\CheckInController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\QrController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/changeCourseImage/{id}', [CourseController::class, 'changeCourseImage']);
     Route::post('/subscribeToCourse/{id}', [CourseController::class, 'subscribeToCourse']);
     Route::post('/unsubscribeFromCourse/{id}', [CourseController::class, 'unsubscribeFromCourse']);
+
+    //QR
+    Route::get('/checkIn', [CheckInController::class, 'checkIn']);
     
 
 
@@ -59,6 +64,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/getComments', [CommentController::class, 'index']);
     Route::get('/getCourses', [CourseController::class, 'index']);
     Route::get('/checkEnrollment/{id}', [CourseController::class, 'checkEnrollment']);
+
+    //QR
+    Route::get('/generateQr/{id}', [QrController::class, 'generate']);
 
     Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
     Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);

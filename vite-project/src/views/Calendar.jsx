@@ -1,85 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import PageComponent from "../components/PageComponent";
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Card, CardContent, Typography, Button, CircularProgress, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, List, ListItem, ListItemText } from '@mui/material'; // Import necessary components
+import { Card, CardContent, Typography, Button, CircularProgress, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, List, ListItem, ListItemText } from '@mui/material';
 import { useStateContext } from '../contexts/ContextProvider';
-import { Delete } from '@mui/icons-material';
+import { Delete, Edit } from '@mui/icons-material';
 import axiosClient from '../axios';
 import EventData from '../components/forms/EventData';
 import AttendeesDialog from '../components/popups/AttendeesDialog';
-import { Edit } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import { useMediaQuery } from '@mui/material';
-
 
 export default function Calendar() {
   const { currentUser, isAdmin } = useStateContext();
   const [events, setEvents] = useState([]);
-  const [open, setOpen] = useState(false); 
-  const [selectedEvent, setSelectedEvent] = useState(null); 
+  const [open, setOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [showAttendees, setShowAttendees] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [showOldEvents, setShowOldEvents] = useState(false);
+  const [qrCode, setQrCode] = useState(null);
+  const [qrCodeDialogOpen, setQrCodeDialogOpen] = useState(false);
 
-  // Media query to check if the screen size is small (mobile view)
   const isMobile = useMediaQuery('(max-width: 600px)');
-
-
 
   const handleOpen = () => {
     setOpen(true);
-  }
+  };
 
   const handleClose = () => {
     setOpen(false);
-  }
+  };
 
   const handleShowAttendees = (event) => {
     setSelectedEvent(event);
     setShowAttendees(true);
-  }
+  };
 
   const handleCloseAttendees = () => {
     setShowAttendees(false);
-  }
+  };
 
   const handleChange = (ev) => {
     const { name, value } = ev.target;
     setNewEvent((prevEvent) => ({ ...prevEvent, [name]: value }));
-  }
+  };
 
   const handleEdit = (event) => {
     setEditMode(true);
     setSelectedEvent(event);
     setOpen(true);
-  }
+  };
 
   const saveEditedEvent = async (editedEvent) => {
     try {
-      await axiosClient.put(`/editEvent/${editedEvent.id}`, editedEvent); // Example put request for updating event
-      fetchEvents(); // Refresh events after edit
+      await axiosClient.put(`/editEvent/${editedEvent.id}`, editedEvent);
+      fetchEvents();
       setSelectedEvent(null);
       setEditMode(false);
-      setOpen(false); // Close the form dialog after editing
+      setOpen(false);
     } catch (error) {
       console.error('Error editing event:', error);
     }
   };
 
-
   const fetchEvents = async () => {
-    console.log('Fetching events...');
     try {
       const response = await axiosClient.get('/getEvents');
       setEvents(response.data);
-      console.log('Events:', response.data);
     } catch (error) {
       console.error('Error fetching events:', error);
     }
   };
 
   const deleteEvent = async (eventId) => {
-    console.log('Deleting event:', eventId);
     try {
       await axiosClient.delete(`/deleteEvent/${eventId}`);
       fetchEvents();
@@ -89,7 +82,6 @@ export default function Calendar() {
   };
 
   const updateAttendance = async (eventId, userId, status) => {
-    console.log('Updating attendance:', eventId, userId, status);
     try {
       await axiosClient.post('/updateAttendance', { eventId, userId, status });
       fetchEvents();
@@ -103,20 +95,34 @@ export default function Calendar() {
     return userAttendance ? userAttendance.pivot.status : null;
   };
 
+  const handleShowQrCode = async (event) => {
+    setSelectedEvent(event);
+    try {
+      const response = await axiosClient.get(`/generateQr/${event.id}`);
+      const qrCodeBase64 = response.data.qr_code;
+      setQrCode(qrCodeBase64);
+      setQrCodeDialogOpen(true);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+    }
+  };
+
+  const handleCloseQrCodeDialog = () => {
+    setQrCodeDialogOpen(false);
+  };
+
   useEffect(() => {
     fetchEvents();
   }, []);
 
   return (
     <PageComponent title="Esemenyek">
-
       <div className={`flex flex-row ${isMobile ? 'justify-center' : ''}`}>
         {isAdmin && (
           <Button variant="contained" color="primary" style={{ marginBottom: '16px' }} onClick={handleOpen}>
             Create Event
           </Button>
         )}
-
         {isAdmin && (
           <Button
             variant="contained"
@@ -127,21 +133,16 @@ export default function Calendar() {
             {showOldEvents ? 'Hide Old Events' : 'Show Old Events'}
           </Button>
         )}
-
-
       </div>
 
       <InfiniteScroll
         dataLength={events.length}
         loader={<CircularProgress />}
         endMessage={
-          <p style={{ textAlign: 'center' }}>
-            {/* <b>Yay! You have seen it all</b> */}
-          </p>
+          <p style={{ textAlign: 'center' }}></p>
         }
       >
         {events.map((event) => (
-          // Only render event if showOldEvents is true or event date is in the future
           (showOldEvents || new Date(event.date) >= new Date()) && (
             <Card key={event.id} style={{ marginBottom: '16px', position: 'relative'}}>
               <CardContent>
@@ -173,6 +174,13 @@ export default function Calendar() {
                   </Button>
                   <Button variant="outlined" color="primary" onClick={() => handleShowAttendees(event)}>
                     Show Attendees
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => handleShowQrCode(event)} // Correctly pass event here
+                  >
+                    Show QR Code
                   </Button>
                 </div>
                 {isAdmin && (
@@ -206,7 +214,22 @@ export default function Calendar() {
         event={selectedEvent}
         saveEditedEvent={saveEditedEvent}
       />
+
       <AttendeesDialog open={showAttendees} handleClose={handleCloseAttendees} event={selectedEvent} />
+
+      {isAdmin && qrCode && (
+        <Dialog open={qrCodeDialogOpen} onClose={handleCloseQrCodeDialog}>
+        <DialogTitle>QR Code</DialogTitle>
+        <DialogContent>
+          {qrCode && <img src={`data:image/png;base64,${qrCode}`} alt="QR Code" />}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseQrCodeDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      )}
 
     </PageComponent>
   );
