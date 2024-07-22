@@ -7,12 +7,10 @@ import { Delete, Edit, ThumbUp, Comment } from '@mui/icons-material';
 import axiosClient from '../axios';
 import PostData from '../components/forms/PostData';
 import CommentData from '../components/forms/CommentData';
-import { use } from 'i18next';
 
 export default function Posts() {
     const { currentUser } = useStateContext();
     const [posts, setPosts] = useState([]);
-    const [comments, setComments] = useState([]);
 
     const [openEditPost, setOpenEditPost] = useState(false);
     const [openEditComment, setOpenEditComment] = useState(false);
@@ -27,18 +25,17 @@ export default function Posts() {
     const [commentBoxVisible, setCommentBoxVisible] = useState({});
     const [postContent, setPostContent] = useState('');
 
-    const [canEdit, setCanEdit] = useState(false);
-
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchPosts();
     }, []);
 
-    //Post logic
     const fetchPosts = async () => {
         try {
             const response = await axiosClient.get('/getPosts');
             setPosts(response.data);
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching posts:', error);
         }
@@ -77,18 +74,18 @@ export default function Posts() {
         setOpenEditPost(false);
     };
 
-    const likePost = (postId) => {
-        const updatedPosts = posts.map(post => {
-            if (post.id === postId) {
-                return {
-                    ...post,
-                    likes: post.likes + 1
-                };
-            }
-            return post;
-        });
-        setPosts(updatedPosts);
-    };
+    // const likePost = (postId) => {
+    //     const updatedPosts = posts.map(post => {
+    //         if (post.id === postId) {
+    //             return {
+    //                 ...post,
+    //                 likes: post.likes + 1
+    //             };
+    //         }
+    //         return post;
+    //     });
+    //     setPosts(updatedPosts);
+    // };
 
     const saveEditedPost = async (editedPost) => {
         try {
@@ -102,7 +99,6 @@ export default function Posts() {
         }
     };
 
-    //Comment logic
     const submitComment = async (postId) => {
         try {
             const response = await axiosClient.post('/addComment', {
@@ -182,7 +178,12 @@ export default function Posts() {
                 </Box>
             </div>
 
-            <InfiniteScroll
+            {loading ? (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <CircularProgress />
+                </div>
+            ) : (
+                <InfiniteScroll
                 dataLength={posts.length}
                 loader={<CircularProgress />}
                 endMessage={<p style={{ textAlign: 'center' }}><b>That's all folks!</b></p>}
@@ -261,6 +262,7 @@ export default function Posts() {
                                     </Box>
                                 )}
                             </div>
+
                             {currentUser && (currentUser.id === post.author.id || currentUser.category == 'admin') && (
                                 <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
                                     <IconButton
@@ -277,10 +279,12 @@ export default function Posts() {
                                     </IconButton>
                                 </Box>
                             )}
+
                         </CardContent>
                     </Card>
                 ))}
             </InfiniteScroll>
+            )}
 
             <PostData
                 open={openEditPost}
