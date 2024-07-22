@@ -20,6 +20,7 @@ export default function Calendar() {
   const [showOldEvents, setShowOldEvents] = useState(false);
   const [qrCode, setQrCode] = useState(null);
   const [qrCodeDialogOpen, setQrCodeDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const isMobile = useMediaQuery('(max-width: 600px)');
 
@@ -67,6 +68,7 @@ export default function Calendar() {
     try {
       const response = await axiosClient.get('/getEvents');
       setEvents(response.data);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching events:', error);
     }
@@ -135,7 +137,12 @@ export default function Calendar() {
         )}
       </div>
 
-      <InfiniteScroll
+      { loading ? (
+        <div className="flex justify-center items-center h-96">
+          <CircularProgress />
+        </div>
+      ) : (
+        <InfiniteScroll
         dataLength={events.length}
         loader={<CircularProgress />}
         endMessage={
@@ -204,6 +211,7 @@ export default function Calendar() {
           )
         ))}
       </InfiniteScroll>
+      )}
 
       <EventData
         open={open}
