@@ -1,9 +1,11 @@
-import PageComponent from "../components/PageComponent";
+import React from "react";
+import QrReaderComponent from "../components/qr/QrReaderComponent";
 
-export default function Dashboard() {
+const Attendance = () => {
     return (
-        <PageComponent title={'Jelenleti iv modul'}>
-            Jelenleti iv modul komponensek
-        </PageComponent>
+        <QrReaderComponent />
+
     );
-}
+};
+
+export default Attendance;
