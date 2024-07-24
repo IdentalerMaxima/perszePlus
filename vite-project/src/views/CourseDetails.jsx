@@ -15,9 +15,6 @@ const CourseDetails = () => {
     const course = location.state?.course || {};
     const isMobile = useMediaQuery('(max-width: 600px)');
     const [enrollClicked, setEnrollClicked] = useState(false);
-    const [showAttendees, setShowAttendees] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState(null);
-
     useEffect(() => {
         checkEnrollment();
     }, []);
@@ -63,7 +60,7 @@ const CourseDetails = () => {
                 <IconButton onClick={goBack}>
                     <ArrowBackIcon />
                 </IconButton>
-                <Card style={{ display: 'flex', height: '100%' }}>
+<                Card style={{ display: 'flex', height: '100%' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={4} style={{ display: 'flex', flexDirection: 'column' }}>
                             <Box style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>

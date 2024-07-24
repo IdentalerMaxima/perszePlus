@@ -79,8 +79,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('editComment/{id}', [CommentController::class, 'update']);
     Route::put('editCourse/{id}', [CourseController::class, 'update']);
 
-
-
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
