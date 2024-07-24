@@ -1,16 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Grid, Card, CardContent, Typography, Button, Dialog, DialogTitle, DialogContent, IconButton
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import EventIcon from '@mui/icons-material/Event';
 import CloseIcon from '@mui/icons-material/Close';
-import PageComponent from '../components/PageComponent';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { QrReader } from '@blackbox-vision/react-qr-reader';
+import PageComponent from '../components/PageComponent';
+import axiosClient from '../axios';
 
 const Attendance = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
+
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -18,8 +22,30 @@ const Attendance = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setDecodedText(''); // Reset decoded text
+    setData(''); // Reset decoded text
   };
+
+  useEffect(() => {
+    if (data) {
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        handleUserCheckIn();
+        closeModal();
+      }, 2000);
+    };
+  }, [data]);
+
+  const handleUserCheckIn = async () => {
+    try {
+      const response = await axiosClient.post('/checkInEvent', { eventId: data.text });
+    }
+    catch (error) {
+      console.error('Error checking in user:', error);
+    }
+  };
+
+
 
   return (
     <PageComponent title="Attendance">
@@ -102,24 +128,45 @@ const Attendance = () => {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
-          <QrReader
-            onResult={(result, error) => {
-              if (!!result) {
-                setData(result?.text);
-              }
 
-              if (!!error) {
-                console.info(error);
-              }
-            }}
-            style={{ width: '100%' }}
-          />
-          <p>{data}</p>
+        <DialogContent>
+            <QrReader
+              onResult={(result, error) => {
+                if (result) {
+                  setData(result.text);
+                }
+                if (error) {
+                  // Handle error (optional)
+                }
+              }}
+            />
+            
+          {/* Success Animation */}
+      {showSuccess && (
+        <div style={successAnimationStyle}>
+          <CheckCircleIcon style={{ fontSize: '100px', color: 'green' }} />
+          <Typography variant="h4" style={{ color: 'green' }}>Success!</Typography>
+        </div>
+      )}
         </DialogContent>
       </Dialog>
+
+      
     </PageComponent>
   );
+};
+
+const successAnimationStyle = {
+  position: 'fixed',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  textAlign: 'center',
+  zIndex: 1000,
+  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  borderRadius: '8px',
+  padding: '20px',
+  boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
 };
 
 export default Attendance;
