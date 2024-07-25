@@ -115,6 +115,12 @@ const MemberProfile = () => {
           <span className="material-icons text-red-300">Not going</span>
         </div>
       );
+    } else if (status === 'not_answered') {
+      return (
+        <div className="flex items-center">
+          <span className="material-icons text-gray-300">Not answered</span>
+        </div>
+      );
     }
   }
 
