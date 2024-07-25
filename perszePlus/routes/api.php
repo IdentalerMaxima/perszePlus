@@ -31,8 +31,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/upload/avatar', [AvatarUploadController::class, 'upload']);
     Route::post('/upload/file', [DocumentController::class, 'upload']);
     Route::post('/user/info', [UserDataController::class, 'saveUserData']);
+    
+
+    //EVENTS
     Route::post('/addEvent', [EventController::class, 'store']);
     Route::post('/updateAttendance', [EventController::class, 'updateAttendance']);
+    Route::post('/updateMissedEvents', [EventController::class, 'updateMissedEvents']);
+
     Route::post('/addPost', [PostController::class, 'store']);
     Route::post('/addComment', [CommentController::class, 'store']);
     Route::post('/addCourse', [CourseController::class, 'store']);

@@ -139,4 +139,29 @@ class EventController extends Controller
         return response()->json($events, 200);
     }
 
+    public function updateMissedEvents()
+    {
+        $now = now();
+        $events = Event::where('date', '<', $now)->get();
+
+        foreach ($events as $event)
+        {
+            $usersToUpdate = $event->users()
+                                    ->wherePivot('status', '!=', 'went')
+                                    ->wherePivot('status', '!=', 'missed')
+                                    ->get();
+
+            foreach ($usersToUpdate as $user)
+            {
+                $event->users()->updateExistingPivot($user->id, ['status' => 'missed']);
+            }
+        }
+
+        
+
+        return response()->json([
+            'message' => 'Missed events updated successfully'
+        ], 200);
+    }
+
 }
