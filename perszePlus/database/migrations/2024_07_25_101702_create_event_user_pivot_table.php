@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('event_user', function (Blueprint $table) {
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('status', ['going', 'not_going', 'not_answered'])->default('not_answered');
+            $table->enum('status', ['going', 'not_going', 'not_answered', 'went', 'missed'])->default('not_answered');
             $table->primary(['event_id', 'user_id']);
             $table->timestamps();
         });
