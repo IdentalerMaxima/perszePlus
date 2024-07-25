@@ -17,6 +17,7 @@ const MemberProfile = () => {
   const [loading, setLoading] = useState(true);
   const [documents, setDocuments] = useState([]);
   const [selectedDocument, setSelectedDocument] = useState(null);
+  const [eventsOfUser, setEventsOfUser] = useState([]);
 
   const isMobile = useMediaQuery('(max-width: 600px)');
 
@@ -24,6 +25,7 @@ const MemberProfile = () => {
     fetchUserData();
     if (isAdmin) {
       fetchDocuments();
+      getEventsOfUser();
     }
   }, [id, isAdmin]);
 
@@ -76,6 +78,45 @@ const MemberProfile = () => {
   const handleCloseDocument = () => {
     setSelectedDocument(null);
   };
+
+  const getEventsOfUser = async () => {
+    try {
+      const response = await axiosClient.get(`/getEventsOfUser/${id}`);
+      console.log('events of user:', response);
+      setEventsOfUser(response.data);
+    }
+    catch (error) {
+      console.error('Error getting events of user:', error);
+    }
+  };
+
+  const setStatusAndIcon = (status) => {
+    if (status === 'went') {
+      return (
+        <div className="flex items-center">
+          <span className="material-icons text-green-500">Went</span>
+        </div>
+      );
+    } else if (status === 'missed') {
+      return (
+        <div className="flex items-center">
+          <span className="material-icons text-red-500">Missed</span>
+        </div>
+      );
+    } else if (status === 'going') {
+      return (
+        <div className="flex items-center">
+          <span className="material-icons text-green-300">Going</span>
+        </div>
+      );
+    } else if (status === 'not_going') {
+      return (
+        <div className="flex items-center">
+          <span className="material-icons text-red-300">Not going</span>
+        </div>
+      );
+    }
+  }
 
   return (
     <PageComponent>
@@ -170,6 +211,35 @@ const MemberProfile = () => {
             ) : (
               <Typography>No documents uploaded</Typography>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* list of what events user attended and missed */}
+      {isAdmin && (
+        <Card className="bg-white rounded-lg shadow-2xl p-2 mt-8">
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Attendance
+            </Typography>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Event Name</TableCell>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {eventsOfUser.map((event) => (
+                  <TableRow key={event.id}>
+                    <TableCell>{event.title}</TableCell>
+                    <TableCell>{event.date}</TableCell>
+                    <TableCell>{setStatusAndIcon(event.pivot.status)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       )}
