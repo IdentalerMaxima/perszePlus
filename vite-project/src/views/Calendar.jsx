@@ -113,6 +113,15 @@ export default function Calendar() {
     setQrCodeDialogOpen(false);
   };
 
+  const handleUpdateEvents = async () => {
+    try {
+      await axiosClient.post('/updateMissedEvents')
+      fetchEvents();
+    } catch (error) {
+      console.error('Error updating events:', error);
+    }
+  };
+
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -162,33 +171,49 @@ export default function Calendar() {
                 <Typography variant="body2">
                   {event.description}
                 </Typography>
+
                 <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={() => updateAttendance(event.id, currentUser.id, 'going')}
-                    disabled={getUserAttendanceStatus(event, currentUser.id) === 'going'}
+                    disabled={getUserAttendanceStatus(event, currentUser.id) === ('going' || 'went')  }
                   >
-                    Attend
+                    Going
                   </Button>
+
                   <Button
                     variant="contained"
                     color="secondary"
                     onClick={() => updateAttendance(event.id, currentUser.id, 'not_going')}
                     disabled={getUserAttendanceStatus(event, currentUser.id) === 'not_going'}
                   >
-                    Can't Attend
+                    Can't go
                   </Button>
+
                   <Button variant="outlined" color="primary" onClick={() => handleShowAttendees(event)}>
                     Show Attendees
                   </Button>
-                  <Button
+
+                  { isAdmin && (
+                    <Button
                     variant="outlined"
                     color="primary"
                     onClick={() => handleShowQrCode(event)} // Correctly pass event here
                   >
-                    Show QR Code
+                  QR Code
                   </Button>
+                  )}
+
+                  { isAdmin && (
+                    <Button
+                    variant="outlined"
+                    onClick={ handleUpdateEvents }>
+                    End Event
+                  </Button>
+                  )}
+
                 </div>
                 {isAdmin && (
                   <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px'}}>
