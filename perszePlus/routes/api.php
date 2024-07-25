@@ -28,7 +28,6 @@ use App\Http\Controllers\QrController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-
     Route::post('/upload/avatar', [AvatarUploadController::class, 'upload']);
     Route::post('/upload/file', [DocumentController::class, 'upload']);
     Route::post('/user/info', [UserDataController::class, 'saveUserData']);
@@ -42,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/unsubscribeFromCourse/{id}', [CourseController::class, 'unsubscribeFromCourse']);
 
     //QR
-    Route::get('/checkIn', [CheckInController::class, 'checkIn']);
+    Route::post('/checkInEvent', [CheckInController::class, 'checkInEvent']);
     
 
 
@@ -55,7 +54,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/getMemberList', [UserDataController::class, 'getAllUsers']);
     Route::get('/user/{id}', [UserDataController::class, 'getUserById']);
+
     Route::get('/getEvents', [EventController::class, 'index']);
+    Route::get('/getEventsOfUser/{id}', [EventController::class, 'getEventsOfUser']);
+    
     Route::get('/getUsersByCategory', [UserDataController::class, 'getUsersByCategory']);
     Route::get('/getCountOfDocumentsByType', [DocumentController::class, 'getCountOfDocumentsByType']);
     Route::get('/getUsersByLevelOfEducation', [UserDataController::class, 'getUsersByLevelOfEducation']);
