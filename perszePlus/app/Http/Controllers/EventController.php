@@ -83,12 +83,17 @@ class EventController extends Controller
             ], 404);
         }
 
-        // Sync the user's attendance status, without detaching any other records
-        $event->users()->sync([$user->id => ['status' => $status]], false);
+        $existingEvent = $event->users()->where('user_id', $user->id)->exists();
 
-        // Respond with a success message
-        return response()->json(['message' => 'Attendance updated successfully'], 200);
+        if ($existingEvent) {
+            $event->users()->updateExistingPivot($user->id, ['status' => $status]);
+        } else {
+            $event->users()->attach($user->id, ['status' => $status]);
+        }
 
+        return response()->json([
+            'message' => 'Attendance updated successfully'
+        ], 200);
     }
 
     public function update(Request $request, $id)
@@ -117,6 +122,21 @@ class EventController extends Controller
             'message' => 'Event updated successfully',
             'event' => $event
         ], 200);
+    }
+
+    public function getEventsOfUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $events = $user->events()->withPivot('status')->get();
+
+        return response()->json($events, 200);
     }
 
 }
