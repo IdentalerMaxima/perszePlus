@@ -1,9 +1,9 @@
 import { Fragment, useEffect, useState } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Link, NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { useStateContext } from '../contexts/ContextProvider'
 import axiosClient from '../axios'
+import { DisclosureButton, DisclosurePanel, MenuButton, MenuItem, MenuItems, Transition, Menu, Disclosure } from '@headlessui/react'
 
 
 
@@ -18,7 +18,10 @@ function classNames(...classes) {
 
 export default function DefaultLayout() {
   const { currentUser, userToken, setCurrentUser, setUserToken } = useStateContext('');
+
   const [avatarPath, setAvatarPath] = useState(currentUser.avatar_path || '');
+  const [showNotifications, setShowNotifications] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,6 +45,11 @@ export default function DefaultLayout() {
         setUserToken(null);
       })
   }
+
+  const openNotifications = () => {
+    console.log('openNotifications');
+    setShowNotifications(!showNotifications);
+  };
 
   const navigation = [
     { name: 'Főoldal', to: '/' },
@@ -83,28 +91,21 @@ export default function DefaultLayout() {
                     </div>
                   </div>
                   <div className="hidden md:block">
-                    <div className="ml-4 flex items-center md:ml-6">
-                      <button
-                        type="button"
-                        className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                      >
-                        <span className="absolute -inset-1.5" />
-                        <span className="sr-only">View notifications</span>
-                        <BellIcon className="h-6 w-6" aria-hidden="true" />
-                      </button>
 
-                      {/* Profile dropdown */}
+                    {/* Notification button */}
+
+                    <div className="ml-4 flex items-center md:ml-6">
                       <Menu as="div" className="relative ml-3">
                         <div>
-                          <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                          <MenuButton
+                            type="MenuButton"
+                            className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                          //onClick={openNotifications}
+                          >
                             <span className="absolute -inset-1.5" />
-                            <span className="sr-only">Open user menu</span>
-                            <div className="flex-shrink-0">
-                              <div className="h-10 w-10 rounded-full overflow-hidden">
-                                <img className="h-full w-full object-cover" src={avatarPath || "../../src/assets/defaultAvatar.PNG"} alt="" />
-                              </div>
-                            </div>
-                          </Menu.Button>
+                            <span className="sr-only">View notifications</span>
+                            <BellIcon className="h-6 w-6" aria-hidden="true" />
+                          </MenuButton>
                         </div>
                         <Transition
                           as={Fragment}
@@ -115,9 +116,45 @@ export default function DefaultLayout() {
                           leaveFrom="transform opacity-100 scale-100"
                           leaveTo="transform opacity-0 scale-95"
                         >
-                          <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                          <MenuItems className="absolute right-0 z-10 mt-2 w-80 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            <MenuItem as="div"> item 1</MenuItem>
+                            <MenuItem as="div"> item 1</MenuItem>
+                            <MenuItem as="div"> item 1</MenuItem>
+                            <MenuItem as="div"> item 1</MenuItem>   
+                          </MenuItems>
+                        </Transition>
+                      </Menu>
+
+
+
+
+                      {/* Profile dropdown */}
+                      <Menu as="div" className="relative ml-3">
+                        <div>
+                          <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm
+                           focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 ">
+                            
+                            <span className="absolute -inset-1.5" />
+                            <span className="sr-only">Open user menu</span>
+                            <div className="flex-shrink-0">
+                              <div className="h-10 w-10 rounded-full overflow-hidden">
+                                <img className="h-full w-full object-cover" src={avatarPath || "../../src/assets/defaultAvatar.PNG"} alt="" />
+                              </div>
+                            </div>
+                          </MenuButton>
+                        </div>
+                        <Transition
+                          as={Fragment}
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
+                        >
+                          <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                             {userNavigation.map((item) => (
-                              <Menu.Item key={item.name}>
+                              <MenuItem key={item.name}>
                                 {({ active }) => (
                                   <Link
                                     to={item.to}
@@ -129,24 +166,24 @@ export default function DefaultLayout() {
                                     {item.name}
                                   </Link>
                                 )}
-                              </Menu.Item>
+                              </MenuItem>
                             ))}
-                            <Menu.Item>
+                            <MenuItem>
                               <button
                                 onClick={(ev) => logout(ev)}
                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                               >
                                 Sign out
                               </button>
-                            </Menu.Item>
-                          </Menu.Items>
+                            </MenuItem>
+                          </MenuItems>
                         </Transition>
                       </Menu>
                     </div>
                   </div>
                   <div className="-mr-2 flex md:hidden">
                     {/* Mobile menu button */}
-                    <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                    <DisclosureButton className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="absolute -inset-0.5" />
                       <span className="sr-only">Open main menu</span>
                       {open ? (
@@ -154,12 +191,12 @@ export default function DefaultLayout() {
                       ) : (
                         <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
                       )}
-                    </Disclosure.Button>
+                    </DisclosureButton>
                   </div>
                 </div>
               </div>
 
-              <Disclosure.Panel className="md:hidden">
+              <DisclosurePanel className="md:hidden">
                 <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
                   {navigation.map((item) => (
                     <NavLink
@@ -197,7 +234,7 @@ export default function DefaultLayout() {
                       </NavLink>
                     ))}
 
-                    <Disclosure.Button
+                    <DisclosureButton
                       as="a"
                       href="#"
                       onClick={(ev) => logout(ev)}
@@ -205,11 +242,11 @@ export default function DefaultLayout() {
 
                     >
                       Sign out
-                    </Disclosure.Button>
+                    </DisclosureButton>
 
                   </div>
                 </div>
-              </Disclosure.Panel>
+              </DisclosurePanel>
             </>
           )}
         </Disclosure>
