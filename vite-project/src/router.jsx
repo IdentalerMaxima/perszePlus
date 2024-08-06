@@ -20,6 +20,7 @@ import ResetPassword from './components/forms/ResetPassword.jsx';
 import Login from './views/Login.jsx';
 import Signup from './views/Signup.jsx';
 import MemberProfile from './views/MemberProfile.jsx';
+import Messages from './views/Messages.jsx';
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
       { path: '/settings', element: <Settings /> },
       { path: '/profile', element: <Profile />},
       { path: '/stats', element: <Stats />},
+      { path: '/messages', element: <Messages />},
       
       // Redirect /dashboard to root /
       { path: '/dashboard', element: <Navigate to="/" /> },
