@@ -20,6 +20,7 @@ class Message extends Model
         'sender_id',  // Foreign key to the sender (assumes sender is a User)
         'receiver_id',  // Foreign key to the receiver (assumes receiver is a User)
         'message',    // The content of the message
+        'read'
     ];
 
     // Define relationships to the User model

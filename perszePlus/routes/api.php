@@ -52,6 +52,8 @@ Route::middleware('auth:sanctum')->group(function () {
     //Messages
     Route::get('/messages', [MessageController::class, 'index']);
     Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
+    Route::put('/messages/{id}/read', [MessageController::class, 'markAsRead']);
+
 
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
 

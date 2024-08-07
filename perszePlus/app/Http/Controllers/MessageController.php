@@ -24,13 +24,14 @@ class MessageController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-         // Transform the messages array
-         $transformedMessages = $messages->map(function ($message) {
+        // Transform the messages array
+        $transformedMessages = $messages->map(function ($message) {
             return [
                 'id' => $message->id,
                 'senderName' => $message->sender->first_name . ' ' . $message->sender->last_name,
                 'senderAvatar' => $message->sender->avatar_path,
                 'message' => $message->message,
+                'read' => $message->read
             ];
         });
 
@@ -91,7 +92,19 @@ class MessageController extends Controller
         } else {
             return response()->json(['message' => 'Message not found'], 404);
         }
-        
+
 
     }
+
+    public function markAsRead($id)
+    {
+        $message = Message::find($id);
+        if ($message) {
+            $message->read = true;
+            $message->save();
+            return response()->json(['message' => 'Message marked as read']);
+        }
+        return response()->json(['error' => 'Message not found'], 404);
+    }
+
 }

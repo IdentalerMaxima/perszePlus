@@ -25,7 +25,7 @@ const trimMessage = (message, maxLength) => {
 };
 
 export default function DefaultLayout() {
-  const { currentUser, userToken, setCurrentUser, setUserToken, setSelectedMessageId } = useStateContext();
+  const { currentUser, userToken, setCurrentUser, setUserToken, setSelectedMessageId, selectedMessageId } = useStateContext();
   const [avatarPath, setAvatarPath] = useState(currentUser.avatar_path || '');
   const [messages, setMessages] = useState([]);
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ export default function DefaultLayout() {
       const response = await axiosClient.get('/messages');
       const data = response.data;
       // Get the last 5 messages
-      const lastFiveMessages = data.slice(-5);
+      const lastFiveMessages = data.slice(0, 5);
       setMessages(lastFiveMessages);
     } catch (error) {
       console.error(error);
@@ -44,7 +44,7 @@ export default function DefaultLayout() {
 
   useEffect(() => {
     getMessagesOfUser();
-  }, []);
+  }, [selectedMessageId]);
 
   useEffect(() => {
     setAvatarPath(currentUser.avatar_path || '');
@@ -66,9 +66,24 @@ export default function DefaultLayout() {
       });
   };
 
-  const handleMessageClick = (messageId) => {
-    setSelectedMessageId(messageId);
-    navigate(`/messages`);
+  const handleMessageClick = async (messageId) => {
+    try {
+      // Mark message as read in the backend
+      await axiosClient.put(`/messages/${messageId}/read`);
+
+      // Update the message state to reflect the read status
+      setMessages((prevMessages) =>
+        prevMessages.map((message) =>
+          message.id === messageId ? { ...message, read: true } : message
+        )
+      );
+
+      // Set selected message ID in context and navigate
+      setSelectedMessageId(messageId);
+      navigate(`/messages`);
+    } catch (error) {
+      console.error('Failed to mark message as read', error);
+    }
   };
 
   const navigation = [
@@ -144,7 +159,7 @@ export default function DefaultLayout() {
                                   <Avatar src={message.senderAvatar} alt={message.senderName} />
                                   <div className="ml-4">
                                     <div className="text-sm font-medium text-gray-900">{message.senderName}</div>
-                                    <div className="text-sm text-gray-500 truncate" style={{ maxWidth: '200px' }}>
+                                    <div className={`text-sm text-gray-500 truncate ${!message.read ? 'font-bold' : ''}`} style={{ maxWidth: '200px' }}>
                                       {trimMessage(message.message, 50)}
                                     </div>
                                   </div>
