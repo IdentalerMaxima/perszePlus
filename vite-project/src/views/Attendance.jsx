@@ -32,13 +32,15 @@ const Attendance = () => {
         setShowSuccess(false);
         handleUserCheckIn();
         closeModal();
+        //window.location.reload(); 
       }, 2000);
     };
   }, [data]);
 
   const handleUserCheckIn = async () => {
+    console.log('Checking in user with ID:', data);
     try {
-      const response = await axiosClient.post('/checkInEvent', { eventId: data.text });
+      const response = await axiosClient.post('/checkInEvent', { eventId: data });
     }
     catch (error) {
       console.error('Error checking in user:', error);
@@ -50,7 +52,7 @@ const Attendance = () => {
   return (
     <PageComponent title="Attendance">
       <Grid container spacing={3} className="flex justify-center">
-        <Grid item xs={12} sm={4} md={3} className="flex justify-center">
+        {/* <Grid item xs={12} sm={4} md={3} className="flex justify-center">
           <Button
             component={Card}
             style={{
@@ -77,7 +79,7 @@ const Attendance = () => {
               />
             </CardContent>
           </Button>
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={12} sm={4} md={3} className="flex justify-center">
           <Button
@@ -90,11 +92,11 @@ const Attendance = () => {
               boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .1)',
               borderRadius: '8px',
             }}
-            onClick={() => console.log("Esemenyre valo becsekkolas button clicked")}
+            onClick={openModal}
           >
             <CardContent className="rounded-md flex flex-col items-center">
               <Typography variant="h6">
-                Esemeny
+                Check In
               </Typography>
               <EventIcon
                 style={{
@@ -134,12 +136,17 @@ const Attendance = () => {
               onResult={(result, error) => {
                 if (result) {
                   setData(result.text);
+                  result = null;
                 }
                 if (error) {
                   // Handle error (optional)
                 }
               }}
             />
+
+            <Button onClick={() => {
+              setData('26');
+            }}>Simulate success</Button>
             
           {/* Success Animation */}
       {showSuccess && (
