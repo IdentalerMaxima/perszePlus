@@ -28,6 +28,7 @@ export default function DefaultLayout() {
   const { currentUser, userToken, setCurrentUser, setUserToken, setSelectedMessageId, selectedMessageId } = useStateContext();
   const [avatarPath, setAvatarPath] = useState(currentUser.avatar_path || '');
   const [messages, setMessages] = useState([]);
+  const [unreadMessages, setUnreadMessages] = useState(0);
   const navigate = useNavigate();
 
   const getMessagesOfUser = async () => {
@@ -37,6 +38,10 @@ export default function DefaultLayout() {
       // Get the last 5 messages
       const lastFiveMessages = data.slice(0, 5);
       setMessages(lastFiveMessages);
+      // Count the number of unread messages
+      const unreadCount = data.filter((message) => !message.read).length;
+      setUnreadMessages(unreadCount);
+      console.log('Unread messages:', unreadCount);
     } catch (error) {
       console.error(error);
     }
@@ -134,7 +139,14 @@ export default function DefaultLayout() {
                             className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                           >
                             <span className="sr-only">View notifications</span>
-                            <BellIcon className="h-6 w-6" aria-hidden="true" />
+                            <div className="relative">
+                              <BellIcon className="h-6 w-6" aria-hidden="true" />
+                              {unreadMessages > 0 && (
+                                <span className="absolute top-0 right-0 inline-flex h-3 w-3 items-center justify-center rounded-full text-white text-xs font-bold bg-gray-800">
+                                  {unreadMessages}
+                                </span>
+                              )}
+                            </div>
                           </Menu.Button>
                         </div>
                         <Transition
@@ -256,7 +268,14 @@ export default function DefaultLayout() {
                       className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     >
                       <span className="sr-only">View notifications</span>
-                      <BellIcon className="h-6 w-6" aria-hidden="true" />
+                      <div className="relative">
+                        <BellIcon className="h-6 w-6" aria-hidden="true" />
+                        {unreadMessages > 0 && (
+                          <span className="absolute top-0 right-0 inline-flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold">
+                            {unreadMessages}
+                          </span>
+                        )}
+                      </div>
                     </button>
                   </div>
 
