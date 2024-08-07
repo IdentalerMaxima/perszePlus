@@ -1,28 +1,50 @@
-import { Fragment, useEffect, useState } from 'react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Link, NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom'
-import { useStateContext } from '../contexts/ContextProvider'
-import axiosClient from '../axios'
-import { DisclosureButton, DisclosurePanel, MenuButton, MenuItem, MenuItems, Transition, Menu, Disclosure } from '@headlessui/react'
-
-
+import { Fragment, useEffect, useState } from 'react';
+import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Link, NavLink, useNavigate, Outlet } from 'react-router-dom';
+import { useStateContext } from '../contexts/ContextProvider';
+import axiosClient from '../axios';
+import { Menu, Transition, Disclosure } from '@headlessui/react';
+import Avatar from '@mui/material/Avatar';
+import { ListItemButton } from '@mui/material';
 
 const userNavigation = [
   { name: 'Your Profile', to: '/profile' },
   { name: 'Settings', to: '/settings' },
-]
+];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(' ');
 }
 
+// Helper function to trim message content
+const trimMessage = (message, maxLength) => {
+  if (message.length > maxLength) {
+    return `${message.slice(0, maxLength)}...`;
+  }
+  return message;
+};
+
 export default function DefaultLayout() {
-  const { currentUser, userToken, setCurrentUser, setUserToken } = useStateContext('');
-
+  const { currentUser, userToken, setCurrentUser, setUserToken, setSelectedMessageId } = useStateContext();
   const [avatarPath, setAvatarPath] = useState(currentUser.avatar_path || '');
-  const [showNotifications, setShowNotifications] = useState(false);
-
+  const [messages, setMessages] = useState([]);
   const navigate = useNavigate();
+
+  const getMessagesOfUser = async () => {
+    try {
+      const response = await axiosClient.get('/messages');
+      const data = response.data;
+      // Get the last 5 messages
+      const lastFiveMessages = data.slice(-5);
+      setMessages(lastFiveMessages);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getMessagesOfUser();
+  }, []);
 
   useEffect(() => {
     setAvatarPath(currentUser.avatar_path || '');
@@ -35,20 +57,18 @@ export default function DefaultLayout() {
     }
   }, [userToken]);
 
-
-
   const logout = (ev) => {
     ev.preventDefault();
     axiosClient.post('/logout')
-      .then(res => {
+      .then(() => {
         setCurrentUser({});
         setUserToken(null);
-      })
-  }
+      });
+  };
 
-  const openNotifications = () => {
-    console.log('openNotifications');
-    setShowNotifications(!showNotifications);
+  const handleMessageClick = (messageId) => {
+    setSelectedMessageId(messageId);
+    navigate(`/messages`);
   };
 
   const navigation = [
@@ -59,8 +79,7 @@ export default function DefaultLayout() {
     { name: 'Jelenléti', to: '/attendance' },
     { name: 'Tagok', to: '/members' },
     { name: 'Statisztikák', to: '/stats' },
-  ]
-
+  ];
 
   return (
     <>
@@ -91,21 +110,17 @@ export default function DefaultLayout() {
                     </div>
                   </div>
                   <div className="hidden md:block">
-
-                    {/* Notification button */}
-
                     <div className="ml-4 flex items-center md:ml-6">
+                      {/* Notification button */}
                       <Menu as="div" className="relative ml-3">
                         <div>
-                          <MenuButton
-                            type="MenuButton"
+                          <Menu.Button
+                            type="button"
                             className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                          //onClick={openNotifications}
                           >
-                            <span className="absolute -inset-1.5" />
                             <span className="sr-only">View notifications</span>
                             <BellIcon className="h-6 w-6" aria-hidden="true" />
-                          </MenuButton>
+                          </Menu.Button>
                         </div>
                         <Transition
                           as={Fragment}
@@ -116,32 +131,41 @@ export default function DefaultLayout() {
                           leaveFrom="transform opacity-100 scale-100"
                           leaveTo="transform opacity-0 scale-95"
                         >
-                          <MenuItems className="absolute right-0 z-10 mt-2 w-80 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                            <MenuItem as="div"> item 1</MenuItem>
-                            <MenuItem as="div"> item 1</MenuItem>
-                            <MenuItem as="div"> item 1</MenuItem>
-                            <MenuItem as="div"> item 1</MenuItem>   
-                          </MenuItems>
+                          <Menu.Items className="absolute right-0 z-10 mt-2 w-80 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            {messages.length === 0 ? (
+                              <div className="px-4 py-2 text-sm text-gray-700">No messages</div>
+                            ) : (
+                              messages.map((message) => (
+                                <ListItemButton
+                                  key={message.id}
+                                  className="flex items-start p-4 border-b border-gray-200"
+                                  onClick={() => handleMessageClick(message.id)}
+                                >
+                                  <Avatar src={message.senderAvatar} alt={message.senderName} />
+                                  <div className="ml-4">
+                                    <div className="text-sm font-medium text-gray-900">{message.senderName}</div>
+                                    <div className="text-sm text-gray-500 truncate" style={{ maxWidth: '200px' }}>
+                                      {trimMessage(message.message, 50)}
+                                    </div>
+                                  </div>
+                                </ListItemButton>
+                              ))
+                            )}
+                          </Menu.Items>
                         </Transition>
                       </Menu>
-
-
-
 
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div>
-                          <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm
-                           focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 ">
-                            
-                            <span className="absolute -inset-1.5" />
+                          <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span className="sr-only">Open user menu</span>
                             <div className="flex-shrink-0">
                               <div className="h-10 w-10 rounded-full overflow-hidden">
                                 <img className="h-full w-full object-cover" src={avatarPath || "../../src/assets/defaultAvatar.PNG"} alt="" />
                               </div>
                             </div>
-                          </MenuButton>
+                          </Menu.Button>
                         </div>
                         <Transition
                           as={Fragment}
@@ -152,9 +176,9 @@ export default function DefaultLayout() {
                           leaveFrom="transform opacity-100 scale-100"
                           leaveTo="transform opacity-0 scale-95"
                         >
-                          <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                          <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                             {userNavigation.map((item) => (
-                              <MenuItem key={item.name}>
+                              <Menu.Item key={item.name}>
                                 {({ active }) => (
                                   <Link
                                     to={item.to}
@@ -166,37 +190,36 @@ export default function DefaultLayout() {
                                     {item.name}
                                   </Link>
                                 )}
-                              </MenuItem>
+                              </Menu.Item>
                             ))}
-                            <MenuItem>
+                            <Menu.Item>
                               <button
                                 onClick={(ev) => logout(ev)}
                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                               >
                                 Sign out
                               </button>
-                            </MenuItem>
-                          </MenuItems>
+                            </Menu.Item>
+                          </Menu.Items>
                         </Transition>
                       </Menu>
                     </div>
                   </div>
                   <div className="-mr-2 flex md:hidden">
                     {/* Mobile menu button */}
-                    <DisclosureButton className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <span className="absolute -inset-0.5" />
+                    <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open main menu</span>
                       {open ? (
                         <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
                       ) : (
                         <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
                       )}
-                    </DisclosureButton>
+                    </Disclosure.Button>
                   </div>
                 </div>
               </div>
 
-              <DisclosurePanel className="md:hidden">
+              <Disclosure.Panel className="md:hidden">
                 <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
                   {navigation.map((item) => (
                     <NavLink
@@ -217,7 +240,6 @@ export default function DefaultLayout() {
                       type="button"
                       className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     >
-                      <span className="absolute -inset-1.5" />
                       <span className="sr-only">View notifications</span>
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
                     </button>
@@ -234,19 +256,17 @@ export default function DefaultLayout() {
                       </NavLink>
                     ))}
 
-                    <DisclosureButton
+                    <Disclosure.Button
                       as="a"
                       href="#"
                       onClick={(ev) => logout(ev)}
                       className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-
                     >
                       Sign out
-                    </DisclosureButton>
-
+                    </Disclosure.Button>
                   </div>
                 </div>
-              </DisclosurePanel>
+              </Disclosure.Panel>
             </>
           )}
         </Disclosure>
@@ -256,5 +276,5 @@ export default function DefaultLayout() {
         </div>
       </div>
     </>
-  )
+  );
 }
