@@ -14,6 +14,7 @@ use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\QrController;
+use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,8 +48,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //QR
     Route::post('/checkInEvent', [CheckInController::class, 'checkInEvent']);
-    
 
+    //Messages
+    Route::get('/messages', [MessageController::class, 'index']);
+    Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
 
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
 
