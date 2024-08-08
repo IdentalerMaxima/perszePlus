@@ -13,10 +13,11 @@ export const ContextProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState({});
     const [userToken, _setUserToken] = useState(localStorage.getItem('token') || sessionStorage.getItem('token') || null);
     const [isAdmin, setIsAdmin] = useState(false);
-    const  [selectedMessageId, setSelectedMessageId] = useState(null);
+    const [selectedMessageId, setSelectedMessageId] = useState(null);
+    const [messages, setMessages] = useState([]);
 
     const fetchUserData = async () => {
-        // Check if userToken exists
+
         if (!userToken) {
             setCurrentUser({});
             setIsAdmin(false);
@@ -70,7 +71,9 @@ export const ContextProvider = ({ children }) => {
             setUserToken,
             isAdmin,
             selectedMessageId,
-            setSelectedMessageId
+            setSelectedMessageId,
+            messages,
+            setMessages
         }}>
             {children}
         </StateContext.Provider>
