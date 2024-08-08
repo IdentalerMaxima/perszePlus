@@ -23,8 +23,8 @@ import { useStateContext } from "../contexts/ContextProvider";
 import WriteMessage from "../components/forms/WriteMessage";
 
 export default function Messages() {
-    const { selectedMessageId, setSelectedMessageId } = useStateContext();
-    const [messages, setMessages] = useState([]);
+    const { selectedMessageId, setSelectedMessageId, messages, setMessages } = useStateContext();
+    
     const [messageLoaded, setMessageLoaded] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -33,28 +33,12 @@ export default function Messages() {
     const messagesPerPage = 7;
 
     useEffect(() => {
-        const getMessages = async () => {
-            try {
-                const response = await axiosClient.get('/messages');
-                setMessages(response.data);
-
-                if (!selectedMessageId && response.data.length > 0) {
-                    const firstMessageId = response.data[0].id;
-                    setSelectedMessageId(firstMessageId);
-                    loadMessage(response.data[0]);
-                } else if (selectedMessageId) {
-                    const selected = response.data.find(message => message.id === selectedMessageId);
-                    if (selected) {
-                        loadMessage(selected);
-                    }
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        getMessages();
-    }, [selectedMessageId, setSelectedMessageId]);
+        console.log("Messages loaded:", messages);
+        if (messages.length > 0) {
+            setMessageLoaded(messages[0]);
+            setSelectedMessageId(messages[0].id);
+        }
+    }, [messages]);
 
     const handleMenuClick = (event, message) => {
         event.stopPropagation();
