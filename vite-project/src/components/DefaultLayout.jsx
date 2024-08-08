@@ -37,7 +37,7 @@ export default function DefaultLayout() {
       const data = response.data;
       // Get the last 5 messages
       const lastFiveMessages = data.slice(0, 5);
-      setMessages(lastFiveMessages);
+      setMessages(data);
       // Count the number of unread messages
       const unreadCount = data.filter((message) => !message.read).length;
       setUnreadMessages(unreadCount);
@@ -99,6 +99,7 @@ export default function DefaultLayout() {
     { name: 'Jelenléti', to: '/attendance' },
     { name: 'Tagok', to: '/members' },
     { name: 'Statisztikák', to: '/stats' },
+    { name: 'Üzenetek', to: '/messages' },
   ];
 
   return (
@@ -158,7 +159,7 @@ export default function DefaultLayout() {
                           leaveFrom="transform opacity-100 scale-100"
                           leaveTo="transform opacity-0 scale-95"
                         >
-                          <Menu.Items className="absolute right-0 z-10 mt-2 w-80 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                          <Menu.Items className="absolute right-0 z-10 mt-2 w-80 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-96 overflow-y-auto">
                             {messages.length === 0 ? (
                               <div className="px-4 py-2 text-sm text-gray-700">No messages</div>
                             ) : (
