@@ -6,6 +6,7 @@ import axiosClient from '../axios';
 import { Menu, Transition, Disclosure } from '@headlessui/react';
 import Avatar from '@mui/material/Avatar';
 import { ListItemButton } from '@mui/material';
+import Pusher from 'pusher-js';
 
 const userNavigation = [
   { name: 'Your Profile', to: '/profile' },
@@ -25,10 +26,12 @@ const trimMessage = (message, maxLength) => {
 };
 
 export default function DefaultLayout() {
-  const { currentUser, userToken, setCurrentUser, setUserToken, setSelectedMessageId, selectedMessageId } = useStateContext();
+  const { currentUser, userToken, setCurrentUser, setUserToken} = useStateContext();
+  const { selectedMessageId, setSelectedMessageId, messages, setMessages } = useStateContext();
+
   const [avatarPath, setAvatarPath] = useState(currentUser.avatar_path || '');
-  const [messages, setMessages] = useState([]);
   const [unreadMessages, setUnreadMessages] = useState(0);
+
   const navigate = useNavigate();
 
   const getMessagesOfUser = async () => {
@@ -46,6 +49,25 @@ export default function DefaultLayout() {
       console.error(error);
     }
   };
+
+  // Real-time message notifications using Pusher
+  useEffect(() => {
+    const pusher = new Pusher('802a39c17b905cc66240', {
+      cluster: 'eu',
+      encrypted: true,
+    });
+
+    const channel = pusher.subscribe(`user.${currentUser.id}`);
+    channel.bind('message.sent', function (data) {
+      setMessages((prevMessages) => [data.message, ...prevMessages.slice(0, 4)]);
+      setUnreadMessages((prevCount) => prevCount + 1);
+    });
+
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+    };
+  }, [currentUser.id]);
 
   useEffect(() => {
     getMessagesOfUser();
@@ -85,7 +107,7 @@ export default function DefaultLayout() {
 
       // Set selected message ID in context and navigate
       setSelectedMessageId(messageId);
-      navigate(`/messages`);
+      navigate('/messages');
     } catch (error) {
       console.error('Failed to mark message as read', error);
     }
@@ -272,7 +294,7 @@ export default function DefaultLayout() {
                       <div className="relative">
                         <BellIcon className="h-6 w-6" aria-hidden="true" />
                         {unreadMessages > 0 && (
-                          <span className="absolute top-0 right-0 inline-flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold">
+                          <span className="absolute top-0 right-0 inline-flex h-3 w-3 items-center justify-center rounded-full bg-gray-800 text-white text-xs font-bold">
                             {unreadMessages}
                           </span>
                         )}
