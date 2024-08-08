@@ -7,6 +7,7 @@ use App\Http\Requests\StoreMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Events\MessageSent;
 
 class MessageController extends Controller
 {
@@ -61,6 +62,8 @@ class MessageController extends Controller
         $message->message = $request->message;
 
         $message->save();
+
+        event(new MessageSent($message));
 
         return response()->json(['message' => 'Message sent successfully']);
     }
