@@ -51,7 +51,18 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $senderId = $request->user()->id;
+        $receiverId = $request->recipientId;
+
+        $message = new Message();
+
+        $message->sender_id = $senderId;
+        $message->receiver_id = $receiverId;
+        $message->message = $request->message;
+
+        $message->save();
+
+        return response()->json(['message' => 'Message sent successfully']);
     }
 
     /**
