@@ -26,7 +26,7 @@ const trimMessage = (message, maxLength) => {
 };
 
 export default function DefaultLayout() {
-  const { currentUser, userToken, setCurrentUser, setUserToken} = useStateContext();
+  const { currentUser, userToken, setCurrentUser, setUserToken } = useStateContext();
   const { selectedMessageId, setSelectedMessageId, messages, setMessages } = useStateContext();
 
   const [avatarPath, setAvatarPath] = useState(currentUser.avatar_path || '');
@@ -50,7 +50,6 @@ export default function DefaultLayout() {
     }
   };
 
-  // Real-time message notifications using Pusher
   useEffect(() => {
     const pusher = new Pusher('802a39c17b905cc66240', {
       cluster: 'eu',
@@ -94,19 +93,18 @@ export default function DefaultLayout() {
   };
 
   const handleMessageClick = async (messageId) => {
+    console.log('Message clicked:', messageId);
+    setSelectedMessageId(messageId);
     try {
-      // Mark message as read in the backend
       await axiosClient.put(`/messages/${messageId}/read`);
 
-      // Update the message state to reflect the read status
       setMessages((prevMessages) =>
         prevMessages.map((message) =>
           message.id === messageId ? { ...message, read: true } : message
         )
       );
 
-      // Set selected message ID in context and navigate
-      setSelectedMessageId(messageId);
+      
       navigate('/messages');
     } catch (error) {
       console.error('Failed to mark message as read', error);
@@ -255,8 +253,58 @@ export default function DefaultLayout() {
                       </Menu>
                     </div>
                   </div>
+
                   <div className="-mr-2 flex md:hidden">
                     {/* Mobile menu button */}
+                    <Menu as="div">
+                      <div className="relative ml-auto flex items-center">
+                        <Menu.Button
+                          type="button"
+                          className="absolute top-1 right-3 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        >
+                          <span className="sr-only">View notifications</span>
+                          <div className="relative">
+                            <BellIcon className="h-6 w-6" aria-hidden="true" />
+                            {unreadMessages > 0 && (
+                              <span className="absolute top-0 right-0 inline-flex h-3 w-3 items-center justify-center rounded-full text-white text-xs font-bold bg-gray-800">
+                                {unreadMessages}
+                              </span>
+                            )}
+                          </div>
+                        </Menu.Button>
+                      </div>
+                      <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <Menu.Items className="absolute right-4 top-11 z-10 mt-2 w-80 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-96 overflow-y-auto">
+                          {messages.length === 0 ? (
+                            <div className="px-4 py-2 text-sm text-gray-700">No messages</div>
+                          ) : (
+                            messages.map((message) => (
+                              <ListItemButton
+                                key={message.id}
+                                className="flex items-start p-4 border-b border-gray-200"
+                                onClick={() => handleMessageClick(message.id)}
+                              >
+                                <Avatar src={message.senderAvatar} alt={message.senderName} />
+                                <div className="ml-4">
+                                  <div className="text-sm font-medium text-gray-900">{message.senderName}</div>
+                                  <div className={`text-sm text-gray-500 truncate ${!message.read ? 'font-bold' : ''}`} style={{ maxWidth: '200px' }}>
+                                    {trimMessage(message.message, 50)}
+                                  </div>
+                                </div>
+                              </ListItemButton>
+                            ))
+                          )}
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
                     <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="sr-only">Open main menu</span>
                       {open ? (
@@ -266,6 +314,7 @@ export default function DefaultLayout() {
                       )}
                     </Disclosure.Button>
                   </div>
+
                 </div>
               </div>
 
