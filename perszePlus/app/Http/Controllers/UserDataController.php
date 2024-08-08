@@ -124,6 +124,27 @@ class UserDataController extends Controller
         return response()->json($yearsInEducationCount);
     }
 
+    public function searchUsers(Request $request)
+    {
+        $searchTerm = $request->input('search');
+    
+        // Ensure the search term is not empty
+        if (!$searchTerm) {
+            return response()->json([
+                'users' => []
+            ]);
+        }
+    
+        $users = User::where('first_name', 'like', $searchTerm . '%')
+            ->orWhere('last_name', 'like', $searchTerm . '%')
+            ->get(['id', 'first_name', 'last_name', 'category', 'avatar_path']);
+    
+        return response()->json([
+            'users' => $users
+        ]);
+    }
+    
+
 
 
 }
