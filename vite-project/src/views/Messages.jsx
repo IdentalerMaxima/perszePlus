@@ -26,7 +26,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 
 export default function Messages() {
     const { selectedMessageId, setSelectedMessageId, messages, setMessages } = useStateContext();
-    const [messageLoaded, setMessageLoaded] = useState(null);
+    const [messageLoaded, setMessageLoaded] = useState(selectedMessageId ? messages.find(msg => msg.id === selectedMessageId) : null);
     const [currentPage, setCurrentPage] = useState(1);
     const [anchorEl, setAnchorEl] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
@@ -40,6 +40,8 @@ export default function Messages() {
         if (messages.length > 0 && !selectedMessageId && !isMobile) {
             setMessageLoaded(messages[0]);
             setSelectedMessageId(messages[0].id);
+        } else if (selectedMessageId) {
+            setMessageLoaded(messages.find(msg => msg.id === selectedMessageId));
         }
     }, [messages, selectedMessageId]);
 
@@ -87,6 +89,7 @@ export default function Messages() {
     };
 
     const loadMessage = (message) => {
+        console.log('loadMessage', message);
         setMessageLoaded(message);
         setSelectedMessageId(message.id);
         if (!message.read) {
@@ -113,7 +116,7 @@ export default function Messages() {
                 message: newMessage,
                 recipientId: recipientId,
             });
-            
+
             setNewMessage("");
             setOpenDialog(false);
         } catch (error) {
@@ -187,32 +190,43 @@ export default function Messages() {
                                 {selectedMessageId && isMobile && (
                                     <Box>
                                         <Box className="flex items-center">
-                                        <IconButton
-                                            onClick={() => {
-                                                setSelectedMessageId(null);
-                                                setMessageLoaded(null);
-                                            }}
-                                            sx={{ marginRight: 2 }}
-                                        >
-                                            <ArrowBackIcon />
-                                        </IconButton>
+                                            <IconButton
+                                                onClick={() => {
+                                                    setSelectedMessageId(null);
+                                                    setMessageLoaded(null);
+                                                }}
+                                                sx={{ marginRight: 2 }}
+                                            >
+                                                <ArrowBackIcon />
+                                            </IconButton>
+                                            {messageLoaded && (
+                                                <Box className="flex items-center space-x-4">
+                                                    <Avatar src={messageLoaded.senderAvatar} alt={messageLoaded.senderName} />
+                                                    <h3 className="text-2xl font-bold">{messageLoaded.senderName}</h3>
+                                                </Box>
+                                            )}
+                                        </Box>
                                         {messageLoaded && (
-                                            <Box className="flex items-center space-x-4">
-                                                <Avatar src={messageLoaded.senderAvatar} alt={messageLoaded.senderName} />
-                                                <h3 className="text-2xl font-bold">{messageLoaded.senderName}</h3>
-                                            </Box>
-                                        )} 
-                                    </Box>
-                                    <Container className="p-6">
-                                        {messageLoaded.message}
-                                    </Container>
+                                            <Container className="p-6">
+                                                {messageLoaded.message}
+                                            </Container>
+                                        )}
                                     </Box>
                                 )}
                                 {messageLoaded && !isMobile && (
                                     <>
-                                        <Box className="flex items-center space-x-4">
-                                            <Avatar src={messageLoaded.senderAvatar} alt={messageLoaded.senderName} />
-                                            <h3 className="text-2xl font-bold">{messageLoaded.senderName}</h3>
+                                        <Box>
+                                            <Box className="flex items-center">
+                                                {messageLoaded && (
+                                                    <Box className="flex items-center space-x-4">
+                                                        <Avatar src={messageLoaded.senderAvatar} alt={messageLoaded.senderName} />
+                                                        <h3 className="text-2xl font-bold">{messageLoaded.senderName}</h3>
+                                                    </Box>
+                                                )}
+                                            </Box>
+                                            <Container className="p-6">
+                                                {messageLoaded.message}
+                                            </Container>
                                         </Box>
                                     </>
                                 )}
