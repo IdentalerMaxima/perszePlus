@@ -13,11 +13,14 @@ import {
     Pagination,
     Stack,
     Menu,
-    MenuItem
+    MenuItem,
+    Button
 } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AddIcon from '@mui/icons-material/Add';
 import axiosClient from "../axios";
 import { useStateContext } from "../contexts/ContextProvider";
+import WriteMessage from "../components/forms/WriteMessage";
 
 export default function Messages() {
     const { selectedMessageId, setSelectedMessageId } = useStateContext();
@@ -25,6 +28,8 @@ export default function Messages() {
     const [messageLoaded, setMessageLoaded] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [newMessage, setNewMessage] = useState("");
     const messagesPerPage = 7;
 
     useEffect(() => {
@@ -104,13 +109,46 @@ export default function Messages() {
     const currentMessages = messages.slice(indexOfFirstMessage, indexOfLastMessage);
     const totalPages = Math.ceil(messages.length / messagesPerPage);
 
+    const handleNewMessageOpen = () => {
+        setOpenDialog(true);
+    };
+
+    const handleNewMessageClose = () => {
+        setOpenDialog(false);
+    };
+
+    const handleSendMessage = async (recipientId) => {
+        try {
+            const response = await axiosClient.post('/messages', {
+                message: newMessage,
+                recipientId: recipientId,
+            });
+            
+            setNewMessage("");
+            setOpenDialog(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <PageComponent title="Messages">
-            <Box className="pt-1 bg-slate-100 rounded-md overflow-hidden" sx={{ height: '64vh' }}>
+            <Box className="pt-1 bg-slate-100 rounded-md overflow-hidden" sx={{ height: '68vh' }}>
                 <Grid container spacing={3} className="h-full">
                     {/* List of messages */}
                     <Grid item xs={12} md={4}>
                         <Box className="border-r-2 overflow-y-auto h-full flex flex-col">
+                            <Box className="p-4">
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    startIcon={<AddIcon />}
+                                    onClick={handleNewMessageOpen}
+                                    className="w-full"
+                                >
+                                    Write Message
+                                </Button>
+                            </Box>
                             <List>
                                 {currentMessages.map((message) => (
                                     <ListItemButton
@@ -189,6 +227,13 @@ export default function Messages() {
                     <MenuItem onClick={deleteMessage}>Delete</MenuItem>
                 </Menu>
             </Box>
+            <WriteMessage
+                open={openDialog}
+                handleClose={handleNewMessageClose}
+                newMessage={newMessage}
+                setNewMessage={setNewMessage}
+                handleSendMessage={handleSendMessage}
+            />
         </PageComponent>
     );
 }
