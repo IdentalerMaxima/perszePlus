@@ -8,11 +8,13 @@ import UniversityData from '../../components/forms/UniversityData';
 import { useStateContext } from '../../contexts/ContextProvider';
 import axiosClient from '../../axios';
 import AvatarUpload from '../../components/upload/AvatarUpload';
+import Settings from '../../components/forms/Settings';
 
 const profileLayouts = [
   { name: 'Personal data', active: true },
   { name: 'University', active: false },
   { name: 'Documents', active: false },
+  { name : 'Settings', active: false }
 ];
 
 export default function Profile() {
@@ -59,7 +61,7 @@ export default function Profile() {
       <div className={`flex ${isMobile ? 'flex-col items-center' : 'flex-row'} min-h-full`}>
         <div
           className={`bg-white rounded-lg shadow-2xl ${isMobile ? 'w-full mb-4' : 'basis-1/4 mr-4'}`}
-          style={{ height: isMobile ? 'auto' : '27rem' }}
+          style={{ height: isMobile ? 'auto' : '29rem' }}
         >
           {loading ? (
             <div className="flex justify-center items-center h-72">
@@ -107,6 +109,7 @@ export default function Profile() {
               {activeContent === 'Personal data' && <PersonalData />}
               {activeContent === 'University' && <UniversityData />}
               {activeContent === 'Documents' && <DocumentsData />}
+              {activeContent === 'Settings' && <Settings />}
             </>
           )}
         </div>
