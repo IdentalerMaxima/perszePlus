@@ -124,7 +124,7 @@ export default function PersonalData() {
   return (
     <form key={rerender}>
       <div className="space-y-12">
-        <div className="border-b border-gray-900/10 pb-12">
+        <div className="pb-24">
           <h2 className="text-base font-semibold leading-7 text-gray-900">University data</h2>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -292,7 +292,8 @@ export default function PersonalData() {
 
           </div>
         </div>
-        <div className="mt-6 flex items-center justify-end gap-x-6">
+
+        <div className="flex justify-end gap-x-6 pt-4 border-t border-gray-90 mt-96">
           <button
             type="button"
             className="text-sm font-semibold leading-6 text-gray-900"
@@ -309,6 +310,7 @@ export default function PersonalData() {
             Save
           </button>
         </div>
+
       </div>
 
       {loading && <p>Loading...</p>}
