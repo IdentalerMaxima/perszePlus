@@ -83,7 +83,6 @@ class UserDataController extends Controller
         return response()->json($categoryCount);
     }
 
-    //getUsersByLevelOfEducation
     public function getUsersByLevelOfEducation()
     {
         // Retrieve all distinct levels of education from the User model
@@ -107,7 +106,6 @@ class UserDataController extends Controller
         return response()->json($levelOfEducationCount);
     }
 
-    //getUsersByCurrentSemester
     public function getUsersByYearsInEducation()
     {
         $yearsInEducation = User::select('current_semester')->whereNotNull('current_semester')->distinct()->get();
