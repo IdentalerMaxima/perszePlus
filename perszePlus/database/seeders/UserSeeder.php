@@ -9,6 +9,8 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        User::factory()->count(21)->create();
+        User::factory()->count(10)->create()->each(function ($user) {
+            $user->settings()->create();
+        });
     }
 }
