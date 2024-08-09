@@ -11,7 +11,6 @@ import CourseDetails from './views/CourseDetails.jsx';
 import News from './views/News.jsx';
 import Members from './views/Members.jsx';
 import Attendance from './views/Attendance.jsx';
-import Settings from './views/user/Settings.jsx';
 import Profile from './views/user/Profile.jsx';
 import Stats from './views/Stats.jsx';
 import ForgotPassword from './components/forms/ForgotPassword.jsx';
@@ -35,7 +34,6 @@ const router = createBrowserRouter([
       { path: '/courses', element: <Courses /> },
       { path: '/courses/:id', element: <CourseDetails /> },
       { path: '/attendance', element: <Attendance /> },
-      { path: '/settings', element: <Settings /> },
       { path: '/profile', element: <Profile />},
       { path: '/stats', element: <Stats />},
       { path: '/messages', element: <Messages />},
