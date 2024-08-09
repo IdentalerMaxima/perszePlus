@@ -7,10 +7,10 @@ import { Menu, Transition, Disclosure } from '@headlessui/react';
 import Avatar from '@mui/material/Avatar';
 import { ListItemButton } from '@mui/material';
 import Pusher from 'pusher-js';
+import { useRef } from 'react';
 
 const userNavigation = [
   { name: 'Your Profile', to: '/profile' },
-  { name: 'Settings', to: '/settings' },
 ];
 
 function classNames(...classes) {
@@ -32,6 +32,8 @@ export default function DefaultLayout() {
   const [avatarPath, setAvatarPath] = useState(currentUser.avatar_path || '');
   const [unreadMessages, setUnreadMessages] = useState(0);
 
+  const pusherRef = useRef(null);
+
   const navigate = useNavigate();
 
   const getMessagesOfUser = async () => {
@@ -44,19 +46,19 @@ export default function DefaultLayout() {
       // Count the number of unread messages
       const unreadCount = data.filter((message) => !message.read).length;
       setUnreadMessages(unreadCount);
-      console.log('Unread messages:', unreadCount);
     } catch (error) {
       console.error(error);
     }
   };
-
   useEffect(() => {
-    const pusher = new Pusher('802a39c17b905cc66240', {
-      cluster: 'eu',
-      encrypted: true,
-    });
+    if (!pusherRef.current) { 
+      pusherRef.current = new Pusher('802a39c17b905cc66240', {
+        cluster: 'eu',
+        encrypted: true,
+      });
+    }
 
-    const channel = pusher.subscribe(`user.${currentUser.id}`);
+    const channel = pusherRef.current.subscribe(`user.${currentUser.id}`);
     channel.bind('message.sent', function (data) {
       setMessages((prevMessages) => [data.message, ...prevMessages.slice(0, 4)]);
       setUnreadMessages((prevCount) => prevCount + 1);
@@ -93,7 +95,6 @@ export default function DefaultLayout() {
   };
 
   const handleMessageClick = async (messageId) => {
-    console.log('Message clicked:', messageId);
     setSelectedMessageId(messageId);
     try {
       await axiosClient.put(`/messages/${messageId}/read`);
@@ -104,7 +105,7 @@ export default function DefaultLayout() {
         )
       );
 
-      
+
       navigate('/messages');
     } catch (error) {
       console.error('Failed to mark message as read', error);
