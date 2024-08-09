@@ -89,7 +89,6 @@ export default function Messages() {
     };
 
     const loadMessage = (message) => {
-        console.log('loadMessage', message);
         setMessageLoaded(message);
         setSelectedMessageId(message.id);
         if (!message.read) {
