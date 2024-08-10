@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use App\Models\Settings;
 
 class UserDataController extends Controller
 {
     public function getUserData(Request $request)
     {
+        //Log::info('Get user data');
+
         $user = $request->user();
 
         return response()->json([
@@ -125,23 +128,74 @@ class UserDataController extends Controller
     public function searchUsers(Request $request)
     {
         $searchTerm = $request->input('search');
-    
+
         // Ensure the search term is not empty
         if (!$searchTerm) {
             return response()->json([
                 'users' => []
             ]);
         }
-    
+
         $users = User::where('first_name', 'like', $searchTerm . '%')
             ->orWhere('last_name', 'like', $searchTerm . '%')
             ->get(['id', 'first_name', 'last_name', 'category', 'avatar_path']);
-    
+
         return response()->json([
             'users' => $users
         ]);
     }
-    
+
+    public function getUserSettings(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+        $settings = Settings::where('user_id', $user->id)->get();
+
+        if (!$settings) {
+            return response()->json(['message' => 'Settings not found'], 404);
+        }
+
+        return response()->json($settings);
+    }
+
+    public function saveUserSettings(Request $request)
+{
+    // Get the authenticated user
+    $user = $request->user();
+
+    // Retrieve settings for the user
+    $settings = Settings::where('user_id', $user->id)->first();
+
+    // Extract the settings data from the request
+    $settingsData = $request->all(); // Fetch all input data from the request
+
+    if ($settings) {
+        // Update existing record with the data from the request
+        $settings->update($settingsData);
+    } else {
+        // Add the user_id to the data for creating a new record
+        $settingsData['user_id'] = $user->id;
+        Settings::create($settingsData);
+    }
+
+    // Return a success response
+    return response()->json(['message' => 'Settings updated successfully']);
+}
+
+
+
+
+    public function testLog()
+    {
+        Log::info('testLog');
+        return response()->json(['message' => 'test log']);
+    }
+
+
 
 
 
