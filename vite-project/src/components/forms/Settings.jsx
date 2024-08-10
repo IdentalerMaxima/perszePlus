@@ -101,7 +101,7 @@ export default function Settings() {
                             onChange={handleChecked}
                             checked={settings.newEvents}
                         />
-                        <p className="text-gray-500 ml-2"> Receive notifications of new events</p>
+                        <p className="text-gray-500 ml-2"> Receive email notifications of new events</p>
                     </div>
                     <div className="flex flex-row items-center">
                         <input
