@@ -31,10 +31,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/upload/avatar', [AvatarUploadController::class, 'upload']);
     Route::post('/upload/file', [DocumentController::class, 'upload']);
-    Route::post('/user/info', [UserDataController::class, 'saveUserData']);
+    
     
 
-    //EVENTS
+    //Events
     Route::post('/addEvent', [EventController::class, 'store']);
     Route::post('/updateAttendance', [EventController::class, 'updateAttendance']);
     Route::post('/updateMissedEvents', [EventController::class, 'updateMissedEvents']);
@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/unsubscribeFromCourse/{id}', [CourseController::class, 'unsubscribeFromCourse']);
 
     //QR
+    Route::get('/generateQr/{id}', [QrController::class, 'generate']);
     Route::post('/checkInEvent', [CheckInController::class, 'checkInEvent']);
 
     //Messages
@@ -59,15 +60,25 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [UserDataController::class, 'searchUsers']);
 
 
+    //User
+    Route::get('/user/test', [UserDataController::class, 'testLog']);
+    Route::post('/user/info', [UserDataController::class, 'saveUserData']);
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
+    Route::get('/user/settings', [UserDataController::class, 'getUserSettings']);
+    Route::post('/user/saveSettings', [UserDataController::class, 'saveUserSettings']);
+    Route::get('/user/{id}', [UserDataController::class, 'getUserById']);
+    
 
+    //Documents
     Route::get('/user/documents', [DocumentController::class, 'index']);
     Route::get('/user/getDocumentsOfUser/{id}', [DocumentController::class, 'getDocumentsOfUser']);
     Route::get('/user/documents/{id}', [DocumentController::class, 'download']);
     Route::get('/user/documents/show/{id}', [DocumentController::class, 'show']);
 
+    
+
     Route::get('/getMemberList', [UserDataController::class, 'getAllUsers']);
-    Route::get('/user/{id}', [UserDataController::class, 'getUserById']);
+    
 
     Route::get('/getEvents', [EventController::class, 'index']);
     Route::get('/getEventsOfUser/{id}', [EventController::class, 'getEventsOfUser']);
@@ -80,9 +91,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/getComments', [CommentController::class, 'index']);
     Route::get('/getCourses', [CourseController::class, 'index']);
     Route::get('/checkEnrollment/{id}', [CourseController::class, 'checkEnrollment']);
-
-    //QR
-    Route::get('/generateQr/{id}', [QrController::class, 'generate']);
+    
 
     Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
     Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);
