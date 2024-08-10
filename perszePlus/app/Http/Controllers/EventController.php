@@ -6,16 +6,21 @@ use Illuminate\Http\Request;
 use App\Models\Event;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use App\Models\Settings;
+use App\Notifications\EventCreated;
+use App\Jobs\SendEmailJob;
 
 class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::with(['users' => function ($query) {
-            $query->withPivot('status'); // Include 'status' pivot attribute
-        }])
-        ->orderBy('date', 'asc')
-        ->get();
+        $events = Event::with([
+            'users' => function ($query) {
+                $query->withPivot('status'); // Include 'status' pivot attribute
+            }
+        ])
+            ->orderBy('date', 'asc')
+            ->get();
 
         //Log::info('Events fetched successfully', ['events' => $events]);
 
@@ -41,6 +46,15 @@ class EventController extends Controller
 
         $users = User::all();
         $event->users()->attach($users, ['status' => 'not_answered']);
+
+        // Notify users who have opted in for new event notifications
+        $usersWithNotifications = Settings::where('receive_notification_new_event', true)
+            ->pluck('user_id');
+        $usersToNotify = User::whereIn('id', $usersWithNotifications)->get();
+
+        foreach ($usersToNotify as $user) {
+            SendEmailJob::dispatch($user, $event);
+        }
 
         return response()->json([
             'message' => 'Event created successfully',
@@ -144,20 +158,18 @@ class EventController extends Controller
         $now = now();
         $events = Event::where('date', '<', $now)->get();
 
-        foreach ($events as $event)
-        {
+        foreach ($events as $event) {
             $usersToUpdate = $event->users()
-                                    ->wherePivot('status', '!=', 'went')
-                                    ->wherePivot('status', '!=', 'missed')
-                                    ->get();
+                ->wherePivot('status', '!=', 'went')
+                ->wherePivot('status', '!=', 'missed')
+                ->get();
 
-            foreach ($usersToUpdate as $user)
-            {
+            foreach ($usersToUpdate as $user) {
                 $event->users()->updateExistingPivot($user->id, ['status' => 'missed']);
             }
         }
 
-        
+
 
         return response()->json([
             'message' => 'Missed events updated successfully'
