@@ -4,6 +4,7 @@ namespace App\Events;
 
 use App\Models\Message;
 use App\Models\User;
+use App\Models\Settings;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -29,12 +30,17 @@ class MessageSent implements ShouldBroadcast
             'message' => $message->message,
             'read' => $message->read,
             'receiver_id' => $message->receiver_id,
-            
+
         ];
 
-        // Send email notification
+        // Get the receiver and their settings
         $receiver = User::find($message->receiver_id);
-        $receiver->notify(new MessageReceived($message, $message->sender));
+        $settings = Settings::where('user_id', $receiver->id)->first();
+
+        // Check if the user has enabled email notifications for messages
+        if ($settings && $settings->receive_email_notifications) {
+            $receiver->notify(new MessageReceived($message, $message->sender));
+        }
 
 
     }
