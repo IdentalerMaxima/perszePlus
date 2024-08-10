@@ -8,7 +8,7 @@ import axiosClient from '../../axios';
 import Cancel from '../popups/Cancel';
 import dayjs from 'dayjs';
 import { useStateContext } from '../../contexts/ContextProvider';
-
+import SuccessSnackbar from "../popups/SuccessSnackbar";
 
 
 
@@ -18,6 +18,8 @@ export default function PersonalData() {
   const [isChecked, setIsChecked] = useState(currentUser.temp_addr == 'true' ? true : false);
   const [isCancelClicked, setIsCancelClicked] = useState(false);
   const [rerender, setRerender] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const initialFormData = {
     first_name: currentUser ? currentUser.first_name : '',
@@ -38,11 +40,8 @@ export default function PersonalData() {
     temp_addr_zip: currentUser.temp_addr_zip ? currentUser.temp_addr_zip : '',
   };
 
-
   const [formData, setFormData] = useState(initialFormData);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -77,20 +76,17 @@ export default function PersonalData() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
+
     try {
       console.log('Data to save:', formData);
       const response = await axiosClient.post('/user/info', formData);
       console.log('Data saved successfully:', response.data);
-      setLoading(false);
-
+      setSuccessMessage("Data saved successfully!");
+      setOpenSnackbar(true);
       setCurrentUser(response.data.user);
-      
     } catch (error) {
       console.error('Error saving data:', error);
       setError('An error occurred while saving data.');
-      setLoading(false);
     }
   };
 
@@ -202,7 +198,7 @@ export default function PersonalData() {
                       name="birth_date"
                       id="birth-date"
                       value={dayjs(formData.birth_date)}
-                      onChange={ (date) => handleDateChange(date)}
+                      onChange={(date) => handleDateChange(date)}
                       renderInput={(params) => <input {...params} />}
                       sx={{
                         '& .MuiInputBase-input.MuiOutlinedInput-input.MuiInputBase-inputAdornedEnd.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:focus': {
@@ -443,9 +439,6 @@ export default function PersonalData() {
 
       </div>
 
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-
       {isCancelClicked && (
         <Cancel
           handleClose={() => setIsCancelClicked(false)}
@@ -453,8 +446,13 @@ export default function PersonalData() {
         />
       )}
 
-    </form >
+      <SuccessSnackbar
+        open={openSnackbar}
+        message={successMessage}
+        onClose={() => setOpenSnackbar(false)}
+      />
 
+    </form >
   )
 }
 

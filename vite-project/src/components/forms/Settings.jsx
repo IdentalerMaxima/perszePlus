@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import axiosClient from "../../axios";
+import SuccessSnackbar from "../popups/SuccessSnackbar";
 
 export default function Settings() {
 
@@ -10,6 +11,9 @@ export default function Settings() {
         newCourses: false,
         emailNotifications: false
     });
+
+    const [successMessage, setSuccessMessage] = useState("");
+    const [openSnackbar, setOpenSnackbar] = useState(false);
 
     useEffect(() => {
         console.log('Settings: ', settings)
@@ -67,6 +71,8 @@ export default function Settings() {
         try {
             const response = await axiosClient.post('/user/saveSettings', settingsToSave);
             console.log('Settings saved successfully:', response.data);
+            setSuccessMessage("Settings saved successfully!");
+            setOpenSnackbar(true);
         } catch (error) {
             console.log('Error saving settings:', error);
         }
@@ -146,6 +152,12 @@ export default function Settings() {
 
                 </div>
             </Box>
+
+            <SuccessSnackbar
+                open={openSnackbar}
+                message={successMessage}
+                onClose={() => setOpenSnackbar(false)}
+            />
         </div>
     );
 }

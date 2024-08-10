@@ -1,7 +1,8 @@
 import axiosClient from '../../axios';
-import { useEffect, useState,} from 'react';
+import { useEffect, useState, } from 'react';
 import Cancel from '../popups/Cancel';
 import { useStateContext } from '../../contexts/ContextProvider';
+import SuccessSnackbar from "../popups/SuccessSnackbar";
 
 export default function PersonalData() {
   const { currentUser, setCurrentUser } = useStateContext();
@@ -20,10 +21,10 @@ export default function PersonalData() {
   const [selectedUniversity, setSelectedUniversity] = useState(null);
   const [universitiesLoading, setUniversitiesLoading] = useState(true);
   const [faculties, setFaculties] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [isCancelClicked, setIsCancelClicked] = useState(false);
   const [rerender, setRerender] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   // Fetch universities on mount
   useEffect(() => {
@@ -89,20 +90,17 @@ export default function PersonalData() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
+
     try {
       console.log('Data to save:', formData);
       const response = await axiosClient.post('/user/info', formData);
-      setLoading(false);
-
-      //retrieve new currentUser data
+      setSuccessMessage("Data saved successfully!");
+      setOpenSnackbar(true);
       const newUserData = await axiosClient.get('/user/info');
       setCurrentUser(newUserData.data.user);
 
     } catch (error) {
-      setError('An error occurred while saving data.');
-      setLoading(false);
+      console.log(error);
     }
   };
 
@@ -156,7 +154,7 @@ export default function PersonalData() {
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset
                    focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                   value={selectedUniversity ? selectedUniversity.id : ''}
-                  //handleChange={handleChange}
+                //handleChange={handleChange}
 
                 >
                   {!selectedUniversity && <option value="">Select a university</option>}
@@ -313,15 +311,18 @@ export default function PersonalData() {
 
       </div>
 
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-
       {isCancelClicked && (
         <Cancel
           handleClose={() => setIsCancelClicked(false)}
           resetForm={resetFormFields}
         />
       )}
+
+      <SuccessSnackbar
+        open={openSnackbar}
+        message={successMessage}
+        onClose={() => setOpenSnackbar(false)}
+      />
 
     </form>
   )

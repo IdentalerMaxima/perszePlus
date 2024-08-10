@@ -7,10 +7,9 @@ import {
     DialogTitle,
     TextField,
     Button,
-    Snackbar,
-    Alert
 } from "@mui/material";
 import SearchBar from "../searchbar/Searchbar";
+import SuccessSnackbar from "../popups/SuccessSnackbar";
 
 export default function WriteMessage({ open, handleClose, newMessage, setNewMessage, handleSendMessage }) {
     const [selectedRecipient, setSelectedRecipient] = useState(null);
@@ -34,10 +33,6 @@ export default function WriteMessage({ open, handleClose, newMessage, setNewMess
     useEffect(() => {
         console.log("Selected recipient:", selectedRecipient);
     }, [selectedRecipient]);
-
-    const handleCloseSnackbar = () => {
-        setOpenSnackbar(false);
-    };
 
     return (
         <>
@@ -77,17 +72,11 @@ export default function WriteMessage({ open, handleClose, newMessage, setNewMess
                 </DialogActions>
             </Dialog>
 
-            {/* Snackbar for success message */}
-            <Snackbar
+            <SuccessSnackbar
                 open={openSnackbar}
-                autoHideDuration={6000}
-                onClose={handleCloseSnackbar}
                 message={successMessage}
-            >
-                <Alert onClose={handleCloseSnackbar} severity="success">
-                    {successMessage}
-                </Alert>
-            </Snackbar>
+                onClose={() => setOpenSnackbar(false)}
+            />
         </>
     );
 }
