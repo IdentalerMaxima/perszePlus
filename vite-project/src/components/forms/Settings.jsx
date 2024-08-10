@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import axiosClient from "../../axios";
 import SuccessSnackbar from "../popups/SuccessSnackbar";
@@ -14,6 +14,7 @@ export default function Settings() {
 
     const [successMessage, setSuccessMessage] = useState("");
     const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [loading, setLoading] = useState(true); 
 
     useEffect(() => {
         console.log('Settings: ', settings)
@@ -38,6 +39,7 @@ export default function Settings() {
             };
 
             setSettings(mappedSettings);
+            setLoading(false);
         } catch (error) {
             console.log('Error fetching settings:', error);
         }
@@ -81,6 +83,11 @@ export default function Settings() {
 
     return (
         <div>
+            {loading ? (
+          <div className="flex justify-center items-center h-72">
+            <CircularProgress />
+          </div>
+        ) : (
             <Box className="">
                 <h1 className="font-semibold">Notifications</h1>
 
@@ -152,6 +159,7 @@ export default function Settings() {
 
                 </div>
             </Box>
+        )}
 
             <SuccessSnackbar
                 open={openSnackbar}
