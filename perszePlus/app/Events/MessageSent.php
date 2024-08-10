@@ -3,12 +3,16 @@
 namespace App\Events;
 
 use App\Models\Message;
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\BroadcastingEvent;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
+use App\Notifications\MessageReceived;
+
+
 
 class MessageSent implements ShouldBroadcast
 {
@@ -27,6 +31,12 @@ class MessageSent implements ShouldBroadcast
             'receiver_id' => $message->receiver_id,
             
         ];
+
+        // Send email notification
+        $receiver = User::find($message->receiver_id);
+        $receiver->notify(new MessageReceived($message, $message->sender));
+
+
     }
 
     public function broadcastOn()
