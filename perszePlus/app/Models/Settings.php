@@ -10,6 +10,8 @@ class Settings extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'user_id'; 
+
     protected $fillable = [
         'user_id',
         'receive_notification_new_event',
