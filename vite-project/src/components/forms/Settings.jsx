@@ -134,7 +134,7 @@ export default function Settings() {
                             checked={settings.emailNotifications}
 
                         />
-                        <p className="text-gray-500 ml-2"> Receive emails of notifications</p>
+                        <p className="text-gray-500 ml-2"> Receive emails of notifications of messages</p>
                     </div>
 
                 </div>
