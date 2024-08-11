@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
+use App\Models\Settings;
+use App\Jobs\SendEmailJob;
 
 class PostController extends Controller
 {
@@ -71,6 +74,15 @@ class PostController extends Controller
             'content' => $validatedData['content'],
             'author_id' => $validatedData['author_id'],
         ]);
+
+        $usersWithNotifications = Settings::where('receive_notification_new_course', true)
+            ->pluck('user_id');
+        $usersToNotify = User::whereIn('id', $usersWithNotifications)->get();
+
+        foreach ($usersToNotify as $user) {
+            SendEmailJob::dispatch($user, $post, 'post');
+        }
+
 
         return response()->json($post, 201);
     }
