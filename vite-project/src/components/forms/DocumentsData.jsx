@@ -3,7 +3,6 @@ import { Fab, Button, CircularProgress, useMediaQuery } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/Download';
-import CloseIcon from '@mui/icons-material/Close';
 import FileUpload from '../../components/upload/FileUpload';
 import axiosClient from '../../axios';
 import DeleteFile from '../../components/popups/DeleteFile';
@@ -19,17 +18,9 @@ export default function DocumentsData() {
   const isMobile = useMediaQuery('(max-width: 600px)');
   const [selectedDocumentToView, setSelectedDocumentToView] = useState(null);
 
-  const openUploadDialog = () => {
-    setIsUploadClicked(true);
-  };
-
   const closeUploadDialog = () => {
     setIsUploadClicked(false);
     fetchDocuments();
-  };
-
-  const openDeleteDialog = () => {
-    setIsDeleteClicked(true);
   };
 
   const closeDeleteDialog = () => {
@@ -44,6 +35,7 @@ export default function DocumentsData() {
   const fetchDocuments = async () => {
     try {
       const response = await axiosClient.get('/user/documents');
+      console.log(response.data.documents)
       setUploadedFiles(response.data.documents);
       setLoading(false);
     } catch (error) {
@@ -205,7 +197,7 @@ export default function DocumentsData() {
             variant="contained"
             color="secondary"
             disabled={checkboxedDocuments.length === 0}
-            onClick={openDeleteDialog}
+            onClick={() => setIsDeleteClicked(true) }
             startIcon={<DeleteIcon />}
           >
             Delete
@@ -299,7 +291,7 @@ export default function DocumentsData() {
           <Fab
             color="primary"
             aria-label="add"
-            onClick={openUploadDialog}
+            onClick={ () => setIsUploadClicked(true) } 
           >
             <AddIcon />
           </Fab>
