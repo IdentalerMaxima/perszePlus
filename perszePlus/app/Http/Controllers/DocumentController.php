@@ -12,6 +12,7 @@ class DocumentController extends Controller
 {
     public function index(Request $request)
     {
+        //Log::info('user/docs/index');
         $userId = $request->user()->id;
         $documents = Document::where('user_id', $userId)->get();
         return response()->json(['documents' => $documents]);
