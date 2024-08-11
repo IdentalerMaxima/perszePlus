@@ -186,17 +186,4 @@ class UserDataController extends Controller
     return response()->json(['message' => 'Settings updated successfully']);
 }
 
-
-
-
-    public function testLog()
-    {
-        Log::info('testLog');
-        return response()->json(['message' => 'test log']);
-    }
-
-
-
-
-
 }
