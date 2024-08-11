@@ -17,7 +17,6 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-// Helper function to trim message content
 const trimMessage = (message, maxLength) => {
   if (message.length > maxLength) {
     return `${message.slice(0, maxLength)}...`;
@@ -26,7 +25,7 @@ const trimMessage = (message, maxLength) => {
 };
 
 export default function DefaultLayout() {
-  const { currentUser, userToken, setCurrentUser, setUserToken } = useStateContext();
+  const { currentUser, userToken, setCurrentUser, setUserToken, isAdmin } = useStateContext();
   const { selectedMessageId, setSelectedMessageId, messages, setMessages } = useStateContext();
 
   const [avatarPath, setAvatarPath] = useState(currentUser.avatar_path || '');
@@ -40,10 +39,8 @@ export default function DefaultLayout() {
     try {
       const response = await axiosClient.get('/messages');
       const data = response.data;
-      // Get the last 5 messages
-      const lastFiveMessages = data.slice(0, 5);
       setMessages(data);
-      // Count the number of unread messages
+
       const unreadCount = data.filter((message) => !message.read).length;
       setUnreadMessages(unreadCount);
     } catch (error) {
@@ -51,7 +48,7 @@ export default function DefaultLayout() {
     }
   };
   useEffect(() => {
-    if (!pusherRef.current) { 
+    if (!pusherRef.current) {
       pusherRef.current = new Pusher('802a39c17b905cc66240', {
         cluster: 'eu',
         encrypted: true,
@@ -241,6 +238,24 @@ export default function DefaultLayout() {
                                 )}
                               </Menu.Item>
                             ))}
+
+                            {/* Render Admin menu item if the user is an admin */}
+                            {isAdmin && (
+                              <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  to={'/admin'}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block px-4 py-2 text-sm text-gray-700'
+                                  )}
+                                >
+                                  {'Admin Dashboard'}
+                                </Link>
+                              )}
+                            </Menu.Item>
+                            )}
+
                             <Menu.Item>
                               <button
                                 onClick={(ev) => logout(ev)}
