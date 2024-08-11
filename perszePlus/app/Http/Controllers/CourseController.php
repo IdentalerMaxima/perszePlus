@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Course;
+use App\Models\Settings;
+use App\Jobs\SendEmailJob;
+use App\Models\User;
 use Storage;
 use Log;
 
@@ -31,7 +34,7 @@ class CourseController extends Controller
         ]);
 
         $defaultImage = 'public/images/default_images/default_banner.jpg';
-    
+
         if ($request->hasFile('image')) {
             $image = $request->file('image')->store('public/images');
             $imagePath = asset(Storage::url($image));
@@ -40,7 +43,7 @@ class CourseController extends Controller
         } else {
             $imagePath = null;
         }
-    
+
         // Create course record
         $course = Course::create([
             'name' => $request->name,
@@ -52,40 +55,48 @@ class CourseController extends Controller
             'requirements' => $request->requirements,
             'dates' => $request->dates,
         ]);
-    
+
+        $usersWithNotifications = Settings::where('receive_notification_new_course', true)
+            ->pluck('user_id');
+        $usersToNotify = User::whereIn('id', $usersWithNotifications)->get();
+
+        foreach ($usersToNotify as $user) {
+            SendEmailJob::dispatch($user, $course, 'course');
+        }
+
         return response()->json($course, 201);
     }
 
     public function destroy($id)
-{
-    $course = Course::find($id);
-    if (!$course) {
-        return response()->json(['message' => 'Course not found'], 404);
-    }
-
-    $strippedImagePath = strstr($course->image_path, 'images');
-
-    $defaultImagePath = 'images/default_images/default_banner.jpg';
-    if ($strippedImagePath !== null && $strippedImagePath !== $defaultImagePath) {
-
-        if (Storage::disk('public')->exists($strippedImagePath)) {
-
-            Storage::disk('public')->delete($strippedImagePath);
-
-        } else {
-            Log::warning('File does not exist: ' . $strippedImagePath);
+    {
+        $course = Course::find($id);
+        if (!$course) {
+            return response()->json(['message' => 'Course not found'], 404);
         }
+
+        $strippedImagePath = strstr($course->image_path, 'images');
+
+        $defaultImagePath = 'images/default_images/default_banner.jpg';
+        if ($strippedImagePath !== null && $strippedImagePath !== $defaultImagePath) {
+
+            if (Storage::disk('public')->exists($strippedImagePath)) {
+
+                Storage::disk('public')->delete($strippedImagePath);
+
+            } else {
+                Log::warning('File does not exist: ' . $strippedImagePath);
+            }
+        }
+
+        $course->delete();
+
+        return response()->json(['message' => 'Course deleted'], 200);
     }
-
-    $course->delete();
-
-    return response()->json(['message' => 'Course deleted'], 200);
-}
 
 
     public function update(Request $request, $id)
     {
-        $request -> validate([
+        $request->validate([
             'name' => 'required|string',
             'description' => 'required|string',
             'semester' => 'required|string',
@@ -144,7 +155,7 @@ class CourseController extends Controller
             return response()->json(['message' => 'Course not found'], 404);
         }
 
-        $course->users()->attach($request->user()->id , ['status' => 'subscribed']);
+        $course->users()->attach($request->user()->id, ['status' => 'subscribed']);
 
         return response()->json(['message' => 'Subscribed to course'], 200);
     }
@@ -156,7 +167,7 @@ class CourseController extends Controller
             return response()->json(['message' => 'Course not found'], 404);
         }
 
-        $course->users()->detach($request->user()->id );
+        $course->users()->detach($request->user()->id);
 
         return response()->json(['message' => 'Unsubscribed from course'], 200);
     }
@@ -172,5 +183,5 @@ class CourseController extends Controller
 
         return response()->json(['isEnrolled' => $isEnrolled], 200);
     }
-    
+
 }
