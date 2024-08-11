@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AvatarUploadController;
 use App\Http\Controllers\CheckInController;
@@ -61,12 +62,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     //User
-    Route::get('/user/test', [UserDataController::class, 'testLog']);
     Route::post('/user/info', [UserDataController::class, 'saveUserData']);
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
     Route::get('/user/settings', [UserDataController::class, 'getUserSettings']);
     Route::post('/user/saveSettings', [UserDataController::class, 'saveUserSettings']);
-    Route::get('/user/{id}', [UserDataController::class, 'getUserById']);
+    //Route::get('/userById/{id}', [UserDataController::class, 'getUserById']);
     
 
     //Documents
@@ -74,6 +74,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/getDocumentsOfUser/{id}', [DocumentController::class, 'getDocumentsOfUser']);
     Route::get('/user/documents/{id}', [DocumentController::class, 'download']);
     Route::get('/user/documents/show/{id}', [DocumentController::class, 'show']);
+
+    //Invite
+    Route::post('/invite', [AdminController::class, 'invite']);
 
     
 
