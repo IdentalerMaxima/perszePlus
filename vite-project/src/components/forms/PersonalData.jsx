@@ -8,7 +8,7 @@ import axiosClient from '../../axios';
 import Cancel from '../popups/Cancel';
 import dayjs from 'dayjs';
 import { useStateContext } from '../../contexts/ContextProvider';
-import SuccessSnackbar from "../popups/SuccessSnackbar";
+import SuccessSnackbar from "../popups/CustomSnackbar";
 
 
 

@@ -2,7 +2,7 @@ import axiosClient from '../../axios';
 import { useEffect, useState, } from 'react';
 import Cancel from '../popups/Cancel';
 import { useStateContext } from '../../contexts/ContextProvider';
-import SuccessSnackbar from "../popups/SuccessSnackbar";
+import SuccessSnackbar from "../popups/CustomSnackbar";
 
 export default function PersonalData() {
   const { currentUser, setCurrentUser } = useStateContext();

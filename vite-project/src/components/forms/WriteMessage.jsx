@@ -9,7 +9,7 @@ import {
     Button,
 } from "@mui/material";
 import SearchBar from "../searchbar/Searchbar";
-import SuccessSnackbar from "../popups/SuccessSnackbar";
+import SuccessSnackbar from "../popups/CustomSnackbar";
 
 export default function WriteMessage({ open, handleClose, newMessage, setNewMessage, handleSendMessage }) {
     const [selectedRecipient, setSelectedRecipient] = useState(null);

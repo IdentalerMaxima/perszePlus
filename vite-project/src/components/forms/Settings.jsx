@@ -1,7 +1,7 @@
 import { Box, CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import axiosClient from "../../axios";
-import SuccessSnackbar from "../popups/SuccessSnackbar";
+import SuccessSnackbar from "../popups/CustomSnackbar";
 
 export default function Settings() {
 
