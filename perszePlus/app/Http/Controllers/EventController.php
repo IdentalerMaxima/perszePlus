@@ -7,7 +7,6 @@ use App\Models\Event;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Settings;
-use App\Notifications\EventCreated;
 use App\Jobs\SendEmailJob;
 
 class EventController extends Controller
@@ -42,18 +41,15 @@ class EventController extends Controller
 
         $event->save();
 
-        //set all users to not_answered
-
         $users = User::all();
         $event->users()->attach($users, ['status' => 'not_answered']);
 
-        // Notify users who have opted in for new event notifications
         $usersWithNotifications = Settings::where('receive_notification_new_event', true)
             ->pluck('user_id');
         $usersToNotify = User::whereIn('id', $usersWithNotifications)->get();
 
         foreach ($usersToNotify as $user) {
-            SendEmailJob::dispatch($user, $event);
+            SendEmailJob::dispatch($user, $event, 'event');
         }
 
         return response()->json([
