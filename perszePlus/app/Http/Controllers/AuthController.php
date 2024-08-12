@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\Invite;
 
 class AuthController extends Controller
 {
@@ -23,6 +24,8 @@ class AuthController extends Controller
             'password' => bcrypt($data['password']),
             'imageUrl' => null,
         ]);
+
+       
 
         $user->settings()->create();
 
@@ -64,8 +67,19 @@ class AuthController extends Controller
         return response([
             'success' => true,
         ]);
+    }
 
+    public function validateToken($token)
+    {
+        $payload = json_decode(base64_decode($token), true);
 
+        $email = $payload['email'];
+
+        if ($payload['expires'] < now()->timestamp) {
+            return response()->json(['message' => 'Token expired'], 400);
+        }
+
+        return response()->json(['email' => $email, 'message' => 'Token valid'], 200);
     }
         
 }
