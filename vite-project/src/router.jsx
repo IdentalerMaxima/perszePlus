@@ -20,6 +20,7 @@ import Login from './views/Login.jsx';
 import Signup from './views/Signup.jsx';
 import MemberProfile from './views/MemberProfile.jsx';
 import Messages from './views/Messages.jsx';
+import RegistrationRestricted from './views/admin/RegistrationRestricted.jsx';
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/login', element: <Login /> },
       { path: '/signup', element: <Signup /> },
+      { path: '/registration-restricted', element: <RegistrationRestricted /> },
       { path: '/forgotPassword', element: <ForgotPassword />},
       { path: '/resetPassword/:token', element: <ResetPassword />},
     ],
