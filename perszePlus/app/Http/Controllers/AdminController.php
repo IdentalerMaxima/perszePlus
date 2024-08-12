@@ -7,8 +7,6 @@ use App\Models\Invite;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\InviteNotification;
 use Illuminate\Support\Facades\Log;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Models\AdminSettings;
 
 class AdminController extends Controller
