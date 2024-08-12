@@ -9,15 +9,33 @@ import { useStateContext } from "../contexts/ContextProvider.jsx";
 export default function Login() {
   const { t } = useTranslation(['translation']);
 
-  const {setCurrentUser, setUserToken} = useStateContext();
+  const { setCurrentUser, setUserToken } = useStateContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState({ __html: '' });
   const [rememberMe, setRememberMe] = useState(localStorage.getItem('token') ? true : false);
+  const [registrationRestriction, setRegistrationRestriction] = useState(true);
 
   useEffect(() => {
     setError({ __html: '' });
   }, [i18next.language]);
+
+  useEffect(() => {
+    console.log('Remember me:', rememberMe);
+  }, [rememberMe]);
+
+  useEffect(() => {
+    getRegistrationRestriction();
+  }, []);
+
+  const getRegistrationRestriction = async () => {
+    try {
+      const response = await axiosClient.get('admin/registration/restricted');
+      setRegistrationRestriction(response.data.restricted);
+    } catch (error) {
+      console.error('Error getting registration status:', error);
+    }
+  };
 
   const translateErrors = (errorMessages) => {
     const errors = errorMessages.split('<br>');
@@ -25,14 +43,12 @@ export default function Login() {
     setError({ __html: translatedErrors.join('<br>') });
   };
 
-  useEffect(() => {
-    console.log('Remember me:', rememberMe);
-  }, [rememberMe]);
+
 
   const handleLogin = (ev) => {
     ev.preventDefault();
     setError({ __html: '' }); // Reset errors if there are some
-    
+
     axiosClient.post('/login', {
       email,
       password,
@@ -42,7 +58,7 @@ export default function Login() {
         if (rememberMe) {
           localStorage.setItem('user', JSON.stringify(data.user));
           localStorage.setItem('token', data.token);
-          
+
         } else {
           sessionStorage.setItem('user', JSON.stringify(data.user));
           sessionStorage.setItem('token', data.token);
@@ -56,7 +72,7 @@ export default function Login() {
           const finalErrors = "email or password is incorrect";
           translateErrors(finalErrors);
         }
-        if (error.response){
+        if (error.response) {
           console.log(error.response.data);
         }
       });
@@ -108,7 +124,7 @@ export default function Login() {
           <div className="flex items-center mt-2 justify-between">
             <div>
               <input type="checkbox" id="rememberMe" name="rememberMe" checked={rememberMe} onChange={(ev) => setRememberMe(ev.target.checked)}
-              className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4" />
+                className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4" />
               <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-600">
                 {t('remember me')}
               </label>
@@ -131,14 +147,18 @@ export default function Login() {
           </div>
         </form>
 
-        <p className="mt-10 text-center text-sm text-gray-500">
-          {t('dont have an account?')}
-          {' '}
-          <Link
-           to="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-            {t('register now')}
-          </Link>
-        </p>
+        { !registrationRestriction &&
+
+          <p className="mt-10 text-center text-sm text-gray-500">
+            {t('dont have an account?')}
+            {' '}
+            <Link
+              to="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+              {t('register now')}
+            </Link>
+          </p>}
+
+
 
         <LanguageSelector />
 
