@@ -7,6 +7,10 @@ const StateContext = createContext({
     userToken: null,
     setUserToken: () => { },
     isAdmin: false,
+    selectedMessageId: null,
+    setSelectedMessageId: () => { },
+    messages: [],
+    setMessages: () => { }
 });
 
 export const ContextProvider = ({ children }) => {
