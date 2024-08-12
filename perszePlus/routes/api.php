@@ -75,8 +75,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/documents/{id}', [DocumentController::class, 'download']);
     Route::get('/user/documents/show/{id}', [DocumentController::class, 'show']);
 
-    //Invite
-    Route::post('/invite', [AdminController::class, 'invite']);
+    //Admin
+    Route::post('/admin/invite', [AdminController::class, 'invite']);
+    Route::get('/admin/settings', [AdminController::class, 'getSettings']);
+    Route::post('/admin/saveSettings', [AdminController::class, 'saveSettings']);
+    
+
 
     
 
@@ -114,6 +118,10 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/universities', [UniversityController::class, 'getUniversities']);
 Route::get('/universities/{universityName}/faculties', [UniversityController::class, 'getFacultiesForUniversity']);
+
+//Validate registration token
+Route::get('/validateToken/{token}', [AuthController::class, 'validateToken']);
+Route::get('/admin/registration/restricted', [AdminController::class, 'adminRegistrationRestricted']);
 
 Route::post('/forgotPassword', [ForgotPasswordController::class, 'forgotPassword'])->name('password.request');  
 Route::get('/resetPassword/{token}', [ResetPasswordController::class, 'showReset'])->name('password.reset');
