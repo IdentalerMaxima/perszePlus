@@ -16,7 +16,7 @@ export default function Invite() {
         console.log('Invite user with email:', email, 'and role:', role);
 
         try {
-            const response = await axiosClient.post('/invite', { email, role });
+            const response = await axiosClient.post('/admin/invite', { email, role });
             console.log('Response:', response.data);
             setMessage(response.data.message);
             setSeverity("success");
