@@ -5,6 +5,7 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Log;
 
 class InviteNotification extends Notification
 {
@@ -47,11 +48,17 @@ class InviteNotification extends Notification
      */
     public function toMail($notifiable)
     {
+
+        //user app url from .env
+        //$url = env('APP_URL') . '/register?token=' . $this->token;
+        $url = 'http://localhost:3000/signup?token=' . $this->token;
+        
+
         return (new MailMessage)
             ->subject('You are invited to join our platform')
             ->greeting('Hello!')
             ->line("You have been invited to join our platform as a {$this->role}.")
-            ->action('Accept Invitation', url('/invite/accept?token=' . $this->token))
+            ->action('Accept Invitation', url($url))
             ->line('Thank you for using our application!')
             ->line("Sent by: {$this->sender}");
     }
