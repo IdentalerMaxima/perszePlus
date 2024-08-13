@@ -1,26 +1,25 @@
 import { useState, useEffect } from "react";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";  // <-- useNavigate imported here
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axiosClient from "../axios.js";
 import LanguageSelector from "../components/LanguageSelector.jsx";
 import { useTranslation } from "react-i18next";
-import { useStateContext } from "../contexts/ContextProvider.jsx";
 import CustomSnackbar from "../components/popups/CustomSnackbar.jsx";
 
 export default function Signup() {
   const { t, i18n } = useTranslation(['translation']);
-  const { setCurrentUser, setUserToken } = useStateContext();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState({ __html: '' });
-  const [isValidToken, setIsValidToken] = useState(false);
+  const [isValidToken, setIsValidToken] = useState(null);
   const [isRegistrationRestricted, setIsRegistrationRestricted] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const location = useLocation();
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -34,21 +33,22 @@ export default function Signup() {
             setEmail(response.data.email);
             setIsValidToken(true);
           } else {
-            setIsValidToken(false);
-            navigate('/registration-restricted');  // <-- use navigate here
+            setIsValidToken(false); // Token invalid, set state to false
+            navigate('/registration-restricted'); // Redirect to error page
           }
         } catch (error) {
           console.error('Error validating token:', error);
           setIsValidToken(false);
-          navigate('/registration-restricted');  // <-- use navigate here
+          navigate('/registration-restricted');
         }
       } else {
         setIsValidToken(false);
+        navigate('/registration-restricted');
       }
     };
 
     validateToken();
-  }, [location.search]);
+  }, [location.search, navigate]);
 
   const getRegistrationRestriction = async () => {
     try {
@@ -75,11 +75,9 @@ export default function Signup() {
 
   const onSubmit = async (ev) => {
     ev.preventDefault();
-    console.log('Form submitted'); // Log form submission
-    setError({ __html: '' }); // Reset errors if there are some
-  
+    setError({ __html: '' });
+
     try {
-      console.log('Before API call');
       const response = await axiosClient.post('/signup', {
         first_name: firstName,
         last_name: lastName,
@@ -88,11 +86,11 @@ export default function Signup() {
         password_confirmation: passwordConfirmation
       });
 
-      setSnackbarMessage('Registration successful, redirecting to login page...');  // Set snackbar message
+      setSnackbarMessage('Registration successful, redirecting to login page...');
       setSnackbarOpen(true);
 
       setTimeout(() => {
-        navigate('/login');  
+        navigate('/login');
       }, 2000);
 
     } catch (error) {
@@ -105,122 +103,132 @@ export default function Signup() {
       }
     }
   };
-  
-  
 
+  // Conditional rendering based on token validity
+  if (isValidToken === null) {
+    // Optionally, you can render a loading spinner here
+    return null; // Or <LoadingSpinner />
+  }
+
+  if (!isValidToken) {
+    return null; // Redirect already handled in useEffect
+  }
 
   return (
     <>
-      <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-        {t('register now')}
-      </h2>
+      <div>
+        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          {t('register now')}
+        </h2>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        {error.__html && (
-          <div className="bg-red-500 rounded py-2 px-3 text-white" dangerouslySetInnerHTML={error} />
-        )}
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+          {error.__html && (
+            <div className="bg-red-500 rounded py-2 px-3 text-white" dangerouslySetInnerHTML={error} />
+          )}
 
-        <form onSubmit={onSubmit} className="" action="" method="POST">
-          <div className="mt-14">
-            <div className="mt-14 flex justify-between py-4 space-x-4">
-              <div>
-                <input
-                  id="first-name"
-                  name="first_name"
-                  type="text"
-                  value={firstName}
-                  onChange={(ev) => setFirstName(ev.target.value)}
-                  className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+          <form onSubmit={onSubmit} className="" action="" method="POST">
+            <div className="mt-14">
+              <div className="mt-14 flex justify-between py-4 space-x-4">
+                <div>
+                  <input
+                    id="first-name"
+                    name="first_name"
+                    type="text"
+                    value={firstName}
+                    onChange={(ev) => setFirstName(ev.target.value)}
+                    className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
                       focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  placeholder={t('first name')}
-                />
+                    placeholder={t('first name')}
+                  />
+                </div>
+
+                <div>
+                  <input
+                    id="last-name"
+                    name="last_name"
+                    type="text"
+                    value={lastName}
+                    onChange={(ev) => setLastName(ev.target.value)}
+                    className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+                      focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder={t('last name')}
+                  />
+                </div>
               </div>
 
-              <div>
-                <input
-                  id="last-name"
-                  name="last_name"
-                  type="text"
-                  value={lastName}
-                  onChange={(ev) => setLastName(ev.target.value)}
-                  className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
-                      focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  placeholder={t('last name')}
-                />
-              </div>
-            </div>
+              {!isRegistrationRestricted && (
+                <div className="pb-4">
+                  <input
+                    id="email-address"
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={(ev) => setEmail(ev.target.value)}
+                    className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+                  focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder={t('email')}
+                  />
+                </div>
+              )}
 
-            {!isRegistrationRestricted && (
               <div className="pb-4">
                 <input
-                  id="email-address"
-                  name="email"
-                  type="email"
-                  value={email}
-                  onChange={(ev) => setEmail(ev.target.value)}
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(ev) => setPassword(ev.target.value)}
                   className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
-                  focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  placeholder={t('email')}
+                      focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  placeholder={t('password')}
                 />
               </div>
-            )}
 
-            <div className="pb-4">
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(ev) => setPassword(ev.target.value)}
-                className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+              <div>
+                <input
+                  id="password-confirmation"
+                  name="password_confirmation"
+                  type="password"
+                  value={passwordConfirmation}
+                  onChange={(ev) => setPasswordConfirmation(ev.target.value)}
+                  className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
                       focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                placeholder={t('password')}
-              />
+                  placeholder={t('confirm password')}
+                />
+              </div>
             </div>
 
             <div>
-              <input
-                id="password-confirmation"
-                name="password_confirmation"
-                type="password"
-                value={passwordConfirmation}
-                onChange={(ev) => setPasswordConfirmation(ev.target.value)}
-                className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
-                      focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                placeholder={t('confirm password')}
-              />
+              <button
+                type="submit"
+                className="flex w-full justify-center rounded-md mt-10 bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                {t('create account')}
+              </button>
             </div>
-          </div>
+          </form>
 
-          <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md mt-10 bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          <p className="mt-10 text-center text-sm text-gray-500">
+            {t('already have an account?')}
+            {' '}
+            <Link
+              to="/login"
+              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
             >
-              {t('create account')}
-            </button>
-          </div>
-        </form>
+              {t('login')}
+            </Link>
+          </p>
 
-        <p className="mt-10 text-center text-sm text-gray-500">
-          {t('already have an account?')}
-          {' '}
-          <Link
-            to="/login"
-            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-          >
-            {t('login')}
-          </Link>
-        </p>
+          <CustomSnackbar
+            open={snackbarOpen}
+            setOpen={setSnackbarOpen}
+            message={snackbarMessage}
+            severity={snackbarSeverity}
+          />
 
-        <CustomSnackbar
-          open={snackbarOpen}
-          setOpen={setSnackbarOpen}
-          message={snackbarMessage}
-        />
-
-        <LanguageSelector />
+          <LanguageSelector />
+        </div>
       </div>
     </>
   );
