@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";  // <-- useNavigate imported here
 import axiosClient from "../axios.js";
 import LanguageSelector from "../components/LanguageSelector.jsx";
 import { useTranslation } from "react-i18next";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
+import CustomSnackbar from "../components/popups/CustomSnackbar.jsx";
 
 export default function Signup() {
   const { t, i18n } = useTranslation(['translation']);
-
   const { setCurrentUser, setUserToken } = useStateContext();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -15,6 +15,53 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState({ __html: '' });
+  const [isValidToken, setIsValidToken] = useState(false);
+  const [isRegistrationRestricted, setIsRegistrationRestricted] = useState(true);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();  
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get('token');
+
+    const validateToken = async () => {
+      if (token) {
+        try {
+          const response = await axiosClient.get(`/validateToken/${token}`);
+          if (response.status === 200) {
+            setEmail(response.data.email);
+            setIsValidToken(true);
+          } else {
+            setIsValidToken(false);
+            navigate('/registration-restricted');  // <-- use navigate here
+          }
+        } catch (error) {
+          console.error('Error validating token:', error);
+          setIsValidToken(false);
+          navigate('/registration-restricted');  // <-- use navigate here
+        }
+      } else {
+        setIsValidToken(false);
+      }
+    };
+
+    validateToken();
+  }, [location.search]);
+
+  const getRegistrationRestriction = async () => {
+    try {
+      const response = await axiosClient.get('admin/registration/restricted');
+      setIsRegistrationRestricted(response.data.restricted);
+    } catch (error) {
+      console.error('Error getting registration status:', error);
+    }
+  };
+
+  useEffect(() => {
+    getRegistrationRestriction();
+  }, []);
 
   useEffect(() => {
     setError({ __html: '' });
@@ -26,29 +73,41 @@ export default function Signup() {
     setError({ __html: translatedErrors.join('<br>') });
   };
 
-  const onSubmit = (ev) => {
+  const onSubmit = async (ev) => {
     ev.preventDefault();
+    console.log('Form submitted'); // Log form submission
     setError({ __html: '' }); // Reset errors if there are some
-    axiosClient.post('/signup', {
-      first_name: firstName,
-      last_name: lastName, 
-      email,
-      password,
-      password_confirmation: passwordConfirmation
-    })
-      .then(({ data }) => {
-        setCurrentUser(data.user);
-        setUserToken(data.token);
-      })
-      .catch((error) => {
-        if (error.response) {
-          const finalErrors = Object.values(error.response.data.errors)
-            .reduce((accum, next) => [...accum, ...next], [])
-            .join('<br>');
-          translateErrors(finalErrors);
-        }
+  
+    try {
+      console.log('Before API call');
+      const response = await axiosClient.post('/signup', {
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        password,
+        password_confirmation: passwordConfirmation
       });
+
+      setSnackbarMessage('Registration successful, redirecting to login page...');  // Set snackbar message
+      setSnackbarOpen(true);
+
+      setTimeout(() => {
+        navigate('/login');  
+      }, 2000);
+
+    } catch (error) {
+      console.error('Caught error:', error);
+      if (error.response) {
+        const finalErrors = Object.values(error.response.data.errors)
+          .reduce((accum, next) => [...accum, ...next], [])
+          .join('<br>');
+        translateErrors(finalErrors);
+      }
+    }
   };
+  
+  
+
 
   return (
     <>
@@ -57,10 +116,9 @@ export default function Signup() {
       </h2>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-
-        {error.__html && (<div className="bg-red-500 rounded py-2 px-3 text-white"
-          dangerouslySetInnerHTML={error}>
-        </div>)}
+        {error.__html && (
+          <div className="bg-red-500 rounded py-2 px-3 text-white" dangerouslySetInnerHTML={error} />
+        )}
 
         <form onSubmit={onSubmit} className="" action="" method="POST">
           <div className="mt-14">
@@ -73,7 +131,7 @@ export default function Signup() {
                   value={firstName}
                   onChange={(ev) => setFirstName(ev.target.value)}
                   className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
-              focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   placeholder={t('first name')}
                 />
               </div>
@@ -86,25 +144,26 @@ export default function Signup() {
                   value={lastName}
                   onChange={(ev) => setLastName(ev.target.value)}
                   className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
-              focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   placeholder={t('last name')}
                 />
               </div>
             </div>
 
-
-            <div className="pb-4">
-              <input
-                id="email-address"
-                name="email"
-                type="email"
-                value={email}
-                onChange={(ev) => setEmail(ev.target.value)}
-                className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
-              focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 "
-                placeholder={t('email')}
-              />
-            </div>
+            {!isRegistrationRestricted && (
+              <div className="pb-4">
+                <input
+                  id="email-address"
+                  name="email"
+                  type="email"
+                  value={email}
+                  onChange={(ev) => setEmail(ev.target.value)}
+                  className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
+                  focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  placeholder={t('email')}
+                />
+              </div>
+            )}
 
             <div className="pb-4">
               <input
@@ -115,7 +174,7 @@ export default function Signup() {
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
                 className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
-              focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder={t('password')}
               />
             </div>
@@ -128,7 +187,7 @@ export default function Signup() {
                 value={passwordConfirmation}
                 onChange={(ev) => setPasswordConfirmation(ev.target.value)}
                 className="block w-full rounded-md border-gray-300 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400
-              focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 placeholder={t('confirm password')}
               />
             </div>
@@ -153,10 +212,16 @@ export default function Signup() {
           >
             {t('login')}
           </Link>
-
         </p>
+
+        <CustomSnackbar
+          open={snackbarOpen}
+          setOpen={setSnackbarOpen}
+          message={snackbarMessage}
+        />
+
         <LanguageSelector />
       </div>
     </>
-  )
+  );
 }
