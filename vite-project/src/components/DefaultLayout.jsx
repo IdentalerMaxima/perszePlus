@@ -3,26 +3,11 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link, NavLink, useNavigate, Outlet } from 'react-router-dom';
 import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from '../axios';
-import { Menu, Transition, Disclosure } from '@headlessui/react';
+import { Menu, Transition, Disclosure, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import Avatar from '@mui/material/Avatar';
 import { ListItemButton } from '@mui/material';
 import Pusher from 'pusher-js';
 import { useRef } from 'react';
-
-const userNavigation = [
-  { name: 'Your Profile', to: '/profile' },
-];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
-
-const trimMessage = (message, maxLength) => {
-  if (message.length > maxLength) {
-    return `${message.slice(0, maxLength)}...`;
-  }
-  return message;
-};
 
 export default function DefaultLayout() {
   const { currentUser, userToken, setCurrentUser, setUserToken, isAdmin } = useStateContext();
@@ -35,18 +20,42 @@ export default function DefaultLayout() {
 
   const navigate = useNavigate();
 
-  const getMessagesOfUser = async () => {
-    try {
-      const response = await axiosClient.get('/messages');
-      const data = response.data;
-      setMessages(data);
-
-      const unreadCount = data.filter((message) => !message.read).length;
-      setUnreadMessages(unreadCount);
-    } catch (error) {
-      console.error(error);
+  const trimMessage = (message, maxLength) => {
+    if (message.length > maxLength) {
+      return `${message.slice(0, maxLength)}...`;
     }
+    return message;
   };
+
+  const userNavigation = [
+    { name: 'Your Profile', to: '/profile' },
+  ];
+  
+  function classNames(...classes) {
+    return classes.filter(Boolean).join(' ');
+  }
+
+  useEffect(() => {
+    const getMessagesOfUser = async () => {
+      if (userToken) {
+        try {
+          const response = await axiosClient.get('/messages', {
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+            },
+          });
+          setMessages(response.data);
+        } catch (error) {
+          console.error('Error fetching messages:', error);
+        }
+      }
+    };
+  
+    getMessagesOfUser();
+  }, [userToken, selectedMessageId]); // The effect runs only when userToken is set or selectedMessageId changes
+  
+  
+
   useEffect(() => {
     if (!pusherRef.current) {
       pusherRef.current = new Pusher('802a39c17b905cc66240', {
@@ -67,9 +76,6 @@ export default function DefaultLayout() {
     };
   }, [currentUser.id]);
 
-  useEffect(() => {
-    getMessagesOfUser();
-  }, [selectedMessageId]);
 
   useEffect(() => {
     setAvatarPath(currentUser.avatar_path || '');
@@ -153,7 +159,7 @@ export default function DefaultLayout() {
                       {/* Notification button */}
                       <Menu as="div" className="relative ml-3">
                         <div>
-                          <Menu.Button
+                          <MenuButton
                             type="button"
                             className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                           >
@@ -166,7 +172,7 @@ export default function DefaultLayout() {
                                 </span>
                               )}
                             </div>
-                          </Menu.Button>
+                          </MenuButton>
                         </div>
                         <Transition
                           as={Fragment}
@@ -177,11 +183,11 @@ export default function DefaultLayout() {
                           leaveFrom="transform opacity-100 scale-100"
                           leaveTo="transform opacity-0 scale-95"
                         >
-                          <Menu.Items className="absolute right-0 z-10 mt-2 w-80 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-96 overflow-y-auto">
-                            {messages.length === 0 ? (
+                          <MenuItems className="absolute right-0 z-10 mt-2 w-80 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-96 overflow-y-auto">
+                            {messages && messages.length === 0 ? (
                               <div className="px-4 py-2 text-sm text-gray-700">No messages</div>
                             ) : (
-                              messages.map((message) => (
+                              messages?.map((message) => (
                                 <ListItemButton
                                   key={message.id}
                                   className="flex items-start p-4 border-b border-gray-200"
@@ -197,21 +203,21 @@ export default function DefaultLayout() {
                                 </ListItemButton>
                               ))
                             )}
-                          </Menu.Items>
+                          </MenuItems>
                         </Transition>
                       </Menu>
 
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div>
-                          <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                          <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                             <span className="sr-only">Open user menu</span>
                             <div className="flex-shrink-0">
                               <div className="h-10 w-10 rounded-full overflow-hidden">
                                 <img className="h-full w-full object-cover" src={avatarPath || "../../src/assets/defaultAvatar.PNG"} alt="" />
                               </div>
                             </div>
-                          </Menu.Button>
+                          </MenuButton>
                         </div>
                         <Transition
                           as={Fragment}
@@ -222,9 +228,9 @@ export default function DefaultLayout() {
                           leaveFrom="transform opacity-100 scale-100"
                           leaveTo="transform opacity-0 scale-95"
                         >
-                          <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                          <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                             {userNavigation.map((item) => (
-                              <Menu.Item key={item.name}>
+                              <MenuItem key={item.name}>
                                 {({ active }) => (
                                   <Link
                                     to={item.to}
@@ -236,12 +242,12 @@ export default function DefaultLayout() {
                                     {item.name}
                                   </Link>
                                 )}
-                              </Menu.Item>
+                              </MenuItem>
                             ))}
 
                             {/* Render Admin menu item if the user is an admin */}
                             {isAdmin && (
-                              <Menu.Item>
+                              <MenuItem>
                               {({ active }) => (
                                 <Link
                                   to={'/admin'}
@@ -253,18 +259,18 @@ export default function DefaultLayout() {
                                   {'Admin Dashboard'}
                                 </Link>
                               )}
-                            </Menu.Item>
+                            </MenuItem>
                             )}
 
-                            <Menu.Item>
+                            <MenuItem>
                               <button
                                 onClick={(ev) => logout(ev)}
                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                               >
                                 Sign out
                               </button>
-                            </Menu.Item>
-                          </Menu.Items>
+                            </MenuItem>
+                          </MenuItems>
                         </Transition>
                       </Menu>
                     </div>
@@ -274,7 +280,7 @@ export default function DefaultLayout() {
                     {/* Mobile menu button */}
                     <Menu as="div">
                       <div className="relative ml-auto flex items-center">
-                        <Menu.Button
+                        <MenuButton
                           type="button"
                           className="absolute top-1 right-3 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                         >
@@ -287,7 +293,7 @@ export default function DefaultLayout() {
                               </span>
                             )}
                           </div>
-                        </Menu.Button>
+                        </MenuButton>
                       </div>
                       <Transition
                         as={Fragment}
@@ -298,7 +304,7 @@ export default function DefaultLayout() {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <Menu.Items className="absolute right-4 top-11 z-10 mt-2 w-80 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-96 overflow-y-auto">
+                        <MenuItems className="absolute right-4 top-11 z-10 mt-2 w-80 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-96 overflow-y-auto">
                           {messages.length === 0 ? (
                             <div className="px-4 py-2 text-sm text-gray-700">No messages</div>
                           ) : (
@@ -318,7 +324,7 @@ export default function DefaultLayout() {
                               </ListItemButton>
                             ))
                           )}
-                        </Menu.Items>
+                        </MenuItems>
                       </Transition>
                     </Menu>
                     <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
