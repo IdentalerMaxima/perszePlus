@@ -116,8 +116,7 @@ export default function DefaultLayout() {
   };
 
   const navigation = [
-    { name: 'Főoldal', to: '/' },
-    { name: 'Hírek', to: '/news' },
+    { name: 'Hírek', to: '/' },
     { name: 'Naptár', to: '/calendar' },
     { name: 'Kurzusok', to: '/courses' },
     { name: 'Jelenléti', to: '/attendance' },
