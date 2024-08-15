@@ -101,6 +101,7 @@ export default function PersonalData() {
 
   const resetFormFields = () => {
     setFormData(initialFormData);
+    setIsChecked(currentUser.temp_addr == 'true' ? true : false);
     setRerender(prev => !prev);
   }
 
