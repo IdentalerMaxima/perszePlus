@@ -10,7 +10,7 @@ import AttendeesDialog from '../components/popups/AttendeesDialog';
 import Box from '@mui/material/Box';
 import { useMediaQuery } from '@mui/material';
 
-export default function Calendar() {
+export default function Events() {
   const { currentUser, isAdmin } = useStateContext();
   const [events, setEvents] = useState([]);
   const [open, setOpen] = useState(false);
@@ -24,21 +24,14 @@ export default function Calendar() {
 
   const isMobile = useMediaQuery('(max-width: 600px)');
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+  //TODO
+  const endEvent = () => {
+    handleUpdateEvents();
   };
 
   const handleShowAttendees = (event) => {
     setSelectedEvent(event);
     setShowAttendees(true);
-  };
-
-  const handleCloseAttendees = () => {
-    setShowAttendees(false);
   };
 
   const handleChange = (ev) => {
@@ -115,7 +108,7 @@ export default function Calendar() {
 
   const handleUpdateEvents = async () => {
     try {
-      await axiosClient.post('/updateMissedEvents')
+      await axiosClient.post('/updateMissedEvents');
       fetchEvents();
     } catch (error) {
       console.error('Error updating events:', error);
@@ -130,7 +123,7 @@ export default function Calendar() {
     <PageComponent title="Esemenyek">
       <div className={`flex flex-row ${isMobile ? 'justify-center' : ''}`}>
         {isAdmin && (
-          <Button variant="contained" color="primary" style={{ marginBottom: '16px' }} onClick={handleOpen}>
+          <Button variant="contained" color="primary" style={{ marginBottom: '16px' }} onClick={ setOpen(true) }>
             Create Event
           </Button>
         )}
@@ -209,7 +202,7 @@ export default function Calendar() {
                   { isAdmin && (
                     <Button
                     variant="outlined"
-                    onClick={ handleUpdateEvents }>
+                    onClick={ endEvent }>
                     End Event
                   </Button>
                   )}
@@ -240,7 +233,7 @@ export default function Calendar() {
 
       <EventData
         open={open}
-        handleClose={handleClose}
+        handleClose={setOpen(false)}
         handleChange={handleChange}
         fetchEvents={fetchEvents}
         editMode={editMode}
@@ -248,16 +241,16 @@ export default function Calendar() {
         saveEditedEvent={saveEditedEvent}
       />
 
-      <AttendeesDialog open={showAttendees} handleClose={handleCloseAttendees} event={selectedEvent} />
+      <AttendeesDialog open={showAttendees} handleClose={setShowAttendees(false)} event={selectedEvent} />
 
       {isAdmin && qrCode && (
-        <Dialog open={qrCodeDialogOpen} onClose={handleCloseQrCodeDialog}>
+        <Dialog open={qrCodeDialogOpen} onClose={setQrCodeDialogOpen(false)}>
         <DialogTitle>QR Code</DialogTitle>
         <DialogContent>
           {qrCode && <img src={`data:image/png;base64,${qrCode}`} alt="QR Code" />}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseQrCodeDialog} color="primary">
+          <Button onClick={setQrCodeDialogOpen(false)} color="primary">
             Close
           </Button>
         </DialogActions>
