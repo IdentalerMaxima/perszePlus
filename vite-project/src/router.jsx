@@ -5,7 +5,7 @@ import GuestLayout from './components/GuestLayout.jsx';
 import DefaultLayout from './components/DefaultLayout.jsx';
 
 import Dashboard from './views/Dashboard.jsx';
-import Calendar from './views/Calendar.jsx';
+import Events from './views/Calendar.jsx';
 import Courses from './views/Courses.jsx';
 import CourseDetails from './views/CourseDetails.jsx';
 import News from './views/News.jsx';
@@ -30,7 +30,7 @@ const router = createBrowserRouter([
       { path: '/news', element: <News /> },
       { path: '/members', element: <Members /> },
       { path: '/members/:id', element: <MemberProfile /> },
-      { path: '/calendar', element: <Calendar /> },
+      { path: '/events', element: <Events /> },
       { path: '/courses', element: <Courses /> },
       { path: '/courses/:id', element: <CourseDetails /> },
       { path: '/attendance', element: <Attendance /> },

@@ -117,7 +117,7 @@ export default function DefaultLayout() {
 
   const navigation = [
     { name: 'Hírek', to: '/news' },
-    { name: 'Naptár', to: '/calendar' },
+    { name: 'Események', to: '/events' },
     { name: 'Kurzusok', to: '/courses' },
     { name: 'Jelenléti', to: '/attendance' },
     { name: 'Tagok', to: '/members' },
