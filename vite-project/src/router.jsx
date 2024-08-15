@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     path: '/',
     element: <DefaultLayout />,
     children: [
-      { path: '/', element: <News /> },
+      { path: '/news', element: <News /> },
       { path: '/members', element: <Members /> },
       { path: '/members/:id', element: <MemberProfile /> },
       { path: '/calendar', element: <Calendar /> },
@@ -40,8 +40,7 @@ const router = createBrowserRouter([
       { path: '/admin', element: <Admin />},
 
       
-      // Redirect /dashboard to root /
-      { path: '/dashboard', element: <Navigate to="/" /> },
+      { path: '/', element: <Navigate to="/news" /> },
     ],
   },
   {
