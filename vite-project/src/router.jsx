@@ -5,7 +5,7 @@ import GuestLayout from './components/GuestLayout.jsx';
 import DefaultLayout from './components/DefaultLayout.jsx';
 
 import Dashboard from './views/Dashboard.jsx';
-import Events from './views/Calendar.jsx';
+import Events from './views/Events.jsx';
 import Courses from './views/Courses.jsx';
 import CourseDetails from './views/CourseDetails.jsx';
 import News from './views/News.jsx';
