@@ -102,10 +102,6 @@ export default function Events() {
     }
   };
 
-  const handleCloseQrCodeDialog = () => {
-    setQrCodeDialogOpen(false);
-  };
-
   const handleUpdateEvents = async () => {
     try {
       await axiosClient.post('/updateMissedEvents');
