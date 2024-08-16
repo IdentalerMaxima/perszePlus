@@ -13,6 +13,7 @@ class Event extends Model
         'description',
         'date',
         'file_path',
+        'closed',
     ];
 
     public function users()
