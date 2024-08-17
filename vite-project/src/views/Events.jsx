@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PageComponent from "../components/PageComponent";
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Card, CardContent, Typography, Button, CircularProgress, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, List, ListItem, ListItemText } from '@mui/material';
+import { Card, CardContent, Typography, Button, CircularProgress, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Box } from '@mui/material';
 import { useStateContext } from '../contexts/ContextProvider';
 import { Delete, Edit } from '@mui/icons-material';
 import axiosClient from '../axios';
 import EventData from '../components/forms/EventData';
 import AttendeesDialog from '../components/popups/AttendeesDialog';
-import Box from '@mui/material/Box';
 import { useMediaQuery } from '@mui/material';
 
 export default function Events() {
@@ -21,22 +20,52 @@ export default function Events() {
   const [qrCode, setQrCode] = useState(null);
   const [qrCodeDialogOpen, setQrCodeDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-
   const isMobile = useMediaQuery('(max-width: 600px)');
 
-  //TODO
-  const endEvent = () => {
-    handleUpdateEvents();
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await axiosClient.get('/getEvents');
+      setEvents(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
+
+  const endEvent = (eventId) => {
+    markUncheckedUsersAsMissed(eventId);
+    closeEvent(eventId);
+  };
+
+  const markUncheckedUsersAsMissed = async () => {
+    try {
+      const response = await axiosClient.post('/setMissedStatus');
+      console.log('Unchecked users marked as missed');
+      console.log(response.data);
+      // fetchEvents();
+    } catch (error) {
+      console.error('Error updating events:', error);
+    }
+  };
+
+  const closeEvent = async (eventId) => {
+    try {
+      console.log('Closing event:', eventId);
+      const response = await axiosClient.post('/closeEvent', { eventId: eventId });
+      console.log('Event closed:', response.data);
+      fetchEvents();
+    } catch (error) {
+      console.error('Error closing event:', error);
+    }
   };
 
   const handleShowAttendees = (event) => {
     setSelectedEvent(event);
     setShowAttendees(true);
-  };
-
-  const handleChange = (ev) => {
-    const { name, value } = ev.target;
-    setNewEvent((prevEvent) => ({ ...prevEvent, [name]: value }));
   };
 
   const handleEdit = (event) => {
@@ -54,16 +83,6 @@ export default function Events() {
       setOpen(false);
     } catch (error) {
       console.error('Error editing event:', error);
-    }
-  };
-
-  const fetchEvents = async () => {
-    try {
-      const response = await axiosClient.get('/getEvents');
-      setEvents(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching events:', error);
     }
   };
 
@@ -102,24 +121,16 @@ export default function Events() {
     }
   };
 
-  const handleUpdateEvents = async () => {
-    try {
-      await axiosClient.post('/updateMissedEvents');
-      fetchEvents();
-    } catch (error) {
-      console.error('Error updating events:', error);
-    }
+  const handleChange = (ev) => {
+    const { name, value } = ev.target;
+    setNewEvent((prevEvent) => ({ ...prevEvent, [name]: value }));
   };
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
   return (
-    <PageComponent title="Esemenyek">
+    <PageComponent title="Events">
       <div className={`flex flex-row ${isMobile ? 'justify-center' : ''}`}>
         {isAdmin && (
-          <Button variant="contained" color="primary" style={{ marginBottom: '16px' }} onClick={ setOpen(true) }>
+          <Button variant="contained" color="primary" style={{ marginBottom: '16px' }} onClick={() => setOpen(true)}>
             Create Event
           </Button>
         )}
@@ -135,101 +146,122 @@ export default function Events() {
         )}
       </div>
 
-      { loading ? (
+      {loading ? (
         <div className="flex justify-center items-center h-96">
           <CircularProgress />
         </div>
       ) : (
         <InfiniteScroll
-        dataLength={events.length}
-        loader={<CircularProgress />}
-        endMessage={
-          <p style={{ textAlign: 'center' }}></p>
-        }
-      >
-        {events.map((event) => (
-          (showOldEvents || new Date(event.date) >= new Date()) && (
-            <Card key={event.id} style={{ marginBottom: '16px', position: 'relative'}}>
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  {event.title}
-                </Typography>
-                <Typography color="text.secondary" gutterBottom>
-                  {event.date}
-                </Typography>
-                <Typography variant="body2">
-                  {event.description}
-                </Typography>
+          dataLength={events.length}
+          loader={<CircularProgress />}
+          endMessage={
+            <p style={{ textAlign: 'center' }}></p>
+          }
+        >
+          {events.map((event) => (
+            (showOldEvents || new Date(event.date) >= new Date()) && (
+              <Card key={event.id} style={{ marginBottom: '16px', position: 'relative' }}>
+                <CardContent>
+                  <Typography variant="h5" component="div">
+                    {event.title}
+                  </Typography>
+                  <Typography color="text.secondary" gutterBottom>
+                    {event.date}
+                  </Typography>
+                  <Typography variant="body2">
+                    {event.description}
+                  </Typography>
 
-                <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
 
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => updateAttendance(event.id, currentUser.id, 'going')}
-                    disabled={getUserAttendanceStatus(event, currentUser.id) === ('going' || 'went')  }
-                  >
-                    Going
-                  </Button>
-
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => updateAttendance(event.id, currentUser.id, 'not_going')}
-                    disabled={getUserAttendanceStatus(event, currentUser.id) === 'not_going'}
-                  >
-                    Can't go
-                  </Button>
-
-                  <Button variant="outlined" color="primary" onClick={() => handleShowAttendees(event)}>
-                    Show Attendees
-                  </Button>
-
-                  { isAdmin && (
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+                    {/* Disable buttons if event is closed */}
                     <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => handleShowQrCode(event)} // Correctly pass event here
-                  >
-                  QR Code
-                  </Button>
+                      variant="contained"
+                      color="primary"
+                      onClick={() => updateAttendance(event.id, currentUser.id, 'going')}
+                      disabled={getUserAttendanceStatus(event, currentUser.id) === ('going' || 'went') || event.isClosed}
+                    >
+                      Going
+                    </Button>
+
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => updateAttendance(event.id, currentUser.id, 'not_going')}
+                      disabled={getUserAttendanceStatus(event, currentUser.id) === 'not_going' || event.isClosed}
+                    >
+                      Can't go
+                    </Button>
+
+                    <Button variant="outlined" color="primary" onClick={() => handleShowAttendees(event)} disabled={event.isClosed}>
+                      Show Attendees
+                    </Button>
+
+                    {isAdmin && (
+                      <>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => handleShowQrCode(event)}
+                          disabled={event.isClosed}
+                        >
+                          QR Code
+                        </Button>
+                        <Button variant="outlined" onClick={() => endEvent(event.id)} disabled={event.isClosed}>
+                          End Event
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                  {isAdmin && (
+                    <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px'}}>
+                      <IconButton
+                        style={{ position: 'absolute', bottom: '2px', right: '40px' }}
+                        onClick={() => deleteEvent(event.id)}
+                        disabled={event.isClosed}
+                      >
+                        <Delete />
+                      </IconButton>
+                      <IconButton
+                        style={{ position: 'absolute', bottom: '2px', right: '8px'}}
+                        onClick={() => handleEdit(event)}
+                        disabled={event.isClosed}
+                      >
+                        <Edit />
+                      </IconButton>
+                    </Box>
                   )}
 
-                  { isAdmin && (
-                    <Button
-                    variant="outlined"
-                    onClick={ endEvent }>
-                    End Event
-                  </Button>
+                  {event.closed === 1 && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(128, 128, 128, 0.5)',
+                        zIndex: 2,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Typography variant="h6" color="white">
+                        Closed
+                      </Typography>
+                    </div>
                   )}
-
-                </div>
-                {isAdmin && (
-                  <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px'}}>
-                    <IconButton
-                      style={{ position: 'absolute', bottom: '2px', right: '40px' }}
-                      onClick={() => deleteEvent(event.id)}
-                    >
-                      <Delete />
-                    </IconButton>
-                    <IconButton
-                      style={{ position: 'absolute', bottom: '2px', right: '8px'}}
-                      onClick={() => { handleEdit(event) }}
-                    >
-                      <Edit />
-                    </IconButton>
-                  </Box>
-                )}
-              </CardContent>
-            </Card>
-          )
-        ))}
-      </InfiniteScroll>
+                </CardContent>
+              </Card>
+            )
+          ))}
+        </InfiniteScroll>
       )}
 
       <EventData
         open={open}
-        handleClose={setOpen(false)}
+        handleClose={() => setOpen(false)}
         handleChange={handleChange}
         fetchEvents={fetchEvents}
         editMode={editMode}
@@ -237,22 +269,21 @@ export default function Events() {
         saveEditedEvent={saveEditedEvent}
       />
 
-      <AttendeesDialog open={showAttendees} handleClose={setShowAttendees(false)} event={selectedEvent} />
+      <AttendeesDialog open={showAttendees} handleClose={() => setShowAttendees(false)} event={selectedEvent} />
 
       {isAdmin && qrCode && (
-        <Dialog open={qrCodeDialogOpen} onClose={setQrCodeDialogOpen(false)}>
-        <DialogTitle>QR Code</DialogTitle>
-        <DialogContent>
-          {qrCode && <img src={`data:image/png;base64,${qrCode}`} alt="QR Code" />}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={setQrCodeDialogOpen(false)} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Dialog open={qrCodeDialogOpen} onClose={() => setQrCodeDialogOpen(false)}>
+          <DialogTitle>QR Code</DialogTitle>
+          <DialogContent>
+            {qrCode && <img src={`data:image/png;base64,${qrCode}`} alt="QR Code" />}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setQrCodeDialogOpen(false)} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       )}
-
     </PageComponent>
   );
 }
