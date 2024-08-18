@@ -78,7 +78,6 @@ class EventController extends Controller
     public function updateAttendance(Request $request)
     {
 
-        // Retrieve data from the POST request
         $eventId = $request->input('eventId');
         $userId = $request->input('userId');
         $status = $request->input('status');
@@ -86,7 +85,6 @@ class EventController extends Controller
         $event = Event::find($eventId);
         $user = User::find($userId);
 
-        // Check if the event and user exist
         if (!$event || !$user) {
             return response()->json([
                 'message' => 'Event or user not found'
@@ -149,7 +147,7 @@ class EventController extends Controller
         return response()->json($events, 200);
     }
 
-    public function updateMissedEvents()
+    public function setMissedStatus()
     {
         $now = now();
         $events = Event::where('date', '<', $now)->get();
@@ -169,6 +167,46 @@ class EventController extends Controller
 
         return response()->json([
             'message' => 'Missed events updated successfully'
+        ], 200);
+    }
+
+    public function closeEvent(Request $request)
+    {
+        $eventId = $request->input('eventId');
+
+        $event = Event::find($eventId);
+
+        if (!$event) {
+            return response()->json([
+                'message' => 'Event not found'
+            ], 404);
+        }
+
+        $event->closed = true;
+        $event->save();
+
+        return response()->json([
+            'message' => 'Event closed successfully'
+        ], 200);
+    }
+
+    public function reopenEvent(Request $request)
+    {
+        $eventId = $request->input('eventId');
+
+        $event = Event::find($eventId);
+
+        if (!$event) {
+            return response()->json([
+                'message' => 'Event not found'
+            ], 404);
+        }
+
+        $event->closed = false;
+        $event->save();
+
+        return response()->json([
+            'message' => 'Event reopened successfully'
         ], 200);
     }
 

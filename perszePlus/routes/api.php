@@ -38,7 +38,10 @@ Route::middleware('auth:sanctum')->group(function () {
     //Events
     Route::post('/addEvent', [EventController::class, 'store']);
     Route::post('/updateAttendance', [EventController::class, 'updateAttendance']);
-    Route::post('/updateMissedEvents', [EventController::class, 'updateMissedEvents']);
+    Route::post('/setMissedStatus', [EventController::class, 'setMissedStatus']);
+    Route::post('/closeEvent', [EventController::class, 'closeEvent']);
+    Route::post('/reopenEvent', [EventController::class, 'reopenEvent']);
+
 
     Route::post('/addPost', [PostController::class, 'store']);
     Route::post('/addComment', [CommentController::class, 'store']);

@@ -3,7 +3,7 @@ import PageComponent from "../components/PageComponent";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Card, CardContent, Typography, Button, CircularProgress, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Box } from '@mui/material';
 import { useStateContext } from '../contexts/ContextProvider';
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete, Edit, Close } from '@mui/icons-material';
 import axiosClient from '../axios';
 import EventData from '../components/forms/EventData';
 import AttendeesDialog from '../components/popups/AttendeesDialog';
@@ -39,6 +39,17 @@ export default function Events() {
   const endEvent = (eventId) => {
     markUncheckedUsersAsMissed(eventId);
     closeEvent(eventId);
+    fetchEvents();
+  };
+
+  const reopenEvent = async (eventId) => {
+    try {
+      const response = await axiosClient.post('/reopenEvent', { eventId });
+      console.log('Event reopened:', response.data);
+      fetchEvents();
+    } catch (error) {
+      console.error('Error reopening event:', error);
+    }
   };
 
   const markUncheckedUsersAsMissed = async () => {
@@ -214,7 +225,7 @@ export default function Events() {
                     )}
                   </div>
                   {isAdmin && (
-                    <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px'}}>
+                    <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
                       <IconButton
                         style={{ position: 'absolute', bottom: '2px', right: '40px' }}
                         onClick={() => deleteEvent(event.id)}
@@ -223,7 +234,7 @@ export default function Events() {
                         <Delete />
                       </IconButton>
                       <IconButton
-                        style={{ position: 'absolute', bottom: '2px', right: '8px'}}
+                        style={{ position: 'absolute', bottom: '2px', right: '8px' }}
                         onClick={() => handleEdit(event)}
                         disabled={event.isClosed}
                       >
@@ -252,6 +263,23 @@ export default function Events() {
                       </Typography>
                     </div>
                   )}
+
+                  {event.closed === 1 && isAdmin && (
+                    <IconButton
+                      onClick={() => reopenEvent(event.id)}
+                      style={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        color: 'white',
+                        zIndex: 3,
+                      }}
+                    >
+                      <Close></Close>
+
+                    </IconButton>
+                  )}
+
                 </CardContent>
               </Card>
             )
