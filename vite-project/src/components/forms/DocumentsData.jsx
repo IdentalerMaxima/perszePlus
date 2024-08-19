@@ -7,6 +7,7 @@ import FileUpload from '../../components/upload/FileUpload';
 import axiosClient from '../../axios';
 import DeleteFile from '../../components/popups/DeleteFile';
 import FileViewerDialog from '../../components/popups/FileViewerDialog';
+import { use } from 'i18next';
 
 export default function DocumentsData() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -31,6 +32,10 @@ export default function DocumentsData() {
   useEffect(() => {
     fetchDocuments();
   }, []);
+
+  // useEffect(() => {
+  //   console.log('selected document to view:', selectedDocumentToView);
+  // }, [selectedDocumentToView]);
 
   const fetchDocuments = async () => {
     try {
@@ -111,13 +116,13 @@ export default function DocumentsData() {
     }
   };
 
-  const formatSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+  // const formatSize = (bytes) => {
+  //   if (bytes === 0) return '0 Bytes';
+  //   const k = 1024;
+  //   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  //   const i = Math.floor(Math.log(bytes) / Math.log(k));
+  //   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  // };
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -175,6 +180,7 @@ export default function DocumentsData() {
         title: file.name,
         type: file.type,
         url: fileURL,
+        extension: getFileExtension(file.original_name),
       });
     } catch (error) {
       console.error('Error viewing file:', error);
