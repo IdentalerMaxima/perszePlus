@@ -69,7 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
     Route::get('/user/settings', [UserDataController::class, 'getUserSettings']);
     Route::post('/user/saveSettings', [UserDataController::class, 'saveUserSettings']);
-    //Route::get('/userById/{id}', [UserDataController::class, 'getUserById']);
+    Route::get('/getUserById/{id}', [UserDataController::class, 'getUserById']);
     
 
     //Documents
