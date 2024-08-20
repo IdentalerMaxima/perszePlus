@@ -4,7 +4,7 @@ import axiosClient from '../axios';
 import { useStateContext } from '../contexts/ContextProvider';
 import PageComponent from '../components/PageComponent';
 import Avatar from '@mui/material/Avatar';
-import { CircularProgress, useMediaQuery, Button, IconButton, Card, CardContent, Typography, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { CircularProgress, useMediaQuery, Button, IconButton, Card, CardContent, Typography, Table, TableBody, TableCell, TableHead, TableRow, Box } from '@mui/material';
 import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import FileViewerDialog from '../components/popups/FileViewerDialog';
 
@@ -59,19 +59,19 @@ const MemberProfile = () => {
 
   const getFile = async (file) => {
     try {
-        console.log('file:', file);
-        const retrievedFile = await axiosClient.get(`/user/documents/show/${file.id}`, {
-            responseType: 'blob',
-        });
-        console.log('retrievedFile:', retrievedFile);
-        const fileURL = URL.createObjectURL(retrievedFile.data);
-        setSelectedDocument({
-            title: file.name,
-            type: file.type,
-            url: fileURL,
-        });
+      console.log('file:', file);
+      const retrievedFile = await axiosClient.get(`/user/documents/show/${file.id}`, {
+        responseType: 'blob',
+      });
+      console.log('retrievedFile:', retrievedFile);
+      const fileURL = URL.createObjectURL(retrievedFile.data);
+      setSelectedDocument({
+        title: file.name,
+        type: file.type,
+        url: fileURL,
+      });
     } catch (error) {
-        console.error('Error viewing file:', error);
+      console.error('Error viewing file:', error);
     }
   };
 
@@ -123,6 +123,47 @@ const MemberProfile = () => {
       );
     }
   }
+
+  const getFileExtension = (fileName) => {
+    const parts = fileName.split('.');
+    const extension = parts[parts.length - 1];
+    return extension;
+  };
+
+  const downloadFile = async (fileId) => {
+    try {
+      const response = await axiosClient.get(`/user/documents/${fileId}`, {
+        responseType: 'blob',
+      });
+
+      const contentType = response.headers['content-type'];
+      const blob = new Blob([response.data], { type: contentType });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+
+      let fileName = 'downloaded-file';
+      if (response.headers && response.headers['content-disposition']) {
+        const contentDisposition = response.headers['content-disposition'];
+        const match = contentDisposition.match(/filename=([^;]+)/);
+
+        if (match && match[1]) {
+          fileName = match[1].trim();
+        } else {
+          console.warn('Filename not found in Content-Disposition header.');
+        }
+      }
+
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  };
 
   return (
     <PageComponent>
@@ -178,7 +219,7 @@ const MemberProfile = () => {
           </div>
         )}
       </div>
-      
+
       {isAdmin && (
         <Card className="bg-white rounded-lg shadow-2xl p-2">
           <CardContent>
@@ -202,13 +243,28 @@ const MemberProfile = () => {
                       <TableCell>{doc.type}</TableCell>
                       <TableCell>{doc.last_modified}</TableCell>
                       <TableCell>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => handleViewDocument(doc)}
+                        <Box
+                          display="flex"
+                          justifyContent="end"
+                          gap={2} // Adds space between the buttons
                         >
-                          View
-                        </Button>
+                          {['jpg', 'jpeg', 'png', 'pdf'].includes(getFileExtension(doc.file_path)) && (
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={() => handleViewDocument(file)}
+                            >
+                              View
+                            </Button>
+                          )}
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => downloadFile(doc.id)}
+                          >
+                            Download
+                          </Button>
+                        </Box>
                       </TableCell>
                     </TableRow>
                   ))}
