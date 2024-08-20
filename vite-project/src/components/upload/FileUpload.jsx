@@ -17,7 +17,7 @@ export default function FileUpload({handleClose, refreshFiles}) {
   };
 
   const validateFileType = (type) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/msword'];
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     return allowedTypes.includes(type);
   };
 
