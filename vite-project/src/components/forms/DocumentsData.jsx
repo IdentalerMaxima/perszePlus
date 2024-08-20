@@ -255,7 +255,7 @@ export default function DocumentsData() {
                   />
                 </div>
 
-                <div className={`flex ${isMobile ? 'w-full justify-start px-4' : 'w-2/6 justify-start px-8'}`}>
+                <div className={`flex ${isMobile ? 'w-full justify-start px-4' : 'w-2/6 justify-start px-8 p-2'}`}>
                   <img
                     src={getFileIcon(file)}
                     alt="file icon"
@@ -275,13 +275,15 @@ export default function DocumentsData() {
                     </div>
 
                     <div className="w-1/6 px-4">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleViewDocument(file)}
-                      >
-                        View
-                      </Button>
+                      {['jpg', 'jpeg', 'png', 'pdf'].includes(getFileExtension(file.file_path)) && (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleViewDocument(file)}
+                        >
+                          View
+                        </Button>
+                      )}
                     </div>
 
                   </>
