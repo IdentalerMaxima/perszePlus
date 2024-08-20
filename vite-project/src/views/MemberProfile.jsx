@@ -31,7 +31,7 @@ const MemberProfile = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axiosClient.get(`/user/${id}`);
+      const response = await axiosClient.get(`/getUserById/${id}`);
       setUserData(response.data.user);
       setLoading(false);
     } catch (error) {
