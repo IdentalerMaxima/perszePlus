@@ -17,23 +17,10 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\QrController;
 use App\Http\Controllers\MessageController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
 Route::middleware('auth:sanctum')->group(function () {
+    
+    //Logout
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/upload/avatar', [AvatarUploadController::class, 'upload']);
-    Route::post('/upload/file', [DocumentController::class, 'upload']);
-    
-    
 
     //Events
     Route::post('/addEvent', [EventController::class, 'store']);
@@ -41,14 +28,32 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/setMissedStatus', [EventController::class, 'setMissedStatus']);
     Route::post('/closeEvent', [EventController::class, 'closeEvent']);
     Route::post('/reopenEvent', [EventController::class, 'reopenEvent']);
+    Route::get('/getEvents', [EventController::class, 'index']);
+    Route::get('/getEventsOfUser/{id}', [EventController::class, 'getEventsOfUser']);
+    Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);
+    Route::put('editEvent/{id}', [EventController::class, 'update']);
 
-
+    //Posts
     Route::post('/addPost', [PostController::class, 'store']);
+    Route::get('/getPosts', [PostController::class, 'index']);
+    Route::delete('/deletePost/{id}', [PostController::class, 'destroy']);
+    Route::put('editPost/{id}', [PostController::class, 'update']);
+    
+    //Comments
     Route::post('/addComment', [CommentController::class, 'store']);
+    Route::get('/getComments', [CommentController::class, 'index']);
+    Route::delete('/deleteComment/{id}', [CommentController::class, 'destroy']);
+    Route::put('editComment/{id}', [CommentController::class, 'update']);
+
+    //Courses
     Route::post('/addCourse', [CourseController::class, 'store']);
+    Route::get('/getCourses', [CourseController::class, 'index']);
     Route::post('/changeCourseImage/{id}', [CourseController::class, 'changeCourseImage']);
     Route::post('/subscribeToCourse/{id}', [CourseController::class, 'subscribeToCourse']);
     Route::post('/unsubscribeFromCourse/{id}', [CourseController::class, 'unsubscribeFromCourse']);
+    Route::get('/checkEnrollment/{id}', [CourseController::class, 'checkEnrollment']);
+    Route::delete('/deleteCourse/{id}', [CourseController::class, 'destroy']);
+    Route::put('editCourse/{id}', [CourseController::class, 'update']);
 
     //QR
     Route::get('/generateQr/{id}', [QrController::class, 'generate']);
@@ -63,13 +68,17 @@ Route::middleware('auth:sanctum')->group(function () {
     //Searchbar
     Route::get('/users', [UserDataController::class, 'searchUsers']);
 
-
     //User
     Route::post('/user/info', [UserDataController::class, 'saveUserData']);
     Route::get('/user/info', [UserDataController::class, 'getUserData']);
     Route::get('/user/settings', [UserDataController::class, 'getUserSettings']);
     Route::post('/user/saveSettings', [UserDataController::class, 'saveUserSettings']);
     Route::get('/getUserById/{id}', [UserDataController::class, 'getUserById']);
+    Route::post('/upload/avatar', [AvatarUploadController::class, 'upload']);
+    Route::get('/getMemberList', [UserDataController::class, 'getAllUsers']);
+    Route::get('/getUsersByCategory', [UserDataController::class, 'getUsersByCategory']);
+    Route::get('/getUsersByLevelOfEducation', [UserDataController::class, 'getUsersByLevelOfEducation']);
+    Route::get('/getUsersByYearsInEducation', [UserDataController::class, 'getUsersByYearsInEducation']);
     
 
     //Documents
@@ -77,61 +86,30 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/getDocumentsOfUser/{id}', [DocumentController::class, 'getDocumentsOfUser']);
     Route::get('/user/documents/{id}', [DocumentController::class, 'download']);
     Route::get('/user/documents/show/{id}', [DocumentController::class, 'show']);
+    Route::post('/upload/file', [DocumentController::class, 'upload']);
+    Route::get('/getCountOfDocumentsByType', [DocumentController::class, 'getCountOfDocumentsByType']);
+    Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
 
     //Admin
     Route::post('/admin/invite', [AdminController::class, 'invite']);
     Route::get('/admin/settings', [AdminController::class, 'getSettings']);
     Route::post('/admin/saveSettings', [AdminController::class, 'saveSettings']);
-    
-
-
-    
-
-    Route::get('/getMemberList', [UserDataController::class, 'getAllUsers']);
-    
-
-    Route::get('/getEvents', [EventController::class, 'index']);
-    Route::get('/getEventsOfUser/{id}', [EventController::class, 'getEventsOfUser']);
-    
-    Route::get('/getUsersByCategory', [UserDataController::class, 'getUsersByCategory']);
-    Route::get('/getCountOfDocumentsByType', [DocumentController::class, 'getCountOfDocumentsByType']);
-    Route::get('/getUsersByLevelOfEducation', [UserDataController::class, 'getUsersByLevelOfEducation']);
-    Route::get('/getUsersByYearsInEducation', [UserDataController::class, 'getUsersByYearsInEducation']);
-    Route::get('/getPosts', [PostController::class, 'index']);
-    Route::get('/getComments', [CommentController::class, 'index']);
-    Route::get('/getCourses', [CourseController::class, 'index']);
-    Route::get('/checkEnrollment/{id}', [CourseController::class, 'checkEnrollment']);
-    
-
-    Route::delete('/user/documents/{id}', [DocumentController::class, 'delete']);
-    Route::delete('/deleteEvent/{id}', [EventController::class, 'delete']);
-    Route::delete('/deletePost/{id}', [PostController::class, 'destroy']);
-    Route::delete('/deleteComment/{id}', [CommentController::class, 'destroy']);
-    Route::delete('/deleteCourse/{id}', [CourseController::class, 'destroy']);
-
-    Route::put('editEvent/{id}', [EventController::class, 'update']);
-    Route::put('editPost/{id}', [PostController::class, 'update']);
-    Route::put('editComment/{id}', [CommentController::class, 'update']);
-    Route::put('editCourse/{id}', [CourseController::class, 'update']);
 
 });
 
+//Auth
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/validateToken/{token}', [AuthController::class, 'validateToken']);
 
+//University
 Route::get('/universities', [UniversityController::class, 'getUniversities']);
 Route::get('/universities/{universityName}/faculties', [UniversityController::class, 'getFacultiesForUniversity']);
 
-//Validate registration token
-Route::get('/validateToken/{token}', [AuthController::class, 'validateToken']);
+//Admin
 Route::get('/admin/registration/restricted', [AdminController::class, 'adminRegistrationRestricted']);
 
+//Forgot and Reset Password
 Route::post('/forgotPassword', [ForgotPasswordController::class, 'forgotPassword'])->name('password.request');  
 Route::get('/resetPassword/{token}', [ResetPasswordController::class, 'showReset'])->name('password.reset');
 Route::post('/resetPassword', [ResetPasswordController::class, 'resetPassword'])->name('password.update');
-
-
-
-
-
-
