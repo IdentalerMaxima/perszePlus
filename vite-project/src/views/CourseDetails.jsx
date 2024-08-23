@@ -5,9 +5,9 @@ import PageComponent from "../components/PageComponent";
 import IconButton from "@mui/material/IconButton";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Button from "@mui/material/Button";
-import AttendeesDialog from "../components/popups/AttendeesDialog";
 import { useStateContext } from "../contexts/ContextProvider";
 import axiosClient from "../axios";
+import CourseAttendeesDialog from "../components/popups/CourseAttendeesDialog"
 
 const CourseDetails = () => {
     const { currentUser } = useStateContext();
@@ -15,6 +15,7 @@ const CourseDetails = () => {
     const course = location.state?.course || {};
     const isMobile = useMediaQuery('(max-width: 600px)');
     const [enrollClicked, setEnrollClicked] = useState(false);
+    const [showAttendees, setShowAttendees] = useState(false);
     useEffect(() => {
         checkEnrollment();
     }, []);
@@ -108,6 +109,18 @@ const CourseDetails = () => {
                                 >
                                     {enrollClicked ? 'Leiratkozás' : 'Feliratkozás'}
                                 </Button>
+                                <Button
+                                    variant="contained"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setShowAttendees(true);
+                                    }}
+                                    
+                                >
+                                    Jelentkezők
+                                </Button>
+
+                                <CourseAttendeesDialog open={showAttendees} handleClose={() => setShowAttendees(false)} ></CourseAttendeesDialog>
                             </CardActions>
                         </Grid>
                     </Grid>
