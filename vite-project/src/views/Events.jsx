@@ -297,7 +297,7 @@ export default function Events() {
         saveEditedEvent={saveEditedEvent}
       />
 
-      <AttendeesDialog open={showAttendees} handleClose={() => setShowAttendees(false)} event={selectedEvent} />
+      <AttendeesDialog open={showAttendees} handleClose={ () => setShowAttendees(false)} event={selectedEvent} />
 
       {isAdmin && qrCode && (
         <Dialog open={qrCodeDialogOpen} onClose={() => setQrCodeDialogOpen(false)}>
