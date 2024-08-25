@@ -1,15 +1,24 @@
-import React from "react";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Avatar, Typography } from "@mui/material";
 
-const CourseAttendeesDialog = ({ open, handleClose }) => {
+
+
+const CourseAttendeesDialog = ({ open, handleClose, course }) => {
     return (
         <Dialog open={open}>
             <DialogTitle>
                 Attendees
             </DialogTitle>
-            <DialogContent>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit cumque nostrum,
-                inventore consequuntur vel architecto, aperiam dolorem quo ex reiciendis sint aliquam! Eius velit quia aut praesentium facere voluptatum. Fugiat?
+            <DialogContent dividers>
+                {course && (
+                    course.users.map((user) =>
+                        <div key={user.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <Avatar alt={user.name} src={user.avatar_path} />
+                                <Typography variant="body2" style={{ marginLeft: '8px' }}>{user.first_name} {user.last_name}</Typography>
+                            </div>
+                        </div>)
+                )}
+
             </DialogContent>
             <DialogActions>
                 <Button
