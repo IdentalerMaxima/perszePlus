@@ -120,7 +120,7 @@ const CourseDetails = () => {
                                     Jelentkezők
                                 </Button>
 
-                                <CourseAttendeesDialog open={showAttendees} handleClose={() => setShowAttendees(false)} ></CourseAttendeesDialog>
+                                <CourseAttendeesDialog open={showAttendees} handleClose={() => setShowAttendees(false)} course={course}></CourseAttendeesDialog>
                             </CardActions>
                         </Grid>
                     </Grid>
