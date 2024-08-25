@@ -15,7 +15,9 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::all();
+        $courses = Course::with('users')->get();
+
+       // Log::info($courses);
 
         return response()->json($courses, 200);
     }
@@ -44,7 +46,6 @@ class CourseController extends Controller
             $imagePath = null;
         }
 
-        // Create course record
         $course = Course::create([
             'name' => $request->name,
             'description' => $request->description,
