@@ -1,5 +1,3 @@
-// AttendeesDialog.jsx
-
 import React from 'react';
 import {
     Dialog,
@@ -12,7 +10,7 @@ import {
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'; // Icon for "not answered"
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const AttendeesDialog = ({ open, handleClose, event }) => {
     return (
