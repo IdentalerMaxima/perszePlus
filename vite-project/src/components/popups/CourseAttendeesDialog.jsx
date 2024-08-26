@@ -20,6 +20,13 @@ const CourseAttendeesDialog = ({ open, handleClose, course }) => {
                 )}
 
             </DialogContent>
+            <DialogContent>
+                {(course.users.length === 0) && (
+                    <div>
+                        <Typography>No users have registered yet</Typography>
+                    </div>
+                )}
+            </DialogContent>
             <DialogActions>
                 <Button
                     onClick={handleClose}
