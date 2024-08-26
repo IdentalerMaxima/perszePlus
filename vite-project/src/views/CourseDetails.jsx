@@ -12,10 +12,11 @@ import CourseAttendeesDialog from "../components/popups/CourseAttendeesDialog"
 const CourseDetails = () => {
     const { currentUser } = useStateContext();
     const location = useLocation();
-    const course = location.state?.course || {};
     const isMobile = useMediaQuery('(max-width: 600px)');
     const [enrollClicked, setEnrollClicked] = useState(false);
     const [showAttendees, setShowAttendees] = useState(false);
+    const [course, setCourse] = useState(location.state?.course || {});
+
     useEffect(() => {
         checkEnrollment();
     }, []);
@@ -37,6 +38,16 @@ const CourseDetails = () => {
         }
     };
 
+    const fetchCourse = async () => {
+        try {
+            const response = await axiosClient.get(`/getCourseById/${course.id}`);
+            console.log('Fetched course: ', response.data);
+            setCourse(response.data);
+        } catch (error) {
+            console.log('Error fetching course: ', error);
+        }
+    };
+
     const handleEnroll = async () => {
         if (enrollClicked) {
             try {
@@ -53,7 +64,10 @@ const CourseDetails = () => {
                 console.error('Error subscribing to course:', error);
             }
         }
+        fetchCourse();
     };
+
+    
 
     return (
         <PageComponent title="Kurzus részletei">
