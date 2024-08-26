@@ -185,4 +185,18 @@ class CourseController extends Controller
         return response()->json(['isEnrolled' => $isEnrolled], 200);
     }
 
+    public function getCourseById($id)
+    {
+        $course = Course::with('users')->find($id);
+
+
+        if (!$course) {
+            return response()->json(['message' => 'Course not found'], 404);
+        }
+
+        Log::info($course);
+
+        return response($course);
+    }
+
 }
