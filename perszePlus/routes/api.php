@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //Courses
     Route::post('/addCourse', [CourseController::class, 'store']);
     Route::get('/getCourses', [CourseController::class, 'index']);
+    Route::get('/getCourseById/{id}', [CourseController::class, 'getCourseById']);
     Route::post('/changeCourseImage/{id}', [CourseController::class, 'changeCourseImage']);
     Route::post('/subscribeToCourse/{id}', [CourseController::class, 'subscribeToCourse']);
     Route::post('/unsubscribeFromCourse/{id}', [CourseController::class, 'unsubscribeFromCourse']);
