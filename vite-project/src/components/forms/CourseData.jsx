@@ -27,6 +27,7 @@ const CourseData = ({ open, handleClose, fetchCourses, mode, course }) => {
                 recommended_year: course.recommended_year,
                 dates: course.dates,
                 requirements: course.requirements,
+                image_path: course.image_path,
             });
             setImagePreview(course.image_path);
         } else {
@@ -118,11 +119,16 @@ const CourseData = ({ open, handleClose, fetchCourses, mode, course }) => {
         try {
             if (mode === 'edit') {
                 await axiosClient.put(`/editCourse/${course.id}`, formData);
-                await axiosClient.post(`/changeCourseImage/${course.id}`, formDataToSubmit, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
+                
+                // Only call the image upload endpoint if a new image was selected
+                if (file) {
+                    await axiosClient.post(`/changeCourseImage/${course.id}`, formDataToSubmit, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                }
+
             }
             else {
                 await axiosClient.post('/addCourse', formDataToSubmit, {
@@ -140,7 +146,7 @@ const CourseData = ({ open, handleClose, fetchCourses, mode, course }) => {
 
     return (
         <Dialog open={open} onClose={handleClose} className="create-event-dialog">
-            <DialogTitle>{ mode === 'edit' ? 'Edit event' : 'Add new course'}</DialogTitle>
+            <DialogTitle>{mode === 'edit' ? 'Edit event' : 'Add new course'}</DialogTitle>
             <DialogContent>
                 <TextField
                     autoFocus
@@ -244,7 +250,7 @@ const CourseData = ({ open, handleClose, fetchCourses, mode, course }) => {
                     <input
                         id="file-input"
                         type="file"
-                        accept="image/*"
+                        accept=".jpg, .jpeg, .png"
                         style={{ display: 'none' }}
                         onChange={handleFileChange}
                     />
