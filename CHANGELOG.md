@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/IdentalerMaxima/perszePlus/compare/v1.0.0...v1.0.1) (2024-08-26)
+
+
+### Bug Fixes
+
+* Add fix to course image upload ([c8c0685](https://github.com/IdentalerMaxima/perszePlus/commit/c8c0685ae7f2526d9cf836f298cffe9def5e7ad6))
+
 ## 1.0.0 (2024-08-26)
 
 
