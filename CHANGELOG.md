@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/IdentalerMaxima/perszePlus/compare/v1.0.1...v1.1.0) (2024-08-27)
+
+
+### Features
+
+* Add event name to success message ([b9ba406](https://github.com/IdentalerMaxima/perszePlus/commit/b9ba406ecf064556dcc70c66adc9a352ba470e6c))
+
+
+### Bug Fixes
+
+* Add event name to success message after check in ([a406e3e](https://github.com/IdentalerMaxima/perszePlus/commit/a406e3e09603d3495d7ae7803cb864295f5ce94f))
+* Make no users registered text prettier ([5c9a77d](https://github.com/IdentalerMaxima/perszePlus/commit/5c9a77d413246ddecb0afbb9cabeed6170a0b8df))
+
 ## [1.0.1](https://github.com/IdentalerMaxima/perszePlus/compare/v1.0.0...v1.0.1) (2024-08-26)
 
 
