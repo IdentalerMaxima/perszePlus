@@ -31,7 +31,10 @@ class CheckInController extends Controller
         $event->users()->attach($user->id, ['status' => 'went']);
     }
 
-    return response()->json(['message' => 'Checked in successfully'], 200);
+    return response()->json([
+        'message' => 'Checked in successfully',
+        'eventName' => $event->title,
+    ], 200);
 }
 
 
