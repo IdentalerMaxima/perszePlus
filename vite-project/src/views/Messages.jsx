@@ -129,8 +129,8 @@ export default function Messages() {
                 <Grid container spacing={2} className="h-full">
                     {/* List of messages */}
                     {(!selectedMessageId || !isMobile) && (
-                        <Grid item xs={12} md={4} sx={{ height: { xs: 'auto', md: '100%' }, overflowY: 'auto' }}>
-                            <Box className="border-r-2 flex flex-col">
+                        <Grid item xs={12} md={4} sx={{ height: { xs: 'auto', md: '100%' }, display: 'flex', flexDirection: 'column' }}>
+                            <Box className="border-r-2 flex flex-col h-full">
                                 <Box className="p-4">
                                     <Button
                                         variant="contained"
@@ -142,7 +142,7 @@ export default function Messages() {
                                         Write Message
                                     </Button>
                                 </Box>
-                                <List>
+                                <List sx={{ flexGrow: 1, overflowY: 'auto' }}>
                                     {currentMessages.map((message) => (
                                         <ListItemButton
                                             key={message.id}
@@ -171,13 +171,15 @@ export default function Messages() {
                                         </ListItemButton>
                                     ))}
                                 </List>
-                                <Stack direction="row" spacing={2} className="justify-center p-4 flex mt-auto">
+
+                                <Stack direction="row" spacing={2} className="justify-center p-4">
                                     <Pagination
                                         count={totalPages}
                                         page={currentPage}
                                         onChange={(e, page) => setCurrentPage(page)}
                                     />
                                 </Stack>
+
                             </Box>
                         </Grid>
                     )}
