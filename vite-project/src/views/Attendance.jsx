@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Grid, Card, CardContent, Typography, Button, Dialog, DialogTitle, DialogContent, IconButton
 } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
 import EventIcon from '@mui/icons-material/Event';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -14,40 +13,37 @@ const Attendance = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data, setData] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
-
-
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+  const [eventName, setEventName] = useState('');
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setData(''); // Reset decoded text
+    setData(''); //Reset decoded text
   };
 
   useEffect(() => {
     if (data) {
-      setShowSuccess(true);
-      setTimeout(() => {
-        setShowSuccess(false);
-        handleUserCheckIn();
-        closeModal();
-        //window.location.reload(); 
-      }, 2000);
-    };
+      handleUserCheckIn();
+    }
   }, [data]);
 
   const handleUserCheckIn = async () => {
     console.log('Checking in user with ID:', data);
     try {
       const response = await axiosClient.post('/checkInEvent', { eventId: data });
+      setEventName(response.data.eventName);
+      console.log('Setting event name');
+
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        closeModal();
+        window.location.reload();
+      }, 2000);
     }
     catch (error) {
       console.error('Error checking in user:', error);
     }
   };
-
-
 
   return (
     <PageComponent title="Attendance">
@@ -63,7 +59,7 @@ const Attendance = () => {
               boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .1)',
               borderRadius: '8px',
             }}
-            onClick={openModal}
+            onClick={() => { setIsModalOpen(true) }}
           >
             <CardContent className="rounded-md flex flex-col items-center">
               <Typography variant="h6">
@@ -102,34 +98,32 @@ const Attendance = () => {
         </DialogTitle>
 
         <DialogContent>
-            <QrReader
-              onResult={(result, error) => {
-                if (result) {
-                  setData(result.text);
-                  result = null;
-                }
-                if (error) {
-                  // Handle error (optional)
-                }
-              }}
-            />
+          <QrReader
+            onResult={(result, error) => {
+              if (result) {
+                setData(result.text);
+                result = null;
+              }
+              if (error) {
+                console.log('Error:', error)
+              }
+            }}
+          />
 
-            <Button onClick={() => {
-              setData('26');
-            }}>Simulate success</Button>
-            
+          {/* <Button onClick={() => {
+            setData('26');
+          }}>Simulate success</Button> */}
+
           {/* Success Animation */}
-      {showSuccess && (
-        <div style={successAnimationStyle}>
-          <CheckCircleIcon style={{ fontSize: '100px', color: 'green' }} />
-          <Typography variant="h4" style={{ color: 'green' }}>Success!</Typography>
-        </div>
-      )}
+          {showSuccess && (
+            <div style={successAnimationStyle}>
+              <CheckCircleIcon style={{ fontSize: '100px', color: 'green' }} />
+              <Typography variant="h4" style={{ color: 'green' }}>Successfully checked in to {eventName}</Typography>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
-
-      
-    </PageComponent>
+    </PageComponent >
   );
 };
 
