@@ -22,8 +22,8 @@ const CourseAttendeesDialog = ({ open, handleClose, course }) => {
             </DialogContent>
             <DialogContent>
                 {(course.users.length === 0) && (
-                    <div>
-                        <Typography>No users have registered yet</Typography>
+                    <div className="pb-6">
+                        <Typography className="text-gray-700">No users have registered yet</Typography>
                     </div>
                 )}
             </DialogContent>
