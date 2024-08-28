@@ -33,10 +33,6 @@ export default function DocumentsData() {
     fetchDocuments();
   }, []);
 
-  // useEffect(() => {
-  //   console.log('selected document to view:', selectedDocumentToView);
-  // }, [selectedDocumentToView]);
-
   const fetchDocuments = async () => {
     try {
       const response = await axiosClient.get('/user/documents');
@@ -116,14 +112,6 @@ export default function DocumentsData() {
     }
   };
 
-  // const formatSize = (bytes) => {
-  //   if (bytes === 0) return '0 Bytes';
-  //   const k = 1024;
-  //   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  //   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  //   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  // };
-
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -143,17 +131,17 @@ export default function DocumentsData() {
     console.log(checkboxedDocuments);
   };
 
-  const handleDeleteSelected = async () => {
-    try {
-      await axiosClient.delete('/delete/documents', {
-        data: { documents: checkboxedDocuments.map((doc) => doc.id) },
-      });
-      setCheckboxedDocuments([]);
-      fetchDocuments();
-    } catch (error) {
-      console.error('Error deleting documents:', error);
-    }
-  };
+  // const handleDeleteSelected = async () => {
+  //   try {
+  //     await axiosClient.delete('/delete/documents', {
+  //       data: { documents: checkboxedDocuments.map((doc) => doc.id) },
+  //     });
+  //     setCheckboxedDocuments([]);
+  //     fetchDocuments();
+  //   } catch (error) {
+  //     console.error('Error deleting documents:', error);
+  //   }
+  // };
 
   const checkboxAll = (event) => {
     const isChecked = event.target.checked;
