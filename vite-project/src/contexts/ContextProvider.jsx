@@ -3,14 +3,14 @@ import axiosClient from "../axios";
 
 const StateContext = createContext({
     currentUser: {},
-    setCurrentUser: () => { },
+    setCurrentUser: () => {},
     userToken: null,
-    setUserToken: () => { },
+    setUserToken: () => {},
     isAdmin: false,
     selectedMessageId: null,
-    setSelectedMessageId: () => { },
+    setSelectedMessageId: () => {},
     messages: [],
-    setMessages: () => { }
+    setMessages: () => {}
 });
 
 export const ContextProvider = ({ children }) => {
@@ -21,41 +21,45 @@ export const ContextProvider = ({ children }) => {
     const [messages, setMessages] = useState([]);
 
     const fetchUserData = async () => {
-
         if (!userToken) {
             setCurrentUser({});
             setIsAdmin(false);
             return; // Exit if not authorized
         }
-    
+
         try {
-            const response = await axiosClient.get('/user/info');
-    
+            const response = await axiosClient.get('/user/info', {
+                headers: {
+                    Authorization: `Bearer ${userToken}`,
+                },
+            });
+
             if (response.status === 200) {
                 setCurrentUser(response.data.user);
-                setIsAdmin(response.data.user.category === 'admin' || response.data.user.category === 'vezetőség');
+                const adminStatus = response.data.user.category === 'admin' || response.data.user.category === 'vezetőség';
+                setIsAdmin(adminStatus);
             }
         } catch (error) {
             console.error('Error fetching user data:', error);
-    
-            // Handle unauthorized access
+
             if (error.response && error.response.status === 401) {
                 setUserToken(null);
                 setCurrentUser({});
+                setIsAdmin(false);
             }
         }
     };
-    
 
     useEffect(() => {
-        fetchUserData();
-    }, []);
+        if (userToken) {
+            fetchUserData();
+        }
+    }, [userToken]); // Fetch user data when userToken changes
 
-    const setUserToken = (token) => {
+    const setUserToken = (token, rememberMe = false) => {
         if (token) {
             if (rememberMe) {
                 localStorage.setItem('token', token);
-                sessionStorage.setItem('token', token);
             } else {
                 sessionStorage.setItem('token', token);
             }
@@ -65,7 +69,6 @@ export const ContextProvider = ({ children }) => {
         }
         _setUserToken(token);
     };
-    
 
     return (
         <StateContext.Provider value={{
@@ -81,7 +84,7 @@ export const ContextProvider = ({ children }) => {
         }}>
             {children}
         </StateContext.Provider>
-    )
+    );
 };
 
 export const useStateContext = () => useContext(StateContext);
