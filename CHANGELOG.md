@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.0...v1.1.1) (2024-08-28)
+
+
+### Bug Fixes
+
+* Fix isAdmin not always setting after new session ([56b78f8](https://github.com/IdentalerMaxima/perszePlus/commit/56b78f8e6e616a18d2e497933bbb617ba3597ce7))
+* Fix pagination so it sticks to the bottom of the page ([fc16414](https://github.com/IdentalerMaxima/perszePlus/commit/fc164144a4d8a4eca42aa65038b6931b9f5ea7dd))
+
 ## [1.1.0](https://github.com/IdentalerMaxima/perszePlus/compare/v1.0.1...v1.1.0) (2024-08-27)
 
 
