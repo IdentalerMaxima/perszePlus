@@ -39,6 +39,7 @@ const MemberProfile = () => {
     }
   };
 
+
   const fetchDocuments = async () => {
     try {
       const response = await axiosClient.get(`/user/getDocumentsOfUser/${id}`);
@@ -53,22 +54,20 @@ const MemberProfile = () => {
   };
 
   const handleViewDocument = (document) => {
-    console.log('document:', document);
     getFile(document);
   };
 
   const getFile = async (file) => {
     try {
-      console.log('file:', file);
-      const retrievedFile = await axiosClient.get(`/user/documents/show/${file.id}`, {
+      const retrievedFile = await axiosClient.get(`/user/documents/show/${file.id}`,   {
         responseType: 'blob',
       });
-      console.log('retrievedFile:', retrievedFile);
       const fileURL = URL.createObjectURL(retrievedFile.data);
       setSelectedDocument({
         title: file.name,
         type: file.type,
         url: fileURL,
+        extension: getFileExtension(file.original_name),
       });
     } catch (error) {
       console.error('Error viewing file:', error);
@@ -82,7 +81,6 @@ const MemberProfile = () => {
   const getEventsOfUser = async () => {
     try {
       const response = await axiosClient.get(`/getEventsOfUser/${id}`);
-      console.log('events of user:', response);
       setEventsOfUser(response.data);
     }
     catch (error) {
@@ -252,7 +250,7 @@ const MemberProfile = () => {
                             <Button
                               variant="contained"
                               color="primary"
-                              onClick={() => handleViewDocument(file)}
+                              onClick={() => handleViewDocument(doc)}
                             >
                               View
                             </Button>
@@ -312,6 +310,7 @@ const MemberProfile = () => {
           onClose={handleCloseDocument}
         />
       )}
+      
     </PageComponent>
   );
 };
