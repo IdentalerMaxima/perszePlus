@@ -16,7 +16,7 @@ export default function Events() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showAttendees, setShowAttendees] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [showOldEvents, setShowOldEvents] = useState(false);
+  const [showOldEvents, setShowOldEvents] = useState(true);
   const [qrCode, setQrCode] = useState(null);
   const [qrCodeDialogOpen, setQrCodeDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
