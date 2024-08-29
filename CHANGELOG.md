@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.3](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.2...v1.1.3) (2024-08-29)
+
+
+### Bug Fixes
+
+* Add icon next to user attendance in events if missed or went ([e9a0ba6](https://github.com/IdentalerMaxima/perszePlus/commit/e9a0ba69519e6145326c8026cb6d0f8b3a681362))
+* Fix if user did not check in event then sent to missed ([a1604d9](https://github.com/IdentalerMaxima/perszePlus/commit/a1604d94122b641f976fd9ec2a1ea8efb45b3ffa))
+* When user loads events show past events too by default ([70f1dfb](https://github.com/IdentalerMaxima/perszePlus/commit/70f1dfb925fb422aa5e71c5831d94d0fbe200181))
+
 ## [1.1.2](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.1...v1.1.2) (2024-08-28)
 
 
