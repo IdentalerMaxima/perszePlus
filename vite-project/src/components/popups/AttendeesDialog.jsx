@@ -28,6 +28,8 @@ const AttendeesDialog = ({ open, handleClose, event }) => {
                                 {user.pivot.status === 'going' && <CheckIcon style={{ marginLeft: '8px', color: 'green' }} />}
                                 {user.pivot.status === 'not_going' && <CancelIcon style={{ marginLeft: '8px', color: 'red' }} />}
                                 {user.pivot.status === 'not_answered' && <HelpOutlineIcon style={{ marginLeft: '8px', color: 'gray' }} />}
+                                {user.pivot.status === 'went' && <CheckIcon style={{ marginLeft: '8px', color: 'green' }} />}
+                                {user.pivot.status === 'missed' && <CancelIcon style={{ marginLeft: '8px', color: 'red' }} />}
                             </div>
                         </div>
                     ))}
