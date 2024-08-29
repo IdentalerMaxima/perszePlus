@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.1...v1.1.2) (2024-08-28)
+
+
+### Bug Fixes
+
+* Add extension to file object to display, this will solve "Cant view files in Member Profile" error ([0c3ce4f](https://github.com/IdentalerMaxima/perszePlus/commit/0c3ce4fb3164bfac667e86cf1d327d66f4836e3a))
+
 ## [1.1.1](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.0...v1.1.1) (2024-08-28)
 
 
