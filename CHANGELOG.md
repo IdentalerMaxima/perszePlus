@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.3...v1.1.4) (2024-08-30)
+
+
+### Bug Fixes
+
+* Fix Invitation based registration turn off error ([f7013c5](https://github.com/IdentalerMaxima/perszePlus/commit/f7013c55979d0f36341eb877d9c8bfad740846ca))
+
 ## [1.1.3](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.2...v1.1.3) (2024-08-29)
 
 
