@@ -14,7 +14,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState({ __html: '' });
   const [rememberMe, setRememberMe] = useState(localStorage.getItem('token') ? true : false);
-  const [registrationRestriction, setRegistrationRestriction] = useState(true);
+  const [registrationRestriction, setRegistrationRestriction] = useState(null);
 
   useEffect(() => {
     setError({ __html: '' });
@@ -26,7 +26,12 @@ export default function Login() {
 
   useEffect(() => {
     getRegistrationRestriction();
+    console.log('Registration restriction is set to: ', registrationRestriction);
   }, []);
+
+  useEffect(() => {
+    console.log('Registration restriction changed to: ', registrationRestriction);
+  }, [registrationRestriction]);
 
   const getRegistrationRestriction = async () => {
     try {

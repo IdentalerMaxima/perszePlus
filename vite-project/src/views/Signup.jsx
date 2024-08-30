@@ -14,7 +14,7 @@ export default function Signup() {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState({ __html: '' });
   const [isValidToken, setIsValidToken] = useState(null);
-  const [isRegistrationRestricted, setIsRegistrationRestricted] = useState(true);
+  const [isRegistrationRestricted, setIsRegistrationRestricted] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
@@ -22,32 +22,39 @@ export default function Signup() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const token = queryParams.get('token');
+    if (isRegistrationRestricted) {
+      console.log('Registration restricted is set to true, performing token validation logic...')
+      const queryParams = new URLSearchParams(location.search);
+      const token = queryParams.get('token');
 
-    const validateToken = async () => {
-      if (token) {
-        try {
-          const response = await axiosClient.get(`/validateToken/${token}`);
-          if (response.status === 200) {
-            setEmail(response.data.email);
-            setIsValidToken(true);
-          } else {
-            setIsValidToken(false); // Token invalid, set state to false
-            navigate('/registration-restricted'); // Redirect to error page
+      const validateToken = async () => {
+        console.log('Validating token...')
+        if (token) {
+          try {
+            const response = await axiosClient.get(`/validateToken/${token}`);
+            if (response.status === 200) {
+              console.log('Token validated!')
+              setEmail(response.data.email);
+              setIsValidToken(true);
+            } else {
+              console.log('Token is invalid')
+              setIsValidToken(false);
+              navigate('/registration-restricted');
+            }
+          } catch (error) {
+            console.error('Error validating token:', error);
+            setIsValidToken(false);
+            navigate('/registration-restricted');
           }
-        } catch (error) {
-          console.error('Error validating token:', error);
+        } else {
+          console.log('Token missing')
           setIsValidToken(false);
           navigate('/registration-restricted');
         }
-      } else {
-        setIsValidToken(false);
-        navigate('/registration-restricted');
-      }
-    };
+      };
 
-    validateToken();
+      validateToken();
+    }
   }, [location.search, navigate]);
 
   const getRegistrationRestriction = async () => {
@@ -62,6 +69,12 @@ export default function Signup() {
   useEffect(() => {
     getRegistrationRestriction();
   }, []);
+
+  useEffect(() => {
+    if (isRegistrationRestricted) {
+      navigate('/registration-restricted');
+    }
+  }, [isRegistrationRestricted]);
 
   useEffect(() => {
     setError({ __html: '' });
@@ -105,12 +118,12 @@ export default function Signup() {
   };
 
   // Conditional rendering based on token validity
-  if (isValidToken === null) {
+  if (isRegistrationRestricted && isValidToken === null) {
     // Optionally, you can render a loading spinner here
     return null; // Or <LoadingSpinner />
   }
 
-  if (!isValidToken) {
+  if (isRegistrationRestricted && !isValidToken) {
     return null; // Redirect already handled in useEffect
   }
 
