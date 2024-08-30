@@ -74,19 +74,6 @@ export default function Posts() {
         setOpenEditPost(false);
     };
 
-    // const likePost = (postId) => {
-    //     const updatedPosts = posts.map(post => {
-    //         if (post.id === postId) {
-    //             return {
-    //                 ...post,
-    //                 likes: post.likes + 1
-    //             };
-    //         }
-    //         return post;
-    //     });
-    //     setPosts(updatedPosts);
-    // };
-
     const saveEditedPost = async (editedPost) => {
         try {
             await axiosClient.put(`/editPost/${editedPost.id}`, editedPost);
@@ -184,106 +171,105 @@ export default function Posts() {
                 </div>
             ) : (
                 <InfiniteScroll
-                dataLength={posts.length}
-                loader={<CircularProgress />}
-                endMessage={<p style={{ textAlign: 'center' }}><b>That's all folks!</b></p>}
-            >
-                {posts.map((post) => (
-                    <Card key={post.id} style={{ marginBottom: '16px', position: 'relative' }}>
-                        <CardContent>
-                            <Box display="flex" alignItems="center" marginBottom={'16px'}>
-                                <Avatar src={post.author.avatar_path} style={{ marginRight: '16px' }} />
-                                <Typography color="text.secondary">
-                                    {`${post.author.first_name} ${post.author.last_name}`} - {post.date} {post.id}
-                                </Typography>
-                            </Box>
-
-                            <Typography variant="h6" paddingBottom={'22px'}>
-                                {post.content}
-                            </Typography>
-
-                            <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px', position: 'absolute', bottom: 4, left: 4 }}>
-                                {/* <IconButton onClick={() => likePost(post.id)}>
-                                    <ThumbUp /> {post.likes}
-                                </IconButton> */}
-                                <IconButton onClick={() => toggleCommentBox(post.id)}>
-                                    <Comment /> {post.comments.length}
-                                </IconButton>
-                            </Box>
-
-                            {commentBoxVisible[post.id] && (
-                                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                    <Divider style={{ margin: '16px 0' }} />
-                                    {post.comments.map((comment) => (
-                                        <Box key={comment.id} display="flex" alignItems="flex-start" style={{ marginLeft: '16px', width: '100%', position: 'relative' }}>
-                                            <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-                                                <Avatar src={comment.avatar_path} style={{ marginRight: '8px', width: '32px', height: '32px' }} />
-                                                <Box>
-                                                    <Typography variant="body2" fontWeight="bold">{comment.user}</Typography>
-                                                    <Typography
-                                                        variant="body2"
-                                                        paddingRight={'32px'}
-                                                    >{comment.comment}</Typography>
-                                                </Box>
-                                            </Box>
-
-                                            {currentUser && (currentUser.id === comment.author_id || currentUser.category == 'admin') && (
-                                                <Box sx={{ position: 'absolute', top: 4, right: 8, display: 'flex', gap: '4px' }}>
-                                                    <IconButton size="small" onClick={() => deleteComment(comment.id)} style={{ padding: 0 }}>
-                                                        <Delete fontSize="small" />
-                                                    </IconButton>
-                                                    <IconButton size="small" onClick={() => editComment(comment)} style={{ padding: 0 }}>
-                                                        <Edit fontSize="small" />
-                                                    </IconButton>
-                                                </Box>
-                                            )}
-                                        </Box>
-                                    ))}
+                    dataLength={posts.length}
+                    loader={<CircularProgress />}
+                    endMessage={<p style={{ textAlign: 'center' }}><b>That's all folks!</b></p>}
+                >
+                    {posts.map((post) => (
+                        <Card key={post.id} style={{ marginBottom: '16px', position: 'relative' }}>
+                            <CardContent>
+                                <Box display="flex" alignItems="center" marginBottom={'16px'}>
+                                    <Avatar src={post.author.avatar_path} style={{ marginRight: '16px' }} />
+                                    <Typography color="text.secondary">
+                                        {`${post.author.first_name} ${post.author.last_name}`}
+                                        <br />
+                                        {post.date.slice(0, -3)}
+                                    </Typography>
                                 </Box>
-                            )}
 
+                                <Typography variant="h6" paddingBottom={'22px'}>
+                                    {post.content}
+                                </Typography>
 
-                            <div className='create-event-dialog'>
+                                <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px', position: 'absolute', bottom: 4, left: 4 }}>
+                                    <IconButton onClick={() => toggleCommentBox(post.id)}>
+                                        <Comment /> {post.comments.length}
+                                    </IconButton>
+                                </Box>
+
                                 {commentBoxVisible[post.id] && (
-                                    <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px', paddingBottom: '22px' }}>
-                                        <Avatar src={currentUser.avatar_path} style={{ marginRight: '8px' }} />
-                                        <TextField
-                                            label="Add a comment"
-                                            variant="outlined"
-                                            wordWrap="break-word"
-                                            fullWidth
-                                            value={newComment[post.id] || ''}
-                                            size='small'
-                                            onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })}
-                                        />
-                                        <Button variant="contained" color="primary" onClick={() => submitComment(post.id)}>
-                                            Comment
-                                        </Button>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                        <Divider style={{ margin: '16px 0' }} />
+                                        {post.comments.map((comment) => (
+                                            <Box key={comment.id} display="flex" alignItems="flex-start" style={{ marginLeft: '16px', width: '100%', position: 'relative' }}>
+                                                <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                                                    <Avatar src={comment.avatar_path} style={{ marginRight: '8px', width: '32px', height: '32px' }} />
+                                                    <Box>
+                                                        <Typography variant="body2" fontWeight="bold">{comment.user}</Typography>
+                                                        <Typography
+                                                            variant="body2"
+                                                            paddingRight={'32px'}
+                                                        >{comment.comment}</Typography>
+                                                    </Box>
+                                                </Box>
+
+                                                {currentUser && (currentUser.id === comment.author_id || currentUser.category == 'admin') && (
+                                                    <Box sx={{ position: 'absolute', top: 4, right: 8, display: 'flex', gap: '4px' }}>
+                                                        <IconButton size="small" onClick={() => deleteComment(comment.id)} style={{ padding: 0 }}>
+                                                            <Delete fontSize="small" />
+                                                        </IconButton>
+                                                        <IconButton size="small" onClick={() => editComment(comment)} style={{ padding: 0 }}>
+                                                            <Edit fontSize="small" />
+                                                        </IconButton>
+                                                    </Box>
+                                                )}
+                                            </Box>
+                                        ))}
                                     </Box>
                                 )}
-                            </div>
 
-                            {currentUser && (currentUser.id === post.author.id || currentUser.category == 'admin') && (
-                                <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
-                                    <IconButton
-                                        style={{ position: 'absolute', top: '2px', right: '40px' }}
-                                        onClick={() => deletePost(post.id)}
-                                    >
-                                        <Delete />
-                                    </IconButton>
-                                    <IconButton
-                                        style={{ position: 'absolute', top: '2px', right: '8px' }}
-                                        onClick={() => editPost(post)}
-                                    >
-                                        <Edit />
-                                    </IconButton>
-                                </Box>
-                            )}
 
-                        </CardContent>
-                    </Card>
-                ))}
-            </InfiniteScroll>
+                                <div className='create-event-dialog'>
+                                    {commentBoxVisible[post.id] && (
+                                        <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px', paddingBottom: '22px' }}>
+                                            <Avatar src={currentUser.avatar_path} style={{ marginRight: '8px' }} />
+                                            <TextField
+                                                label="Add a comment"
+                                                variant="outlined"
+                                                wordWrap="break-word"
+                                                fullWidth
+                                                value={newComment[post.id] || ''}
+                                                size='small'
+                                                onChange={(e) => setNewComment({ ...newComment, [post.id]: e.target.value })}
+                                            />
+                                            <Button variant="contained" color="primary" onClick={() => submitComment(post.id)}>
+                                                Comment
+                                            </Button>
+                                        </Box>
+                                    )}
+                                </div>
+
+                                {currentUser && (currentUser.id === post.author.id || currentUser.category == 'admin') && (
+                                    <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+                                        <IconButton
+                                            style={{ position: 'absolute', top: '2px', right: '40px' }}
+                                            onClick={() => deletePost(post.id)}
+                                        >
+                                            <Delete />
+                                        </IconButton>
+                                        <IconButton
+                                            style={{ position: 'absolute', top: '2px', right: '8px' }}
+                                            onClick={() => editPost(post)}
+                                        >
+                                            <Edit />
+                                        </IconButton>
+                                    </Box>
+                                )}
+
+                            </CardContent>
+                        </Card>
+                    ))}
+                </InfiniteScroll>
             )}
 
             <PostData
