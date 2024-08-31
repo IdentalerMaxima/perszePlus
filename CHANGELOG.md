@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.6](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.5...v1.1.6) (2024-08-31)
+
+
+### Bug Fixes
+
+* do mafic update ([11d76d9](https://github.com/IdentalerMaxima/perszePlus/commit/11d76d936aa7ed81a5984dd8680bbb3dfa63f523))
+
 ## [1.1.5](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.4...v1.1.5) (2024-08-31)
 
 
