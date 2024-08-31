@@ -203,6 +203,15 @@ export default function Events() {
                     >
                       Can't go
                     </Button>
+                    
+
+
+
+
+
+
+
+                    {console.log('Hi');}
                     {isAdmin && (
                       <>
                         <Button
