@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.4...v1.1.5) (2024-08-31)
+
+
+### Bug Fixes
+
+* Correct mobile styling in news ([e663def](https://github.com/IdentalerMaxima/perszePlus/commit/e663deff37c258ddfa78015dc12951ca5b37c907))
+
 ## [1.1.4](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.3...v1.1.4) (2024-08-30)
 
 
