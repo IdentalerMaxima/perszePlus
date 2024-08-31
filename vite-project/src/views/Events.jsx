@@ -184,7 +184,7 @@ export default function Events() {
                   </Typography>
 
 
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '16px' }}>
                     {/* Disable buttons if event is closed */}
                     <Button
                       variant="contained"
@@ -203,11 +203,6 @@ export default function Events() {
                     >
                       Can't go
                     </Button>
-
-                    <Button variant="outlined" color="primary" onClick={() => handleShowAttendees(event)} disabled={event.isClosed}>
-                      Show Attendees
-                    </Button>
-
                     {isAdmin && (
                       <>
                         <Button
@@ -223,6 +218,9 @@ export default function Events() {
                         </Button>
                       </>
                     )}
+                    <Button variant="outlined" color="primary" onClick={() => handleShowAttendees(event)} disabled={event.isClosed}>
+                      Show Attendees
+                    </Button>
                   </div>
                   {isAdmin && (
                     <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
