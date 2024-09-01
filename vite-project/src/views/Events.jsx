@@ -171,9 +171,9 @@ export default function Events() {
         >
           {events.map((event) => (
             (showOldEvents || new Date(event.date) >= new Date()) && (
-              <Card key={event.id} style={{ marginBottom: '16px', position: 'relative' }}>
+              <Card key={event.id} style={{ marginBottom: '16px', position: 'relative'}}>
                 <CardContent>
-                  <Typography variant="h5" component="div" className='pr-12'>
+                  <Typography variant="h5" component="div" className='pr-14'>
                     {event.title}
                   </Typography>
                   <Typography color="text.secondary" gutterBottom>
@@ -184,7 +184,7 @@ export default function Events() {
                   </Typography>
 
 
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '16px' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '20px', marginBottom: '-26px' }}>
                     {/* Disable buttons if event is closed */}
                     <Button
                       variant="contained"
