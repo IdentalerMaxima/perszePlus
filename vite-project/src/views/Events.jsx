@@ -173,7 +173,7 @@ export default function Events() {
             (showOldEvents || new Date(event.date) >= new Date()) && (
               <Card key={event.id} style={{ marginBottom: '16px', position: 'relative' }}>
                 <CardContent>
-                  <Typography variant="h5" component="div">
+                  <Typography variant="h5" component="div" className='pr-12'>
                     {event.title}
                   </Typography>
                   <Typography color="text.secondary" gutterBottom>
@@ -193,6 +193,7 @@ export default function Events() {
                       disabled={getUserAttendanceStatus(event, currentUser.id) === ('going' || 'went') || event.isClosed}
                     >
                       Going
+
                     </Button>
 
                     <Button
@@ -204,14 +205,6 @@ export default function Events() {
                       Can't go
                     </Button>
                     
-
-
-
-
-
-
-
-                    {console.log('Hi');}
                     {isAdmin && (
                       <>
                         <Button
@@ -234,14 +227,14 @@ export default function Events() {
                   {isAdmin && (
                     <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
                       <IconButton
-                        style={{ position: 'absolute', bottom: '2px', right: '40px' }}
+                        style={{ position: 'absolute', top: '12px', right: '40px' }}
                         onClick={() => deleteEvent(event.id)}
                         disabled={event.isClosed}
                       >
                         <Delete />
                       </IconButton>
                       <IconButton
-                        style={{ position: 'absolute', bottom: '2px', right: '8px' }}
+                        style={{ position: 'absolute', top: '12px', right: '8px' }}
                         onClick={() => handleEdit(event)}
                         disabled={event.isClosed}
                       >
