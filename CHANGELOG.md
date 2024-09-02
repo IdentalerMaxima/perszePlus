@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.7](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.6...v1.1.7) (2024-09-02)
+
+
+### Bug Fixes
+
+* Fix mobile view for news ([1882595](https://github.com/IdentalerMaxima/perszePlus/commit/1882595e1c15c2001143520d28ab88d42739253b))
+
 ## [1.1.6](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.5...v1.1.6) (2024-08-31)
 
 
