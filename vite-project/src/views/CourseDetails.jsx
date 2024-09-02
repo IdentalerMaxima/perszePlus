@@ -73,7 +73,7 @@ const CourseDetails = () => {
         <PageComponent title="Kurzus részletei">
             <div className={`flex ${isMobile ? 'flex-col' : 'flex-row items-center'} pt-3`}>
                 <IconButton onClick={goBack}>
-                    <ArrowBackIcon />
+                    <ArrowBackIcon className="mb-6"/>
                 </IconButton>
 <                Card style={{ display: 'flex', height: '100%' }}>
                     <Grid container spacing={2}>
