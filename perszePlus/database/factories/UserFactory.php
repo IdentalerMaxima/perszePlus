@@ -23,12 +23,8 @@ class UserFactory extends Factory
             'city' => $this->faker->city,
             'state' => $this->faker->state,
             'zip' => $this->faker->postcode,
-            'temp_addr' => $this->faker->boolean ? $this->faker->city : null,
-            'temp_addr_street' => $this->faker->boolean ? $this->faker->streetAddress : null,
-            'temp_addr_city' => $this->faker->boolean ? $this->faker->city : null,
-            'temp_addr_state' => $this->faker->boolean ? $this->faker->state : null,
-            'temp_addr_zip' => $this->faker->boolean ? $this->faker->postcode : null,
-            'password' => bcrypt('password'), // or Hash::make('password')
+            //temp addr values are null by def
+            'password' => bcrypt('password'),
             'avatar_path' => $this->faker->imageUrl(),
             'neptun_code' => $this->faker->unique()->word,
             'university' => $this->faker->randomElement(['Pécsi Tudományegyetem', 'Budapesti Műszaki és Gazdaságtudományi Egyetem', 'Debreceni Egyetem']),
