@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.8](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.7...v1.1.8) (2024-10-02)
+
+
+### Bug Fixes
+
+* merge migration files, update the seeder so it creates a specific admin and 20 random users ([2677e1c](https://github.com/IdentalerMaxima/perszePlus/commit/2677e1c8cdbaa327ca4d1fe656d089e405da32a8))
+* remove max avatar size constraint ([ad00646](https://github.com/IdentalerMaxima/perszePlus/commit/ad006466e16bd7f2393a2b0881976da53324dd9d))
+
 ## [1.1.7](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.6...v1.1.7) (2024-09-02)
 
 
