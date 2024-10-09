@@ -1,6 +1,6 @@
 services:
   backend:
-    image: identaler/perszeplus:backend  # Replace with your actual backend image name
+    image: identaler/perszeplus:app
     ports:
       - "8000:80"
     volumes:
@@ -9,7 +9,7 @@ services:
       - db
 
   frontend:
-    image: identaler/perszeplus:frontend  # Replace with your actual frontend image name
+    image: identaler/perszeplus:web
     ports:
       - "3000:80"
     volumes:
