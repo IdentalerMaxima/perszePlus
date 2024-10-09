@@ -1,0 +1,27 @@
+services:
+  backend:
+    image: identaler/perszeplus:backend  # Replace with your actual backend image name
+    ports:
+      - "8000:80"
+    volumes:
+      - ./perszePlus:/var/www/html
+    depends_on:
+      - db
+
+  frontend:
+    image: identaler/perszeplus:frontend  # Replace with your actual frontend image name
+    ports:
+      - "3000:80"
+    volumes:
+      - ./vite-project:/app
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: asd
+      MYSQL_DATABASE: persze
+      MYSQL_USER: user
+      MYSQL_PASSWORD: asd
+    ports:
+      - "3306:3306"
