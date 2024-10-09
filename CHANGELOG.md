@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/IdentalerMaxima/perszePlus/compare/v1.2.0...v1.2.1) (2024-10-09)
+
+
+### Bug Fixes
+
+* correct images requested from docker hub ([705ffc4](https://github.com/IdentalerMaxima/perszePlus/commit/705ffc4d0bb7f8536658b984c6b9a9b7652a6904))
+
 ## [1.2.0](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.8...v1.2.0) (2024-10-09)
 
 
