@@ -32,6 +32,9 @@ RUN composer install
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Overwrite the default configuration with custom settings
+COPY .apache/apache-custom.conf /etc/apache2/sites-available/000-default.conf
+
 # Expose port 80
 EXPOSE 80
 
