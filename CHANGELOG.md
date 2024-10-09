@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.8...v1.2.0) (2024-10-09)
+
+
+### Features
+
+* add docker file for backend ([30c0cfe](https://github.com/IdentalerMaxima/perszePlus/commit/30c0cfec506051114852e7ce8582be8cffcae829))
+
 ## [1.1.8](https://github.com/IdentalerMaxima/perszePlus/compare/v1.1.7...v1.1.8) (2024-10-02)
 
 
