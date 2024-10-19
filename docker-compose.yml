@@ -7,6 +7,10 @@ services:
       - ./perszePlus:/var/www/html
     depends_on:
       - db
+    environment:
+      - DB_HOST=db
+      - DB_USERNAME=user
+      - DB_PASSWORD=asd
 
   frontend:
     image: identaler/perszeplus:web
@@ -25,3 +29,15 @@ services:
       MYSQL_PASSWORD: asd
     ports:
       - "3306:3306"
+
+  phpmyadmin:  
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"  
+    environment:
+      PMA_HOST: db  
+      PMA_USER: user  
+      PMA_PASSWORD: asd  
+    depends_on:
+      - db  
