@@ -3,7 +3,7 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link, NavLink, useNavigate, Outlet } from 'react-router-dom';
 import { useStateContext } from '../contexts/ContextProvider';
 import axiosClient from '../axios';
-import { Menu, Transition, Disclosure, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { Menu, Transition, Disclosure, MenuButton, MenuItem, MenuItems, DisclosureButton } from '@headlessui/react';
 import Avatar from '@mui/material/Avatar';
 import { ListItemButton } from '@mui/material';
 import Pusher from 'pusher-js';
@@ -30,7 +30,7 @@ export default function DefaultLayout() {
   const userNavigation = [
     { name: 'Your Profile', to: '/profile' },
   ];
-  
+
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
   }
@@ -50,11 +50,11 @@ export default function DefaultLayout() {
         }
       }
     };
-  
+
     getMessagesOfUser();
   }, [userToken, selectedMessageId]); // The effect runs only when userToken is set or selectedMessageId changes
-  
-  
+
+
 
   useEffect(() => {
     if (!pusherRef.current) {
@@ -247,19 +247,20 @@ export default function DefaultLayout() {
                             {/* Render Admin menu item if the user is an admin */}
                             {isAdmin && (
                               <MenuItem>
-                              {({ active }) => (
-                                <Link
-                                  to={'/admin'}
-                                  className={classNames(
-                                    active ? 'bg-gray-100' : '',
-                                    'block px-4 py-2 text-sm text-gray-700'
-                                  )}
-                                >
-                                  {'Admin Dashboard'}
-                                </Link>
-                              )}
-                            </MenuItem>
+                                {({ active }) => (
+                                  <Link
+                                    to={'/admin'}
+                                    className={classNames(
+                                      active ? 'bg-gray-100' : '',
+                                      'block px-4 py-2 text-sm text-gray-700'
+                                    )}
+                                  >
+                                    {'Admin Dashboard'}
+                                  </Link>
+                                )}
+                              </MenuItem>
                             )}
+
 
                             <MenuItem>
                               <button
@@ -276,6 +277,7 @@ export default function DefaultLayout() {
                   </div>
 
                   <div className="-mr-2 flex md:hidden">
+
                     {/* Mobile menu button */}
                     <Menu as="div">
                       <div className="relative ml-auto flex items-center">
@@ -351,7 +353,10 @@ export default function DefaultLayout() {
                       )}
                     >
                       {item.name}
+
                     </NavLink>
+
+
                   ))}
                 </div>
                 <div className="border-t border-gray-700 pb-3 pt-4">
@@ -372,6 +377,8 @@ export default function DefaultLayout() {
                     </button>
                   </div>
 
+
+
                   <div className="mt-3 space-y-1 px-2">
                     {userNavigation.map((item) => (
                       <NavLink
@@ -380,17 +387,32 @@ export default function DefaultLayout() {
                         className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                       >
                         {item.name}
+
                       </NavLink>
                     ))}
 
-                    <Disclosure.Button
+
+
+                    {/* Render Admin menu item if the user is an admin */}
+                    {isAdmin && (
+                      <NavLink
+                        to={'/admin'}
+                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                      >
+                        {'Admin setting'}
+
+                      </NavLink>
+                    )}
+
+
+                    <Disclosure
                       as="a"
                       href="#"
                       onClick={(ev) => logout(ev)}
                       className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                     >
                       Sign out
-                    </Disclosure.Button>
+                    </Disclosure>
                   </div>
                 </div>
               </Disclosure.Panel>
