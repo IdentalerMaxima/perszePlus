@@ -21,17 +21,8 @@ export default function Login() {
   }, [i18next.language]);
 
   useEffect(() => {
-    console.log('Remember me:', rememberMe);
-  }, [rememberMe]);
-
-  useEffect(() => {
-    getRegistrationRestriction();
-    console.log('Registration restriction is set to: ', registrationRestriction);
+    console.log(getRegistrationRestriction);
   }, []);
-
-  useEffect(() => {
-    console.log('Registration restriction changed to: ', registrationRestriction);
-  }, [registrationRestriction]);
 
   const getRegistrationRestriction = async () => {
     try {
@@ -86,7 +77,10 @@ export default function Login() {
   return (
     <>
       <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-        {t('login')}
+        {t('login')}    
+      </h2>
+      <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+        localhost 
       </h2>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
