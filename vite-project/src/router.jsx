@@ -1,10 +1,7 @@
-// router.js
-
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import GuestLayout from './components/GuestLayout.jsx';
 import DefaultLayout from './components/DefaultLayout.jsx';
 
-import Dashboard from './views/Dashboard.jsx';
 import Events from './views/Events.jsx';
 import Courses from './views/Courses.jsx';
 import CourseDetails from './views/CourseDetails.jsx';
@@ -27,31 +24,29 @@ const router = createBrowserRouter([
     path: '/',
     element: <DefaultLayout />,
     children: [
-      { path: '/news', element: <News /> },
-      { path: '/members', element: <Members /> },
-      { path: '/members/:id', element: <MemberProfile /> },
-      { path: '/events', element: <Events /> },
-      { path: '/courses', element: <Courses /> },
-      { path: '/courses/:id', element: <CourseDetails /> },
-      { path: '/attendance', element: <Attendance /> },
-      { path: '/profile', element: <Profile />},
-      { path: '/stats', element: <Stats />},
-      { path: '/messages', element: <Messages />},
-      { path: '/admin', element: <Admin />},
-
-      
-      { path: '/', element: <Navigate to="/news" /> },
+      { path: 'news', element: <News /> },
+      { path: 'members', element: <Members /> },
+      { path: 'members/:id', element: <MemberProfile /> },
+      { path: 'events', element: <Events /> },
+      { path: 'courses', element: <Courses /> },
+      { path: 'courses/:id', element: <CourseDetails /> },
+      { path: 'attendance', element: <Attendance /> },
+      { path: 'profile', element: <Profile /> },
+      { path: 'stats', element: <Stats /> },
+      { path: 'messages', element: <Messages /> },
+      { path: 'admin', element: <Admin /> },
+      { path: '/', element: <Navigate to="news" /> },
     ],
   },
   {
     path: '/',
     element: <GuestLayout />,
     children: [
-      { path: '/login', element: <Login /> },
-      { path: '/signup', element: <Signup /> },
-      { path: '/registration-restricted', element: <RegistrationRestricted /> },
-      { path: '/forgotPassword', element: <ForgotPassword />},
-      { path: '/resetPassword/:token', element: <ResetPassword />},
+      { path: 'login', element: <Login /> },
+      { path: 'signup', element: <Signup /> },
+      { path: 'registration-restricted', element: <RegistrationRestricted /> },
+      { path: 'forgotPassword', element: <ForgotPassword /> },
+      { path: 'resetPassword/:token', element: <ResetPassword /> },
     ],
   },
 ]);
