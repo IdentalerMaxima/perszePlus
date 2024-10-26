@@ -19,6 +19,7 @@ export const ContextProvider = ({ children }) => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [selectedMessageId, setSelectedMessageId] = useState(null);
     const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const fetchUserData = async () => {
         if (!userToken) {
@@ -26,6 +27,8 @@ export const ContextProvider = ({ children }) => {
             setIsAdmin(false);
             return; // Exit if not authorized
         }
+
+        setLoading(true);
 
         try {
             const response = await axiosClient.get('/user/info', {
@@ -47,6 +50,8 @@ export const ContextProvider = ({ children }) => {
                 setCurrentUser({});
                 setIsAdmin(false);
             }
+        } finally {
+            setLoading(false); 
         }
     };
 
@@ -80,7 +85,8 @@ export const ContextProvider = ({ children }) => {
             selectedMessageId,
             setSelectedMessageId,
             messages,
-            setMessages
+            setMessages,
+            loading
         }}>
             {children}
         </StateContext.Provider>
