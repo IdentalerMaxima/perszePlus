@@ -42,34 +42,38 @@ class AdminController extends Controller
     }
 
     protected function generateInviteToken($email)
-{
-    try {
-        $payload = [
-            'email' => $email,
-            'expires' => now()->addHours(24)->timestamp, // Example: token expiry
-        ];
+    {
+        try {
+            $payload = [
+                'email' => $email,
+                'expires' => now()->addHours(24)->timestamp, // Example: token expiry
+            ];
 
-        $token = base64_encode(json_encode($payload));
-        return $token;
-    } catch (\Exception $e) {
-        Log::error('Error generating invite token: ' . $e->getMessage());
-        throw $e;
+            $token = base64_encode(json_encode($payload));
+            return $token;
+        } catch (\Exception $e) {
+            Log::error('Error generating invite token: ' . $e->getMessage());
+            throw $e;
+        }
     }
-}
 
 
     public function getSettings(Request $request)
     {
-        // Return the first record from admin_settings table
+
         $adminSettings = AdminSettings::first();
-        
-        // Handle the case where no settings are found
+
         if (!$adminSettings) {
-            return response()->json(['message' => 'Settings not found'], 404);
+            $adminSettings = AdminSettings::create([
+                'registration_only_with_invitation' => '0',
+            ]);
+
+            return response()->json($adminSettings);
         }
 
         return response()->json($adminSettings);
     }
+
 
     public function saveSettings(Request $request)
     {
