@@ -18,6 +18,7 @@ import Signup from './views/Signup.jsx';
 import MemberProfile from './views/MemberProfile.jsx';
 import Messages from './views/Messages.jsx';
 import RegistrationRestricted from './views/admin/RegistrationRestricted.jsx';
+import ProtectedRoute from './components/routes/ProtectedRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -34,7 +35,13 @@ const router = createBrowserRouter([
       { path: 'profile', element: <Profile /> },
       { path: 'stats', element: <Stats /> },
       { path: 'messages', element: <Messages /> },
-      { path: 'admin', element: <Admin /> },
+      {
+        path: 'admin',
+        element: <ProtectedRoute isAdminRoute={true} />,
+        children: [
+          { path: '', element: <Admin /> },
+        ],
+      },
       { path: '/', element: <Navigate to="news" /> },
     ],
   },
