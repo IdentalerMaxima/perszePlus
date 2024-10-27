@@ -16,9 +16,6 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::with('users')->get();
-
-       // Log::info($courses);
-
         return response()->json($courses, 200);
     }
 
