@@ -48,14 +48,14 @@ class MessageReceived extends Notification implements ShouldQueue
         $appUrl = config('app.url');
 
         // Generate the message URL
-        $messageUrl = $appUrl . '/messages/';
+        $messageUrl = $appUrl . '/login';
 
         return (new MailMessage)
                     ->subject('New Message Received from ' . $senderName)
                     ->greeting('Hello ' . $receiverName . ',')
                     ->line('You have received a new message from ' . $senderName . ':')
                     ->line($this->message->content)
-                    ->action('View Message', $messageUrl)
+                    ->action('Login', $messageUrl)
                     ->line('Thank you for using our application!');
     }
 

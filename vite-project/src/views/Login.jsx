@@ -43,18 +43,15 @@ export default function Login() {
     setError({ __html: translatedErrors.join('<br>') });
   };
 
-
-
   const handleLogin = (ev) => {
     ev.preventDefault();
-    setError({ __html: '' }); // Reset errors if there are some
+    setError({ __html: '' });
 
     axiosClient.post('/login', {
       email,
       password,
     })
       .then(({ data }) => {
-        // Store user and token based on remember me selection
         if (rememberMe) {
           localStorage.setItem('user', JSON.stringify(data.user));
           localStorage.setItem('token', data.token);

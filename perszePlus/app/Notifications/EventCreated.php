@@ -38,14 +38,14 @@ class EventCreated extends Notification implements ShouldQueue
     {
         // Use environment URL if needed
         $appUrl = config('app.url');
-        $eventUrl = $appUrl . '/events';
+        $eventUrl = $appUrl . '/login';
 
         return (new MailMessage)
                     ->subject('New Event Created: ' . $this->event->title)
                     ->greeting('Hello ' . $notifiable->first_name . ' ' . $notifiable->last_name . ',')
                     ->line('A new event has been created: ' . $this->event->title)
                     ->line('Details: ' . $this->event->description)
-                    ->action('View Event', $eventUrl)
+                    ->action('Login', $eventUrl)
                     ->line('Thank you for using our application!');
     }
 }

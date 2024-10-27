@@ -40,13 +40,12 @@ class NewCourseNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        // Use environment URL if needed
         $appUrl = config('app.url');
-        $eventUrl = $appUrl . '/courses';
+        $eventUrl = $appUrl . '/login';
         
         return (new MailMessage)
             ->line('A new course has been added.')
-            ->action('View Course', ($eventUrl))
+            ->action('Login', $eventUrl)
             ->line('Thank you for using our application!');
     }
 }

@@ -40,13 +40,12 @@ class NewPostNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        // Use environment URL if needed
         $appUrl = config('app.url');
-        $eventUrl = $appUrl . '/news';
+        $eventUrl = $appUrl . '/login';
 
         return (new MailMessage)
             ->line('A new post has been published.')
-            ->action('View Post', $eventUrl)
+            ->action('Login', $eventUrl)
             ->line('Thank you for using our application!');
     }
 }
