@@ -153,37 +153,37 @@ class UserDataController extends Controller
             return response()->json(['message' => 'User not authenticated'], 401);
         }
 
-        $settings = Settings::where('user_id', $user->id)->get();
+        $settings = Settings::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'receive_notification_new_event' => '0',
+                'receive_notification_new_post' => '0',
+                'receive_notification_new_course' => '0',
+                'receive_email_notifications' => '0',
+            ]
+        );
 
-        if (!$settings) {
-            return response()->json(['message' => 'Settings not found'], 404);
-        }
-
-        return response()->json($settings);
+        return response()->json($settings, 200);
     }
 
     public function saveUserSettings(Request $request)
-{
-    // Get the authenticated user
-    $user = $request->user();
+    {
+        $user = $request->user();
 
-    // Retrieve settings for the user
-    $settings = Settings::where('user_id', $user->id)->first();
+        $settings = Settings::where('user_id', $user->id)->first();
 
-    // Extract the settings data from the request
-    $settingsData = $request->all(); // Fetch all input data from the request
+        $settingsData = $request->all();
 
-    if ($settings) {
-        // Update existing record with the data from the request
-        $settings->update($settingsData);
-    } else {
-        // Add the user_id to the data for creating a new record
-        $settingsData['user_id'] = $user->id;
-        Settings::create($settingsData);
+        if ($settings) {
+            // Update existing record with the data from the request
+            $settings->update($settingsData);
+        } else {
+            // Add the user_id to the data for creating a new record
+            $settingsData['user_id'] = $user->id;
+            Settings::create($settingsData);
+        }
+
+        // Return a success response
+        return response()->json(['message' => 'Settings updated successfully']);
     }
-
-    // Return a success response
-    return response()->json(['message' => 'Settings updated successfully']);
-}
-
 }
