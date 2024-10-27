@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
         ]);
 
         //Create admin settings record
-        $adminUser->adminSettings()->create([
+        $adminUser->admin_settings()->create([
             'registration_only_with_invitation' => 0,  
         ]);
 
