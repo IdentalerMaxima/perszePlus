@@ -16,7 +16,7 @@ class NewPostNotification extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct($post)
+    public function  __construct($post)
     {
         $this->post = $post;
     }
@@ -40,9 +40,13 @@ class NewPostNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        // Use environment URL if needed
+        $appUrl = config('app.url');
+        $eventUrl = $appUrl . '/news';
+
         return (new MailMessage)
             ->line('A new post has been published.')
-            ->action('View Post', url('/posts/' . $this->post->id))
+            ->action('View Post', $eventUrl)
             ->line('Thank you for using our application!');
     }
 }
