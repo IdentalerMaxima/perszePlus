@@ -12,19 +12,22 @@ class UserSeeder extends Seeder
     {
 
         //Create the admin user
-        User::factory()->create([
+        $adminUser = User::factory()->create([
             'first_name' => 'Admin',
             'last_name' => 'User',
-            'email' => 'admin@gmail.com',
+            'email' => 'koppany.naray@gmail.com',
             'password' => Hash::make('asd'),
             'category' => 'admin',
         ]);
 
-        //Create 20 users
-        User::factory()->count(20)->create()->each(function ($user) {
+        //Create admin settings record
+        $adminUser->adminSettings()->create([
+            'registration_only_with_invitation' => 0,  
+        ]);
+
+        //Create users
+        User::factory()->count(2)->create()->each(function ($user) {
             $user->settings()->create();
         });
-
-        
     }
 }
