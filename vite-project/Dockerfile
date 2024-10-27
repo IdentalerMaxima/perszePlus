@@ -4,6 +4,12 @@ FROM node:14 as build
 # Set the working directory
 WORKDIR /app
 
+# Define the build argument
+ARG VITE_BACKEND_URL
+
+# Set the environment variable for the build
+ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
