@@ -69,8 +69,6 @@ class PostController extends Controller
         $usersToNotify = User::whereIn('id', $usersWithNotifications)->get();
 
         foreach ($usersToNotify as $user) {
-            // Log::info('Sending email jobs...');
-            //Log::info('Dispatching to ', $user);
             SendEmailJob::dispatch($user, $post, 'post');
             
         }
