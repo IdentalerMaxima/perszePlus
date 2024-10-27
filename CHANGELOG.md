@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.3.0](https://github.com/IdentalerMaxima/perszePlus/compare/v1.2.1...v1.3.0) (2024-10-27)
+
+
+### Features
+
+* create protected route component ([7e922ef](https://github.com/IdentalerMaxima/perszePlus/commit/7e922ef50edff8663534a54df5718c0153365e95))
+
+
+### Bug Fixes
+
+* add create default reg status if none is set ([e1e9edd](https://github.com/IdentalerMaxima/perszePlus/commit/e1e9edda2f59b16e34425e263b53c89923cf596d))
+* add create default user settings if none are found ([27656f2](https://github.com/IdentalerMaxima/perszePlus/commit/27656f2a7c2638363adf44b00e365da48d69a4a8))
+* add loading funcitonality to settings so it waits for fetch ([46e1de5](https://github.com/IdentalerMaxima/perszePlus/commit/46e1de538a47c59be6d740faf0173fbc48261cff))
+* add loading state to context provider ([ca62253](https://github.com/IdentalerMaxima/perszePlus/commit/ca62253ea7dc64cc0ae64f13545e911a334325f0))
+* add loading state to login page so it has time to ask for reg status ([86bb2de](https://github.com/IdentalerMaxima/perszePlus/commit/86bb2deda78d08db806b9323567141f5d898f40d))
+* add protected route to router ([876ae08](https://github.com/IdentalerMaxima/perszePlus/commit/876ae088f1b305f16379f14a4ccf8e8d1e76b882))
+* correct field name ([3491879](https://github.com/IdentalerMaxima/perszePlus/commit/3491879e068b509359921537da691eef2bb34def))
+* event view for non admins faulty ([a03e3b8](https://github.com/IdentalerMaxima/perszePlus/commit/a03e3b8cdbb23a720783460ddfb6b484f5021ffe))
+* fix admin dashboard option not showing in mobile view ([189a4c6](https://github.com/IdentalerMaxima/perszePlus/commit/189a4c6a6e70beca2fb5c6b61a7d121b78a51f58))
+* fix spa reload problem in production ([1a28b8d](https://github.com/IdentalerMaxima/perszePlus/commit/1a28b8df7b516b9cd71edb64ea03d77775081a95))
+* Update event URL in EventCreated notification ([944ff2f](https://github.com/IdentalerMaxima/perszePlus/commit/944ff2f51ffcf7f4cc0f9c13265410b7ee7e50e3))
+* Update event URL in NewCourseNotification ([7543dbd](https://github.com/IdentalerMaxima/perszePlus/commit/7543dbd97f5b0b7ab75e60521525277a03c44ac7))
+
 ## [1.2.1](https://github.com/IdentalerMaxima/perszePlus/compare/v1.2.0...v1.2.1) (2024-10-09)
 
 
