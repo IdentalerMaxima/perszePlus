@@ -184,7 +184,7 @@ export default function Events() {
                   </Typography>
 
 
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '20px', marginBottom: '-26px' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '20px', marginBottom: '-26px', paddingBottom: '20px' }}>
                     {/* Disable buttons if event is closed */}
                     <Button
                       variant="contained"
@@ -224,8 +224,9 @@ export default function Events() {
                       Show Attendees
                     </Button>
                   </div>
+
                   {isAdmin && (
-                    <Box sx={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+                    <Box>
                       <IconButton
                         style={{ position: 'absolute', top: '12px', right: '40px' }}
                         onClick={() => deleteEvent(event.id)}
