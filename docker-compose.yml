@@ -8,17 +8,10 @@ services:
     depends_on:
       - db
     environment:
-<<<<<<< Updated upstream
       - DB_HOST=${DB_HOST}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - APP_URL=${APP_URL}
-=======
-      - DB_HOST=db
-      - DB_USERNAME=user
-      - DB_PASSWORD=asd
-      - APP_URL=http://62.84.181.127:8000
->>>>>>> Stashed changes
 
   frontend:
     build:
@@ -32,12 +25,7 @@ services:
     volumes:
       - ./vite-project:/app
     environment:
-<<<<<<< Updated upstream
       - VITE_API_BASE_URL=${VITE_API_BASE_URL}
-=======
-      - VITE_API_BASE_URL=http://backend:80
->>>>>>> Stashed changes
-
   db:
     image: mysql:5.7
     restart: always
@@ -53,7 +41,6 @@ services:
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
-<<<<<<< Updated upstream
       - "${PHPMYADMIN_PORT}:80"
     environment:
       PMA_HOST: ${PMA_HOST}  
@@ -61,18 +48,3 @@ services:
       PMA_PASSWORD: ${PMA_PASSWORD}  
     depends_on:
       - db
-=======
-      - "3306:3306"
-
-  phpmyadmin:  
-    image: phpmyadmin/phpmyadmin
-    restart: always
-    ports:
-      - "8080:80"  
-    environment:
-      PMA_HOST: db  
-      PMA_USER: user  
-      PMA_PASSWORD: asd  
-    depends_on:
-      - db  
->>>>>>> Stashed changes
