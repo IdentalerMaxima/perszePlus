@@ -14,30 +14,24 @@ export default function Settings() {
 
     const [successMessage, setSuccessMessage] = useState("");
     const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(); 
 
     useEffect(() => {
-        console.log('Settings: ', settings)
-    }), [settings];
-
-    useEffect(() => {
+        setLoading(true);
         getUserSettings();
+        setLoading(false);
     }, []);
 
     const getUserSettings = async () => {
         try {
             const response = await axiosClient.get('/user/settings');
-            console.log('Response: ', response.data);
-
-            const settingsData = response.data[0];
-
+            const settingsData = response.data;
             const mappedSettings = {
                 newEvents: settingsData.receive_notification_new_event === 1,
                 newPosts: settingsData.receive_notification_new_post === 1,
                 newCourses: settingsData.receive_notification_new_course === 1,
                 emailNotifications: settingsData.receive_email_notifications === 1,
             };
-
             setSettings(mappedSettings);
             setLoading(false);
         } catch (error) {
