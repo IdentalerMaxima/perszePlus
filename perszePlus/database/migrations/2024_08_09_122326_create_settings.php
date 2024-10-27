@@ -15,10 +15,10 @@ return new class extends Migration
 
             $table->unsignedBigInteger('user_id')->primary();
 
-            $table->boolean('receive_notification_new_event')->default(true);
-            $table->boolean('receive_notification_new_post')->default(true);
-            $table->boolean('receive_notification_new_course')->default(true);
-            $table->boolean('receive_email_notifications')->default(true);
+            $table->boolean('receive_notification_new_event')->default(false);
+            $table->boolean('receive_notification_new_post')->default(false);
+            $table->boolean('receive_notification_new_course')->default(false);
+            $table->boolean('receive_email_notifications')->default(false);
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
