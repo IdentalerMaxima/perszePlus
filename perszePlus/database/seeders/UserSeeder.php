@@ -20,10 +20,6 @@ class UserSeeder extends Seeder
             'category' => 'admin',
         ]);
 
-        AdminSettings::factory()->create([
-            'registration_only_with_invitation' => 0,
-        ]);
-
         User::factory()->count(2)->create()->each(function ($user) {
             $user->settings()->create();
         });
