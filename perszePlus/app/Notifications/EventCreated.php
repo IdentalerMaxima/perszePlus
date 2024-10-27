@@ -38,7 +38,7 @@ class EventCreated extends Notification implements ShouldQueue
     {
         // Use environment URL if needed
         $appUrl = config('app.url');
-        $eventUrl = $appUrl . '/calendar';
+        $eventUrl = $appUrl . '/events';
 
         return (new MailMessage)
                     ->subject('New Event Created: ' . $this->event->title)
