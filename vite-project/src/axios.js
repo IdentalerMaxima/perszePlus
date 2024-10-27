@@ -7,10 +7,6 @@ console.log(apiUrl);
 
 const axiosClient = axios.create({
     baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
-<<<<<<< Updated upstream
-=======
-    //baseURL: apiUrl,
->>>>>>> Stashed changes
 });
 
 axiosClient.interceptors.request.use((config) => {
