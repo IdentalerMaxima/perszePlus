@@ -33,7 +33,7 @@ export default function PersonalData() {
     city: currentUser.city ? currentUser.city : '',
     state: currentUser.state ? currentUser.state : '',
     zip: currentUser.zip ? currentUser.zip : '',
-    temp_addr: currentUser.temp_addr ? currentUser.temp_addr : 'false',
+    main_address_matches_temporary_address: currentUser.main_address_matches_temporary_address ? currentUser.main_address_matches_temporary_address : 'false',
     temp_addr_street: currentUser.temp_addr_street ? currentUser.temp_addr_street : '',
     temp_addr_city: currentUser.temp_addr_city ? currentUser.temp_addr_city : '',
     temp_addr_state: currentUser.temp_addr_state ? currentUser.temp_addr_state : '',
