@@ -16,12 +16,12 @@ class PostController extends Controller
      */
     public function index()
     {
-        // Fetch posts with their related author and comments
+
         $posts = Post::with(['author', 'comments'])
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Structure the response to include the author's name and avatar path, and the comments
+
         $posts = $posts->map(function ($post) {
             return [
                 'id' => $post->id,
@@ -46,18 +46,7 @@ class PostController extends Controller
             ];
         });
 
-        // Log the posts
-        //Log::info('Posts fetched successfully', ['posts' => $posts]);
-
         return response()->json($posts, 200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -75,32 +64,19 @@ class PostController extends Controller
             'author_id' => $validatedData['author_id'],
         ]);
 
-        $usersWithNotifications = Settings::where('receive_notification_new_course', true)
+        $usersWithNotifications = Settings::where('receive_notification_new_post', true)
             ->pluck('user_id');
         $usersToNotify = User::whereIn('id', $usersWithNotifications)->get();
 
         foreach ($usersToNotify as $user) {
+            // Log::info('Sending email jobs...');
+            //Log::info('Dispatching to ', $user);
             SendEmailJob::dispatch($user, $post, 'post');
+            
         }
 
 
-        return response()->json($post, 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return response()->json($usersToNotify, 201);
     }
 
     /**
