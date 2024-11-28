@@ -52,17 +52,18 @@ export default function DefaultLayout() {
     };
 
     getMessagesOfUser();
-  }, [userToken, selectedMessageId]); // The effect runs only when userToken is set or selectedMessageId changes
+  }, [userToken, selectedMessageId]);
 
 
 
   useEffect(() => {
-    if (!pusherRef.current) {
-      pusherRef.current = new Pusher('802a39c17b905cc66240', {
-        cluster: 'eu',
-        encrypted: true,
-      });
-    }
+    const pusherKey = import.meta.env.VITE_PUSHER_KEY;
+    const pusherCluster = import.meta.env.VITE_PUSHER_CLUSTER;
+    
+    pusherRef.current = new Pusher(pusherKey, {
+      cluster: pusherCluster,
+      encrypted: true,
+    });
 
     const channel = pusherRef.current.subscribe(`user.${currentUser.id}`);
     channel.bind('message.sent', function (data) {
