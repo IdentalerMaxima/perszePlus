@@ -17,7 +17,7 @@ services:
     build:
       context: ./vite-project
       args:
-        VITE_BACKEND_URL: http://backend:80 # Injecting the variable statically
+        VITE_BACKEND_URL: http://backend:80 
 
     image: identaler/perszeplus:web
     ports:
