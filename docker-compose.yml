@@ -1,8 +1,7 @@
 # 2025-01-11 21:28 hotfix
 services:
   backend:
-    build:
-      context: ./perszePlus
+    image: identaler/perszeplus:app
     ports:
       - "${BACKEND_PORT}:80"
     volumes:
