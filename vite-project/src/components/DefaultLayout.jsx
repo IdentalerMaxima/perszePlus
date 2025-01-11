@@ -54,9 +54,8 @@ export default function DefaultLayout() {
     getMessagesOfUser();
   }, [userToken, selectedMessageId]);
 
-
-
-  useEffect(() => {
+  
+useEffect(() => {
     const pusherKey = import.meta.env.VITE_PUSHER_KEY;
     const pusherCluster = import.meta.env.VITE_PUSHER_CLUSTER;
     
@@ -76,6 +75,7 @@ export default function DefaultLayout() {
       channel.unsubscribe();
     };
   }, [currentUser.id]);
+  
 
 
   useEffect(() => {
